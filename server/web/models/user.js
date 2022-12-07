@@ -1,6 +1,7 @@
 const { Model, DataTypes } = require("sequelize");
 const bcrypt = require("bcrypt");
 const sequelize = require("../config/connection");
+const jwt = require("jsonwebtoken");
 
 class User extends Model {}
 
@@ -25,7 +26,7 @@ User.init(
       },
     },
     password: {
-      type: DataTypes.STRING(30),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     gender: {
@@ -36,6 +37,7 @@ User.init(
     },
     role: {
       type: DataTypes.SMALLINT,
+      defaultValue: 1
     },
     dob: {
       type: DataTypes.DATE,
@@ -62,6 +64,7 @@ User.init(
         return updatedUserData;
       },
     },
+    
     sequelize,
     timestamps: true,
     freezeTableName: true,
@@ -69,5 +72,16 @@ User.init(
     modelName: "User",
   }
 );
+
+User.prototype.getJwtToken = function () {
+  return jwt.sign({ id: this.id_user }, process.env.JWT_SECRET_KEY, {
+    expiresIn: process.env.JWT_EXPIRES,
+  });
+};
+
+// So sánh mật khẩu
+User.prototype.comparePassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 
 module.exports = User;
