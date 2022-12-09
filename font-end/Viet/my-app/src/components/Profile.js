@@ -13,7 +13,7 @@ function Profile(props) {
     hideAccountName,
     image,
   } = props;
-
+ 
   let accountName = username
     ? username
     : users[Math.floor(Math.random() * users.length)].username;
