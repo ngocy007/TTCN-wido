@@ -9,7 +9,7 @@ const { isAuthenticatedUser } = require("../middleware/auth");
 
 const router = express.Router();
 
-router.route("/registration").post(createUser);
+router.route("/register").post(createUser);
 
 router.route("/login").post(login);
 

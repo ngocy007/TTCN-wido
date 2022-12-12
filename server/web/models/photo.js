@@ -14,6 +14,9 @@ Photo.init(
     url: {
       type: DataTypes.STRING,
     },
+    belong:{
+      type: DataTypes.STRING(15),
+    },
     id_post: {
       type: DataTypes.INTEGER,
       allowNull: false,

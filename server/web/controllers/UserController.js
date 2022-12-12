@@ -1,4 +1,4 @@
-const User = require("../models/user.js");
+const {User} = require("../models");
 const sendToken = require("../utils/jwtToken.js");
 const ErrorHandler = require("../utils/errorHandler.js");
 
@@ -57,7 +57,7 @@ exports.login = async (req, res, next) => {
     name: user.name,
     image: user.image,
   });
-  sendToken(newUser, 201, res);
+  sendToken(newUser, 200, res);
 };
 
 // Đăng xuất
@@ -69,7 +69,7 @@ exports.logoutUser = async (req, res) => {
 
   res.status(200).json({
     success: true,
-    message: "Log out success",
+    message: "Đã đăng xuất",
   });
 };
 
