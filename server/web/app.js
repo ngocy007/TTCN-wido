@@ -13,8 +13,12 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 // Danh sách các Route
 const post = require("./routes/PostRoute");
 const user = require("./routes/UserRoute");
+const comment = require("./routes/CommentRoute");
+const like = require("./routes/LikeRoute");
 
 app.use("/api/post", post);
 app.use("/api/user", user);
+app.use("/api/comment", comment);
+app.use("/api/like", like);
 
 module.exports = app;

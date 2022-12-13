@@ -10,23 +10,25 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+// Tải ảnh lên cloudinary
 exports.upload = catchAsyncErrors(async (req, res, next) => {
-  const newFileLink = [];
-  const newFile = req.body.file;
-  if (!newFile) {
+  const linkFiles = [];
+  const newFiles = req.body.file;
+  if (!newFiles) {
     return next(new ErrorHandler("Rỗng", 404));
   }
 
-  for (let i = 0; i < newFile.length; i++) {
-    const result = await cloudinary.uploader.upload(newFile[i], {
+  for (let i = 0; i < newFiles.length; i++) {
+    const result = await cloudinary.uploader.upload(newFiles[i], {
       folder: "file_post",
     });
-    newFileLink.push(result.url);
+    linkFiles.push(result.url);
   }
-  req.newFile = newFileLink;
+  req.newFile = linkFiles;
   next();
 });
 
+// Xóa ảnh
 exports.deletefile = catchAsyncErrors(async (req, res, next) => {
   const post = await Post.findOne({ where: { id_post: req.params.id } });
   if (!post) {

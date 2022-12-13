@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 class User extends Model {}
 
 User.init(
+
   {
     id_user: {
       type: DataTypes.INTEGER,

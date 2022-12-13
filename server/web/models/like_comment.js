@@ -4,7 +4,7 @@ class Like_Comment extends Model {}
 
 Like_Comment.init(
   {
-    id_lp: {
+    id_lc: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
@@ -18,12 +18,12 @@ Like_Comment.init(
         key: "id_user",
       },
     },
-    id_post: {
+    id_com: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "Post",
-        key: "id_post",
+        model: "Comment",
+        key: "id_com",
       },
     },
   },

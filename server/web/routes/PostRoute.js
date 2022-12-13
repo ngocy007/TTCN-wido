@@ -1,24 +1,23 @@
-const express = require("express");
+const router  = require("express").Router();
 const {
   createPost,
   getAllPost,
   updatePost,
   deletePost,
-  likePost,
+  getDetailsPost
 } = require("../controllers/PostController");
 const { isAuthenticatedUser } = require("../middleware/auth");
 const { upload, deletefile } = require("../middleware/cloudinary");
 
-const router = express.Router();
 
 router.route("/").get(isAuthenticatedUser,getAllPost);
-
 router.route("/create").post(isAuthenticatedUser, upload, createPost);
 
 router
   .route("/:id")
+  .get(isAuthenticatedUser,getDetailsPost)
   .put(isAuthenticatedUser,updatePost)
   .delete(isAuthenticatedUser,deletefile, deletePost)
-  .post(isAuthenticatedUser,likePost);
+  
 
 module.exports = router;

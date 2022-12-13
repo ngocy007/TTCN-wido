@@ -16,7 +16,7 @@ Like_Post.init(
       allowNull: false,
       references: {
         model: "User",
-        key: "id_like",
+        key: "id_user",
       },
     },
     id_post: {
