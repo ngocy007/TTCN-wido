@@ -41,14 +41,14 @@ User.hasMany(Like_Post, {
 });
 
 // NN
-User.belongsToMany(Post, {
-  through: Like_Post,
-  foreignKey: "id_user",
-});
-Post.belongsToMany(User, {
-  through: Like_Post,
-  foreignKey: "id_post",
-});
+// User.belongsToMany(Post, {
+//   through: Like_Post,
+//   foreignKey: "id_user",
+// });
+// Post.belongsToMany(User, {
+//   through: Like_Post,
+//   foreignKey: "id_post",
+// });
 
 //Quan hệ bình luận
 Post.hasMany(Comment, {
@@ -97,9 +97,25 @@ User.hasMany(Like_Comment, {
 //   foreignKey: 'follower_id',
 // });
 
-// User.hasMany(Follower, {
-//   foreignKey: 'follower_id',
-// });
+User.hasMany(Follow, {
+  as: "followee",
+  foreignKey: "id_follower",
+});
+User.hasMany(Follow, {
+  as: "follower",
+  foreignKey: "id_followee",
+});
+
+
+Follow.belongsTo(User, {
+  as: "follower",
+  foreignKey: "id_followee",
+});
+Follow.belongsTo(User, {
+  as: "followee",
+  foreignKey: "id_follower",
+});
+
 module.exports = {
   User,
   Post,

@@ -10,7 +10,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Tải ảnh lên cloudinary
+// Tải ảnh của post lên cloudinary
 exports.upload = catchAsyncErrors(async (req, res, next) => {
   const linkFiles = [];
   const newFiles = req.body.file;
@@ -28,7 +28,7 @@ exports.upload = catchAsyncErrors(async (req, res, next) => {
   next();
 });
 
-// Xóa ảnh
+// Xóa ảnh trong post
 exports.deletefile = catchAsyncErrors(async (req, res, next) => {
   const post = await Post.findOne({ where: { id_post: req.params.id } });
   if (!post) {
@@ -42,4 +42,25 @@ exports.deletefile = catchAsyncErrors(async (req, res, next) => {
       photoUrl.slice(photoUrl.indexOf("file"), photoUrl.lastIndexOf("."))
     );
   }
+  next();
+});
+
+// Đổi avatar
+exports.changeAva = catchAsyncErrors(async (req, res, next) => {
+  const avatar = req.user.image;
+  if (!req.body.file) {
+    return next();
+  }
+  if (req.user.image != "https://bulma.io/images/placeholders/128x128.png") {
+    const result1 = await cloudinary.uploader.destroy(
+      avatar.slice(avatar.indexOf("avatars"), avatar.lastIndexOf("."))
+    );
+  }
+
+  const result2 = await cloudinary.uploader.upload(req.body.file, {
+    folder: "avatars",
+  });
+
+  req.newAva = result2.url;
+  next();
 });

@@ -48,6 +48,7 @@ exports.getDetailsPost = async (req, res) => {
         attributes: ["id_com", "content"],
         separate: true,
         limit: 15,
+        where: {reply:null}
       },
       {
         duplicating: false,
