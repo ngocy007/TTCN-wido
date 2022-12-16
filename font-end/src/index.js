@@ -8,6 +8,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Register from "./Auth/Register";
 import Github from "./Auth/Login_github";
 import AdminIndex from "./Admin/Admin_Index";
+import UserProfile from "./components/Userprofile";
 
 const login = ReactDOM.createRoot(document.getElementById("login"));
 let headers = new Headers();
@@ -31,6 +32,7 @@ login.render(
         <Route path="/login_github" element={<Github />} />
         <Route path="/Admin_Index" element={<AdminIndex />} />
         <Route path="/Home" element={<App />} />
+        <Route path="/user" element={<UserProfile />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
