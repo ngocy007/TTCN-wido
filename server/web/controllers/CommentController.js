@@ -1,6 +1,6 @@
-const { Comment, User, Like_Comment, Post } = require("../models");
+const { Comment, User, Like_Comment} = require("../models");
 
-// Lấy bình luận
+// Lấy thêm bình luận
 exports.getMoreComments = async (req, res) => {
   try {
     const comments = await Comment.findAll({
@@ -10,6 +10,7 @@ exports.getMoreComments = async (req, res) => {
       ],
       offset: req.body.offset ?? 15,
       limit: 10,
+      where: {reply:null}
     });
     res.json({ comments, success: true });
   } catch (err) {
@@ -50,34 +51,6 @@ exports.commentDelete = async (req, res) => {
   }
 };
 
-exports.getAllPost = async (req, res) => {
-  const posts = await Post.findAll({
-    attributes: {
-      include: [
-        [Sequelize.fn("COUNT", Sequelize.col("Like_Posts.id_lp")), "countLike"],
-      ],
-    },
-    include: [
-      { duplicating: false, model: Photo, attributes: ["url"] },
-      { duplicating: false, model: User, attributes: ["name", "image"] },
-      {
-        duplicating: false,
-        model: Like_Post,
-        attributes: [],
-      },
-    ],
-    group: ["Post.id_post", "Photos.id_photo", "User.id_user"],
-
-    limit: 10,
-    // offset: req.body.offset ?? 0,
-  });
-
-  res.status(200).json({
-    success: true,
-    posts,
-  });
-};
-
 // Like bình luận
 exports.likeComment = async (req, res) => {
   try {
@@ -111,3 +84,5 @@ exports.getUsersLCM = async (req, res) => {
     res.sendStatus(500).send(err);
   }
 };
+
+
