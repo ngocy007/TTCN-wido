@@ -47,66 +47,21 @@ function Cards() {
       user: "mapvault",
       text: "Niceeeee!",
       id: 10,
-    },{
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 11,
-    },{
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 12,
-    },{
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 13,
-    },{
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 14,
-    },{
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 15,
     },
     {
       user: "mapvault",
       text: "Niceeeee!",
-      id: 16,
+      id: 10,
     },
     {
       user: "mapvault",
       text: "Niceeeee!",
-      id: 17,
+      id: 10,
     },
     {
       user: "mapvault",
       text: "Niceeeee!",
-      id: 18,
-    },
-    {
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 19,
-    },
-    {
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 20,
-    },
-    {
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 21,
-    },
-    {
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 22,
-    },
-    {
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 23,
+      id: 10,
     },
   ];
 

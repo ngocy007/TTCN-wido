@@ -1,13 +1,15 @@
 @import "./variables";
 
-.card {
+.cardModal {
   border: 1px solid $border-color-grey;
   background-color: $background-white;
   margin-bottom: 3.5em;
   border-radius: 3px;
+  .menuModal{
+    width: 40%;
+  }
   .cardcontainer{
     display: flex;
-    justify-content: space-between;
   }
   header {
     display: flex;
@@ -28,8 +30,9 @@
     }
   }
 
-  .cardImage {
-    width: 100%;
+  .cardImageModal {
+    width: 495px;
+    height: 619px;
     display: block;
   }
 
@@ -44,8 +47,9 @@
     }
   }
 
-  .comments {
+  .commentsModal {
     margin-bottom: 0.75em;
+    height:55%;
   }
 
   .timePosted {

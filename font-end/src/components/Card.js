@@ -13,7 +13,7 @@ function Card(props) {
     props;
   const [modalOpen, setModalOpen] = useState(false);
   const style = {
-    position: "absolute",
+    position: "fixed",
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
@@ -87,9 +87,22 @@ function Card(props) {
         })}
       </div>
       <div className="timePosted">{hours} HOURS AGO</div>
-      <div className="addComment">
-        <div className="commentText">Add a comment...</div>
-        <div className="postText">Post</div>
+      <div className="post__comment">
+        <form className="form">
+          <div className="addComment">
+            <div className="commentText">
+              <input
+                text="text"
+                className="post__commentbox"
+                placeholder="Add a comment..."
+              />
+            </div>
+            {/* <div className="postText">Post</div> */}
+            <button className="post_comment">
+              Đăng
+            </button>
+          </div>
+        </form>
       </div>
 
       <Modal

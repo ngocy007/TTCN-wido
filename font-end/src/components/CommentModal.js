@@ -14,51 +14,49 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 function renderRow(props) {
   const { data, index, style } = props;
-  console.log(data.comment)
+  console.log(data.comment);
   return (
     <ListItem style={style} key={index} component="div" disablePadding>
       <ListItemButton>
-      <ListItemText primary={`Item ${index + 1}`} />
-    
+        <ListItemText primary={`Item ${index + 1}`} />
+        {console.log(index)}
       </ListItemButton>
     </ListItem>
-
   );
 }
 function CommentModal(props) {
   const { storyBorder, image, comments, likedByText, likedByNumber, hours } =
     props;
+
+  console.log(
+    comments.map((comment) => {
+      console.log("pointer");
+      return comment;
+    })
+  );
   return (
-    <div className="card">
+    <div className="cardModal">
       <div className="cardcontainer">
         <div className="img1">
-          <img className="cardImage" src={image} alt="card content" />
+          <img className="cardImageModal" src={image} alt="card content" />
         </div>
-        <div>
+        <div className="menuModal">
           <header>
             <Profile iconSize="medium" storyBorder={storyBorder} />
             <CardButton className="cardButton" />
           </header>
+          <div className="commentsModal">
+            {comments.map((comment) => {
+              return (
+                <Comment
+                  key={comment.id}
+                  accountName={comment.user}
+                  comment={comment.text}
+                />
+              );
+            })}
+          </div>
           {/* <div className="comments">
-              <FixedSizeList
-                height={400}
-                width={360}
-                itemSize={46}
-                itemCount={200}
-                overscanCount={5}
-              >
-                {comments.map((comment) => {
-                  return (
-                    <Comment
-                      key={comment.id}
-                      accountName={comment.user}
-                      comment={comment.text}
-                    />
-                  );
-                })}
-              </FixedSizeList>
-          </div> */}
-          <div className="comments">
           <FixedSizeList
               height={200}
               width={360}
@@ -68,9 +66,9 @@ function CommentModal(props) {
               itemData={{comments:"123"}}
             >
             {renderRow}
+            {console.log(comments,"sdfsgfrf")}
             </FixedSizeList>
-          </div>
-         
+          </div> */}
 
           <CardMenu />
           <div className="likedBy">
@@ -81,9 +79,24 @@ function CommentModal(props) {
             </span>
           </div>
           <div className="timePosted">{hours} HOURS AGO</div>
-          <div className="addComment">
+          {/* <div className="addComment">
             <div className="commentText">Add a comment...</div>
             <div className="postText">Post</div>
+          </div> */}
+          <div className="post__comment">
+            <form className="form">
+              <div className="addComment">
+                <div className="commentText">
+                  <input
+                    text="text"
+                    className="post__commentbox"
+                    placeholder="Add a comment..."
+                  />
+                </div>
+                {/* <div className="postText">Post</div> */}
+                <button className="post_comment">Đăng</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>

@@ -60,6 +60,7 @@
     padding: 1.5em 1.25em;
 
     .commentText {
+      width: 95%;
       color: $font-color-secondary;
     }
 
@@ -67,6 +68,19 @@
       color: $link-color-secondary;
     }
   }
+}
+.post__commentbox {
+    height: 56px;
+    width: 95%;
+    border: 0px;
+    font-size: 16px;
+    padding-left: 10px;
+}
+.post_comment {
+  border: 0px;
+  background-color: transparent;
+  color: #0095f6;
+  font-weight: 600;
 }
 
 @media only screen and (max-width: 640px) {
