@@ -35,31 +35,30 @@ class Register extends React.Component {
       input["password"] = "";
       input["confirm_password"] = "";
       this.setState({ input: input });
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      axios
+        .post("http://localhost:8000/api/user/register", {
+          name: this.state.input.username,
+          email: this.state.input.email,
+          password: this.state.input.password,
+          config,
+        })
+        .then(function (response) {
+          console.log(response.status);
+          if (response.status === 201) {
+            //window.location.assign("/Admin");
+            alert("Đăng ký thành công");
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          alert("lỗi rồi đó");
+        });
     }
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    axios
-      .post("http://192.168.2.121:8000/api/user/register", {
-        name: this.state.input.username,
-        email: this.state.input.email,
-        password: this.state.input.password,
-        config,
-      })
-      .then(function (response) {
-        console.log(response.status);
-        if (response.status === 200) {
-          window.location.assign("/Admin_Index");
-          alert("Đăng ký thành công");
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-        alert("lỗi rồi đó");
-      });
   }
   validate() {
     let input = this.state.input;
@@ -195,7 +194,7 @@ class Register extends React.Component {
             </div>
             <input type="submit" value="Đăng ký" className=" btn-login" />
             <button className="btn-login">
-              <Link style={{ textDecoration: "none" }} to="/">
+              <Link style={{ textDecoration: "none", color: "white" }} to="/">
                 Đăng Nhập
               </Link>
             </button>

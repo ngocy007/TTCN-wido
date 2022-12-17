@@ -37,16 +37,16 @@ class Login extends Component {
     };
 
     axios
-      .post("http://192.168.2.121:8000/api/user/login", {
+      .post("http://localhost:8000/api/user/login", {
         email: this.state.email,
         password: this.state.password,
         config,
       })
       .then(function (response) {
         console.log(response.status);
-        //if (response.status === 200) {
-        window.location.assign("/Home");
-        //}
+        if (response.status === 200) {
+          window.location.assign("/Home");
+        }
       })
       .catch(function (error) {
         console.log(error);
@@ -97,7 +97,10 @@ class Login extends Component {
             </div>
             <div className="col-12">
               <button className="btn-login">
-                <Link style={{ textDecoration: "none" }} to="/register">
+                <Link
+                  style={{ textDecoration: "none", color: "white" }}
+                  to="/register"
+                >
                   Đăng Ký
                 </Link>
               </button>
@@ -116,7 +119,7 @@ class Login extends Component {
             <div className="col-12">
               <span>Đăng nhập với: </span>
               <Link style={{ textDecoration: "none" }} to="/login_github">
-                <i className="fab fa-github"></i>
+                <i className="fab fa-github"> github</i>
               </Link>
             </div>
           </div>
