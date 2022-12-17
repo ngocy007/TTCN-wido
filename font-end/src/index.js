@@ -11,6 +11,7 @@ import Thongke from "./components/Admin/Thongke";
 import Profiles from "./components/Admin/profile";
 import UserAdmin from "./components/Admin/User";
 import UserProfile from "./components/Userprofile";
+import PostAdmin from "./components/Admin/Post";
 
 const login = ReactDOM.createRoot(document.getElementById("login"));
 let headers = new Headers();
@@ -37,6 +38,7 @@ login.render(
         <Route path="/Admin/profile" element={<Profiles />} />
         <Route path="/user" element={<UserProfile />} />
         <Route path="/Admin/user" element={<UserAdmin />} />
+        <Route path="/Admin/post" element={<PostAdmin />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

@@ -38,7 +38,7 @@ class Admin_Index extends Component {
               </Link>
             </div>
             <div className="div-left">
-              <Link>
+              <Link to="/Admin/post">
                 <i className="nav-text fa fa-book">Bài viết</i>
               </Link>
             </div>

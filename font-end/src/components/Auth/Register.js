@@ -49,8 +49,8 @@ class Register extends React.Component {
         })
         .then(function (response) {
           console.log(response.status);
-          if (response.status === 200) {
-            window.location.assign("/Admin_Index");
+          if (response.status === 201) {
+            //window.location.assign("/Admin");
             alert("Đăng ký thành công");
           }
         })

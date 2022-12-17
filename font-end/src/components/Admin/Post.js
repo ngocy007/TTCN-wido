@@ -2,37 +2,23 @@ import React, { Component } from "react";
 import axios, * as others from "axios";
 import Admin_Index from "./Admin_Index";
 
-class User extends Component {
+class Post extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      users: [],
+      posts: [],
     };
   }
 
   componentDidMount() {
     axios
-      .get("http://localhost:8000/api/user")
+      .get("http://localhost:8000/api/post")
       .then((res) => {
-        const user = res.data;
-        this.setState({ users: user.users });
+        const post = res.data;
+        this.setState({ posts: post.posts });
       })
       .catch((error) => console.log(error));
   }
-
-  handleDetail = (item) => {
-    const userId = {
-      id: item.id_user,
-    };
-    axios
-      .post("http://localhost:8000/api/user/info/{id_uesr}", userId)
-      .then((res) => {
-        this.setState((prevState) => ({
-          news: prevState.news.filter((el) => el.id !== item.id_user),
-        }));
-      })
-      .catch((error) => console.log(error));
-  };
   handleDelete = (item) => {
     const newsId = {
       id: item.id,
@@ -55,14 +41,14 @@ class User extends Component {
           <table className="table">
             <tr className="col-9">
               <td className="col-2">id</td>
-              <td className="col-2">name</td>
-              <td className="col-2">email</td>
+              <td className="col-2">nội dung</td>
+              <td className="col-2">ngày đăng</td>
             </tr>
-            {this.state.users.map((item) => (
-              <tr key={item.id_user} className="col-9">
-                <td className="col-2">{item.id_user}</td>
-                <td className="col-2">{item.name}</td>
-                <td className="col-2">{item.email}</td>
+            {this.state.posts.map((item) => (
+              <tr key={item.id_post} className="col-9">
+                <td className="col-2">{item.id_post}</td>
+                <td className="col-2 content">{item.content}</td>
+                <td className="col-2">{item.created_At}</td>
                 <td className="col-1">
                   <button onClick={() => this.handleDetail(item)}>
                     chi tiết
@@ -80,4 +66,4 @@ class User extends Component {
   }
 }
 
-export default User;
+export default Post;
