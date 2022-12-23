@@ -30,9 +30,9 @@ function Menu() {
   const handleClose = () => setOpen(false);
   return (
     <div className="menu">
-      <Home className="icon" />
-      <Inbox className="icon" />
-      <Explore className="icon" />
+      <Home className="icon" onclick="location.href='https://google.com';"></Home>
+      {/* <Inbox className="icon" />
+      <Explore className="icon" /> */}
       <Notifications className="icon" />
       <Upload className="icon" onClick={handleOpen}/>
       <ProfileIcon iconSize="small" image={image} />

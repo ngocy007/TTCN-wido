@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Admin_Index from "./Admin_Index";
 
-import "./Profile.css";
+// import "./Profile.css";
 
 const Profiles = ({ history }) => {
   const { user, loading, isAuthenticated } = useSelector((state) => state.user);
