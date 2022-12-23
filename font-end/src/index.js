@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./components/App";
 import Login from "./components/Auth/Login";
+import ForgotPass from "./components/Auth/FogotPass";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Register from "./components/Auth/Register";
@@ -33,6 +34,7 @@ login.render(
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login_github" element={<Github />} />
+        <Route path="/fogotpass" element={<ForgotPass />} />
         <Route path="/Home" element={<App />} />
         <Route path="/Admin" element={<Thongke />} />
         <Route path="/Admin/profile" element={<Profiles />} />

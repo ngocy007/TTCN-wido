@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import "./Login.scss";
 import { Link } from "react-router-dom";
 import axios, * as others from "axios";
-import PropTypes from "prop-types";
+//import PropTypes from "prop-types";
 class Login extends Component {
-  static contextTypes = {
-    router: PropTypes.object,
-  };
+  // static contextTypes = {
+  //   router: PropTypes.object,
+  // };
   // eslint-disable-next-line no-useless-constructor
   constructor(props) {
     super(props);
@@ -114,7 +114,9 @@ class Login extends Component {
               </button>
             </div>
             <div className="col-12">
-              <span className="forgot-password">Quên mật khẩu?</span>
+              <Link style={{ textDecoration: "none" }} to="/Fogotpass">
+                <span className="forgot-password">Quên mật khẩu?</span>
+              </Link>
             </div>
             <div className="col-12">
               <span>Đăng nhập với: </span>

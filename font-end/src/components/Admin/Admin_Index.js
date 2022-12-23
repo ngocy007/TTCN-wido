@@ -2,6 +2,11 @@ import React, { Component } from "react";
 import "../../styles/navigation.scss";
 import "../../styles/admin_nav.scss";
 import { Link } from "react-router-dom";
+import Dropdown from "react-bootstrap/Dropdown";
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import NavDropdown from "react-bootstrap/NavDropdown";
+
 class Admin_Index extends Component {
   constructor(props) {
     super(props);
@@ -20,10 +25,41 @@ class Admin_Index extends Component {
                 <i class="fa fa-home" aria-hidden="true"></i> Trang Chủ
               </Link>
             </li>
-            <li>
-              <Link to="/Admin/profile">
-                <i class="fa fa-info" aria-hidden="true"></i> trang cá nhân
-              </Link>
+            <li id="dropdown">
+              <div>
+                <img
+                  class="img-xs rounded-circle avata"
+                  src="../../images/gallery-1.jpg"
+                  alt="Profile"
+                ></img>
+                <NavDropdown
+                  id="nav-dropdown"
+                  title="trang cá nhân"
+                  menuVariant="dark"
+                >
+                  <NavDropdown.Item href="#action/3.1">
+                    profile
+                  </NavDropdown.Item>
+                  <NavDropdown.Item href="#action/3.2">logout</NavDropdown.Item>
+                </NavDropdown>
+              </div>
+              {/* <Dropdown>
+                <Dropdown.Toggle
+                  variant="secondary"
+                  id="nav-dropdown-dark-example"
+                >
+                  <img
+                    class="img-xs rounded-circle avata"
+                    src="../../images/gallery-1.jpg"
+                    alt="Profile"
+                  ></img>{" "}
+                  Trang cá nhân
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item href="#/action-1">profile</Dropdown.Item>
+                  <Dropdown.Item href="#/action-2">logout</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown> */}
             </li>
             <li>
               <Link to="">
