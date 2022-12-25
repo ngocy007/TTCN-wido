@@ -3,7 +3,6 @@ const cloudinary = require("cloudinary").v2;
 const catchAsyncErrors = require("./catchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
 const { Post } = require("../models");
-const { json } = require("body-parser");
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -15,10 +14,6 @@ cloudinary.config({
 exports.upload = catchAsyncErrors(async (req, res, next) => {
   
   const linkFiles = [];
-<<<<<<< HEAD
-
-=======
->>>>>>> 66a84b5066dc84d950001d410df9b34793dddb50
   const newFiles = req.body.file;
   if (!newFiles) {
     return next(new ErrorHandler("Rỗng", 404));
