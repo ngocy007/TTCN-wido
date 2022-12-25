@@ -21,6 +21,8 @@ const {
 const { isAuthenticatedUser } = require("../middleware/auth");
 const { changeAva } = require("../middleware/cloudinary");
 
+router.route("/search").get(isAuthenticatedUser, searchUser);
+
 router.route("/sendOTP/Create").post(sendOTPCreate);
 
 router.route("/sendOTP/ForgotPW").post(sendOTPForgotPW);
@@ -51,8 +53,6 @@ router
 router.route("/listfollowing/:id").get(isAuthenticatedUser, getUsersFLg);
 
 router.route("/listfollower/:id").get(isAuthenticatedUser, getUsersFLr);
-
-router.route("/search/:q").get(isAuthenticatedUser, searchUser);
 
 router.route("/reset").get(isAuthenticatedUser, resetPassword);
 

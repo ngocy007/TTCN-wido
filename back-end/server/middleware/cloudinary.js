@@ -13,8 +13,9 @@ cloudinary.config({
 
 // Tải ảnh của post lên cloudinary
 exports.upload = catchAsyncErrors(async (req, res, next) => {
+  
   const linkFiles = [];
-  console.log(JSON.parse(req.body));
+
   const newFiles = req.body.file;
   console.log(typeof newFiles);
   if (!newFiles) {
@@ -32,9 +33,11 @@ exports.upload = catchAsyncErrors(async (req, res, next) => {
       const result = await cloudinary.uploader.upload(newFiles[i], {
         folder: "file_post",
       });
+     
       linkFiles.push(result.url);
     }
   }
+  
   req.newFile = linkFiles;
   console.log("gà");
   next();

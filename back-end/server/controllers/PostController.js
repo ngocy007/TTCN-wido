@@ -1,28 +1,43 @@
 const { Photo, Post, Like_Post, User, Comment } = require("../models");
 const Sequelize = require("sequelize");
+const { Op } = require("sequelize");
 
 // Lấy dữ liệu tất cả bài viết
 exports.getAllPost = async (req, res) => {
-  const posts = await Post.findAll({
-    attributes: {
-      include: [
-        [Sequelize.fn("COUNT", Sequelize.col("Like_Posts.id_lp")), "countLike"],
-      ],
-    },
+  const rawPosts = await Post.findAll({
     include: [
-      { duplicating: false, model: Photo, attributes: ["url"] },
-      { duplicating: false, model: User, attributes: ["name", "image","id_user"] },
+      { model: Photo, attributes: ["url"] },
       {
-        duplicating: false,
-        model: Like_Post,
-        attributes: [],
+        model: User,
+        attributes: ["name", "image", "id_user"],
       },
     ],
-    group: ["Post.id_post", "Photos.id_photo", "User.id_user"],
 
-    limit: 10,
-    // offset: req.body.offset ?? 0,
+    limit: 5,
+    offset: req.body.offset ?? 0,
   });
+  const processPosts = rawPosts.map((e) => e.get({ plain: true }));
+  const posts = [];
+  for (const post of processPosts) {
+    let isLike = false;
+    let countLike = 0;
+    let like = await Like_Post.findOne({
+      where: {
+        [Op.and]: [{ id_post: post.id_post }, { id_user: req.user.id_user }],
+      },
+    });
+    if (like) {
+      isLike = true;
+    }
+    const { count } = await Like_Post.findAndCountAll({
+      where: { id_post: post.id_post },
+    });
+    countLike = count;
+    const countCmt = await Comment.findAll({
+      where: { id_post: post.id_post },
+    }).then((e) => e.length);
+    posts.push({ ...post, isLike, countLike, countCmt });
+  }
 
   res.status(200).json({
     success: true,
@@ -32,33 +47,47 @@ exports.getAllPost = async (req, res) => {
 
 // Xem chi tiết Post
 exports.getDetailsPost = async (req, res) => {
-  const posts = await Post.findOne({
+  const rawPosts = await Post.findOne({
     where: { id_post: req.params.id },
-    attributes: {
-      include: [
-        [Sequelize.fn("COUNT", Sequelize.col("Like_Posts.id_lp")), "countLike"],
-      ],
-    },
     include: [
-      { duplicating: false, model: Photo, attributes: ["url"] },
-      { duplicating: false, model: User, attributes: ["name", "image"] },
+      { model: Photo, attributes: ["url"] },
+      { model: User, attributes: ["name", "image"] },
       {
-        duplicating: false,
         model: Comment,
-        attributes: ["id_com", "content"],
+        attributes: ["id_com", "id_post" , "content"],
         separate: true,
         limit: 15,
-        where: {reply:null}
-      },
-      {
-        duplicating: false,
-        model: Like_Post,
-        attributes: [],
+        where: { reply: null },
       },
     ],
-    group: ["Post.id_post", "Photos.id_photo", "User.id_user"],
   });
-
+  const processPosts = rawPosts.get({ plain: true });
+  let isLike = false;
+  let countLike = 0;
+  let like = await Like_Post.findOne({
+    where: {
+      [Op.and]: [
+        { id_post: processPosts.id_post },
+        { id_user: req.user.id_user },
+      ],
+    },
+  });
+  if (like) {
+    isLike = true;
+  }
+  const { count } = await Like_Post.findAndCountAll({
+    where: { id_post: processPosts.id_post },
+  });
+  countLike = count;
+  for (cmt of processPosts.Comments) {
+    console.log(cmt)
+    cmt.countRep = await Comment.findAll({
+      where: {
+        [Op.and]: [{ id_post: cmt.id_post }, { reply: cmt.id_com }],
+      },
+    }).then((e) => e.length);
+  }
+  const posts = { ...processPosts, isLike, countLike };
   res.status(200).json({
     success: true,
     posts,
@@ -127,6 +156,7 @@ exports.deletePost = async (req, res) => {
     res.sendStatus(500).send(err);
   }
 };
+
 // Like bài
 exports.likePost = async (req, res) => {
   try {
@@ -153,15 +183,11 @@ exports.getUsersLP = async (req, res) => {
   try {
     const users = await Post.findOne({
       attributes: [],
-      where: { id_post: req.params.id},
-      include: {model: User, attributes: ["name","image","id_user"]}
+      where: { id_post: req.params.id },
+      include: { model: User, attributes: ["name", "image", "id_user"] },
     });
     res.json({ users, success: true });
   } catch (error) {
     res.sendStatus(500).send(err);
   }
 };
-
-
-
-
