@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./Login.scss";
 import { Link } from "react-router-dom";
 import axios, * as others from "axios";
+import Home from "../Admin/Admin_Index";
 //import PropTypes from "prop-types";
 class Login extends Component {
   // static contextTypes = {
@@ -14,6 +15,7 @@ class Login extends Component {
       email: "",
       password: "",
       ishowpassword: false,
+      islogin: localStorage.getItem("token") != null,
     };
   }
   handleonChangeEmail = (event) => {
@@ -33,6 +35,7 @@ class Login extends Component {
     const config = {
       headers: {
         "Content-Type": "application/json",
+        "x-access-token": localStorage.getItem("token"),
       },
     };
 
@@ -45,7 +48,10 @@ class Login extends Component {
       .then(function (response) {
         console.log(response.status);
         if (response.status === 200) {
+          //console.log(response.data.token);
+          localStorage.setItem("token", response.data.token);
           window.location.assign("/Home");
+          //return response.json();
         }
       })
       .catch(function (error) {

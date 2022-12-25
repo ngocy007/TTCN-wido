@@ -15,9 +15,11 @@ cloudinary.config({
 exports.upload = catchAsyncErrors(async (req, res, next) => {
   
   const linkFiles = [];
+<<<<<<< HEAD
 
+=======
+>>>>>>> 66a84b5066dc84d950001d410df9b34793dddb50
   const newFiles = req.body.file;
-  console.log(typeof newFiles);
   if (!newFiles) {
     return next(new ErrorHandler("Rỗng", 404));
   }
@@ -26,8 +28,7 @@ exports.upload = catchAsyncErrors(async (req, res, next) => {
       folder: "file_post",
     });
     linkFiles.push(result.url);
-  }
-  else {
+  } else {
     for (let i = 0; i < newFiles.length; i++) {
       console.log(newFiles[i]);
       const result = await cloudinary.uploader.upload(newFiles[i], {
@@ -39,7 +40,6 @@ exports.upload = catchAsyncErrors(async (req, res, next) => {
   }
   
   req.newFile = linkFiles;
-  console.log("gà");
   next();
 });
 
@@ -79,4 +79,3 @@ exports.changeAva = catchAsyncErrors(async (req, res, next) => {
   req.newAva = result2.url;
   next();
 });
-

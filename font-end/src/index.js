@@ -20,10 +20,7 @@ let headers = new Headers();
 headers.append("Content-Type", "application/json");
 headers.append("Accept", "application/json");
 
-headers.append(
-  "Access-Control-Allow-Origin",
-  "http://192.168.2.121:8000/api/user/login"
-);
+headers.append("Access-Control-Allow-Origin", "*");
 headers.append("Access-Control-Allow-Credentials", "true");
 
 headers.append("GET", "POST", "OPTIONS");

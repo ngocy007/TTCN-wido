@@ -2,6 +2,8 @@ import React from "react";
 import "./Register.scss";
 import axios, * as others from "axios";
 import { Link } from "react-router-dom";
+import Code from "./SendMail";
+var a = 0;
 class Register extends React.Component {
   constructor() {
     super();
@@ -9,9 +11,15 @@ class Register extends React.Component {
       input: {},
       errors: {},
       ishowpassword: false,
+      checkedmail: true,
+      checkedcode: false,
+      checkedFirt: true,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.showdiv = this.showdiv.bind(this);
+    this.handleSubmitEmail = this.handleSubmitEmail.bind(this);
+    //this.sendmail = this.sendmail.bind(this);
   }
   ishowpass = () => {
     this.setState({
@@ -40,6 +48,7 @@ class Register extends React.Component {
           "Content-Type": "application/json",
         },
       };
+
       axios
         .post("http://localhost:8000/api/user/register", {
           name: this.state.input.username,
@@ -56,9 +65,127 @@ class Register extends React.Component {
         })
         .catch(function (error) {
           console.log(error);
-          alert("lỗi rồi đó");
         });
     }
+  }
+  validateEmail() {
+    let input = this.state.input;
+    let errors = {};
+    let isValid = true;
+    if (!input["email"]) {
+      isValid = false;
+      errors["email"] = "hãy nhập email";
+    }
+    if (typeof input["email"] !== "undefined") {
+      var pattern = new RegExp(
+        /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i
+      );
+
+      if (!pattern.test(input["email"])) {
+        isValid = false;
+        errors["email"] = "email không hợp lệ.";
+      }
+    }
+    this.setState({
+      errors: errors,
+    });
+    return isValid;
+  }
+  handleSubmitEmail(event) {
+    event.preventDefault();
+
+    if (this.validateEmail()) {
+      console.log("email: ", this.state.input.email);
+      console.log("all state", this.state);
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      axios
+        .post("http://localhost:8000/api/user/sendOTP/Create", {
+          email: this.state.input.email,
+          config,
+        })
+        .then(function (response) {
+          console.log(response.status);
+          if (response.status === 200) {
+            //console.log(response.data.token);
+            alert("thành công");
+            //return response.json();
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          alert("email  không đúng");
+        });
+    }
+  }
+  showdiv(event) {
+    switch (event) {
+      case "checkedmail":
+        // this.setState({
+        //   checkedmail: !this.state.checkedmail,
+        //   checkedcode: !this.state.checkedcode,
+        // });
+        break;
+      case "checkedcode":
+        if (this.validotp()) {
+          this.setState({
+            checkedmail: !this.state.checkedmail,
+            checkedcode: !this.state.checkedcode,
+          });
+        }
+        console.log(this.state.input.email);
+        break;
+      case "confim":
+        this.setState({});
+      default:
+    }
+  }
+  validotp() {
+    let input = this.state.input;
+    let errors = {};
+    let isValid = true;
+    if (!input["code"]) {
+      isValid = false;
+      errors["code"] = "hãy nhập mã xác nhận";
+    }
+    if (typeof input["code"] !== "undefined") {
+      if (
+        input["code"].length < 6 ||
+        input["code"].length > 6 ||
+        this.validateCode() !== 1
+      ) {
+        isValid = false;
+
+        errors["code"] = "mã không hợp lệ";
+      }
+    }
+    this.setState({
+      errors: errors,
+    });
+    return isValid;
+  }
+  validateCode() {
+    axios
+      .post("http://localhost:8000/api/user/isOTP", {
+        email: this.state.input.email,
+        otp: this.state.input.code,
+      })
+      .then(function (response) {
+        if (response.status === 200) {
+          a = 1;
+        } else {
+          a = 2;
+        }
+      })
+      .catch(function (error) {
+        a = 2;
+      });
+    console.log(a);
+    return a;
   }
   validate() {
     let input = this.state.input;
@@ -89,6 +216,7 @@ class Register extends React.Component {
         errors["email"] = "email không hợp lệ.";
       }
     }
+
     if (!input["password"]) {
       isValid = false;
       errors["password"] = "hãy nhập mật khẩu.";
@@ -114,90 +242,160 @@ class Register extends React.Component {
         errors["password"] = "không khớp mật khẩu.";
       }
     }
+    if (!input["code"]) {
+      isValid = false;
+      errors["code"] = "hãy nhập mã xác nhận";
+    }
+    if (typeof input["code"] !== "undefined") {
+      if (
+        input["code"].length < 6 ||
+        input["code"].length > 6 ||
+        this.validateCode() !== 1
+      ) {
+        isValid = false;
+
+        errors["code"] = "mã không hợp lệ";
+      }
+    }
     this.setState({
       errors: errors,
     });
     return isValid;
   }
   render() {
+    const { checkedmail, checkedcode, checkedpass, checkedFirt } = this.state;
     return (
       <div className="register-background">
         <form onSubmit={this.handleSubmit} className="login-container">
           <div className="login-contain">
             <div className="col-12 text-center text-login">ĐĂNG KÝ</div>
+
             <div className="form-group col-12">
-              <label htmlFor="username">Họ tên:</label>
-              <input
-                type="text"
-                name="username"
-                value={this.state.input.username}
-                onChange={this.handleChange}
-                className="form-control input-login"
-                placeholder="nhập họ tên"
-                id="username"
-              />
-              <div className="text-danger err">
-                {this.state.errors.username}
+              {checkedmail && (
+                <div>
+                  {/* <Code /> */}
+                  <div>
+                    <lable>Nhập email:</lable>
+                    <br></br>
+                    <input
+                      className="form-control input-login"
+                      type="text"
+                      placeholder="email hoặc số điện thoại"
+                      name="email"
+                      id="email"
+                      value={this.state.input.email}
+                      onChange={this.handleChange}
+                    />
+                    <div className="text-danger err">
+                      {this.state.errors.email}
+                    </div>
+                  </div>
+
+                  <div className="col-12">
+                    <button
+                      className="btn-login"
+                      onClick={this.handleSubmitEmail}
+                    >
+                      gửi yêu cầu
+                    </button>
+                  </div>
+                  <label htmlFor="Code">nhập code:</label>
+                  <input
+                    type="text"
+                    name="code"
+                    value={this.state.input.code}
+                    onChange={this.handleChange}
+                    className="form-control input-login"
+                    placeholder="nhập code"
+                    id="code"
+                  />
+                  <div className="text-danger err">
+                    {this.state.errors.code}
+                  </div>
+                  <button
+                    className="btn-login"
+                    onClick={() => this.showdiv("checkedcode")}
+                  >
+                    gửi
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {checkedcode && (
+              <div>
+                <div className="form-group col-12">
+                  <label htmlFor="username">Họ tên:</label>
+                  <input
+                    type="text"
+                    name="username"
+                    value={this.state.input.username}
+                    onChange={this.handleChange}
+                    className="form-control input-login"
+                    placeholder="nhập họ tên"
+                    id="username"
+                  />
+                  <div className="text-danger err">
+                    {this.state.errors.username}
+                  </div>
+                </div>
+
+                <div className="form-group col-12">
+                  <label htmlFor="password">Mật khẩu:</label>
+                  <input
+                    type={this.state.ishowpassword ? "text" : "password"}
+                    name="password"
+                    value={this.state.input.password}
+                    onChange={this.handleChange}
+                    className="form-control input-login"
+                    placeholder="nhập mật khẩu"
+                    id="password"
+                  />
+                  <div className="text-danger err">
+                    {this.state.errors.password}
+                  </div>
+                </div>
+                <div className="form-group col-12">
+                  <label htmlFor="password">Xác nhận mật khẩu:</label>
+                  <input
+                    type={this.state.ishowpassword ? "text" : "password"}
+                    name="confirm_password"
+                    value={this.state.input.confirm_password}
+                    onChange={this.handleChange}
+                    className="form-control input-login"
+                    placeholder="nhập lại mật khẩu "
+                    id="confirm_password"
+                  />
+                  <div className="text-danger err">
+                    {this.state.errors.confirm_password}
+                  </div>
+                </div>
+                <div>
+                  <input
+                    type="checkbox"
+                    id="checkbox"
+                    className="form-check-input"
+                    onClick={() => this.ishowpass()}
+                  />
+                  <span className="forgot-password">Hiện mật khẩu</span>
+                  <div>
+                    <input
+                      type="submit"
+                      value="Đăng ký"
+                      className=" btn-login"
+                    />
+                    <button className="btn-login">
+                      <Link
+                        style={{ textDecoration: "none", color: "white" }}
+                        to="/"
+                      >
+                        Đăng Nhập
+                      </Link>
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="form-group col-12">
-              <label htmlFor="email">Địa chỉ Email:</label>
-              <input
-                type="text"
-                name="email"
-                value={this.state.input.email}
-                onChange={this.handleChange}
-                className="form-control input-login"
-                placeholder="nhập email"
-                id="email"
-              />
-              <div className="text-danger err">{this.state.errors.email}</div>
-            </div>
-            <div className="form-group col-12">
-              <label htmlFor="password">Mật khẩu:</label>
-              <input
-                type={this.state.ishowpassword ? "text" : "password"}
-                name="password"
-                value={this.state.input.password}
-                onChange={this.handleChange}
-                className="form-control input-login"
-                placeholder="nhập mật khẩu"
-                id="password"
-              />
-              <div className="text-danger err">
-                {this.state.errors.password}
-              </div>
-            </div>
-            <div className="form-group col-12">
-              <label htmlFor="password">Xác nhận mật khẩu:</label>
-              <input
-                type={this.state.ishowpassword ? "text" : "password"}
-                name="confirm_password"
-                value={this.state.input.confirm_password}
-                onChange={this.handleChange}
-                className="form-control input-login"
-                placeholder="nhập lại mật khẩu "
-                id="confirm_password"
-              />
-              <div className="text-danger err">
-                {this.state.errors.confirm_password}
-              </div>
-            </div>
-            <div>
-              <input
-                type="checkbox"
-                id="checkbox"
-                className="form-check-input"
-                onClick={() => this.ishowpass()}
-              />
-              <span className="forgot-password">Hiện mật khẩu</span>
-            </div>
-            <input type="submit" value="Đăng ký" className=" btn-login" />
-            <button className="btn-login">
-              <Link style={{ textDecoration: "none", color: "white" }} to="/">
-                Đăng Nhập
-              </Link>
-            </button>
+            )}
           </div>
         </form>
       </div>
