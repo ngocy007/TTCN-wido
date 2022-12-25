@@ -11,7 +11,11 @@ exports.getAllPost = async (req, res) => {
     },
     include: [
       { duplicating: false, model: Photo, attributes: ["url"] },
-      { duplicating: false, model: User, attributes: ["name", "image","id_user"] },
+      {
+        duplicating: false,
+        model: User,
+        attributes: ["name", "image", "id_user"],
+      },
       {
         duplicating: false,
         model: Like_Post,
@@ -48,7 +52,7 @@ exports.getDetailsPost = async (req, res) => {
         attributes: ["id_com", "content"],
         separate: true,
         limit: 15,
-        where: {reply:null}
+        where: { reply: null },
       },
       {
         duplicating: false,
@@ -153,15 +157,11 @@ exports.getUsersLP = async (req, res) => {
   try {
     const users = await Post.findOne({
       attributes: [],
-      where: { id_post: req.params.id},
-      include: {model: User, attributes: ["name","image","id_user"]}
+      where: { id_post: req.params.id },
+      include: { model: User, attributes: ["name", "image", "id_user"] },
     });
     res.json({ users, success: true });
   } catch (error) {
     res.sendStatus(500).send(err);
   }
 };
-
-
-
-

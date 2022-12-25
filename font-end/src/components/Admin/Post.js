@@ -12,23 +12,28 @@ class Post extends Component {
 
   componentDidMount() {
     axios
-      .get("http://localhost:8000/api/post")
+      .get("http://localhost:8000/api/post", {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+      })
       .then((res) => {
         const post = res.data;
         this.setState({ posts: post.posts });
+        console.log(post.posts);
       })
       .catch((error) => console.log(error));
   }
   handleDelete = (item) => {
     const newsId = {
-      id: item.id,
+      id: item.id_post,
     };
 
     axios
-      .post("", newsId)
+      .post("http://localhost:8000/api/post/" + newsId)
       .then((res) => {
         this.setState((prevState) => ({
-          news: prevState.news.filter((el) => el.id !== item.id),
+          news: prevState.news.filter((el) => el.id !== item.id_post),
         }));
       })
       .catch((error) => console.log(error));
