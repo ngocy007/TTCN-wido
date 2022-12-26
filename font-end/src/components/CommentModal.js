@@ -1,6 +1,6 @@
 import "../styles/commentmodal.scss";
 import Card from "./Card";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Profile from "./Profile";
@@ -12,46 +12,68 @@ import { FixedSizeList } from "react-window";
 import AutoSizerProps from "react-virtualized-auto-sizer";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-function renderRow(props) {
-  const { data, index, style } = props;
-  console.log(data.comment);
-  return (
-    <ListItem style={style} key={index} component="div" disablePadding>
-      <ListItemButton>
-        <ListItemText primary={`Item ${index + 1}`} />
-        {console.log(index)}
-      </ListItemButton>
-    </ListItem>
-  );
-}
+import Carousel from "react-bootstrap/Carousel";
+// function renderRow(props) {
+//   const { data, index, style } = props;
+//   console.log(data.comment);
+//   return (
+//     <ListItem style={style} key={index} component="div" disablePadding>
+//       <ListItemButton>
+//         <ListItemText primary={`Item ${index + 1}`} />
+//         {console.log(index)}
+//       </ListItemButton>
+//     </ListItem>
+//   );
+// }
 function CommentModal(props) {
-  const { storyBorder, image, comments, likedByText, likedByNumber, hours } =
-    props;
+  const {
+    storyBorder,
+    image,
+    comments,
+    likedByText,
+    likedByNumber,
+    hours,
+    userName,
+    profileIcon,
+    id_post,
+    id_user,
+  } = props;
 
-  console.log(
-    comments.map((comment) => {
-      console.log("pointer");
-      return comment;
-    })
-  );
   return (
     <div className="cardModal">
       <div className="cardcontainer">
         <div className="img1">
-          <img className="cardImageModal" src={image} alt="card content" />
+          <Carousel interval={null}>
+            {image.map((img) => {
+              return (
+                <Carousel.Item>
+                  <img
+                    className="cardImageModal"
+                    src={img.url}
+                    alt="card content"
+                  />
+                </Carousel.Item>
+              );
+            })}
+          </Carousel>
         </div>
         <div className="menuModal">
           <header>
-            <Profile iconSize="medium" storyBorder={storyBorder} />
+            <Profile
+              iconSize="medium"
+              storyBorder={storyBorder}
+              username={userName}
+              image={profileIcon}
+            />
             <CardButton className="cardButton" />
           </header>
           <div className="commentsModal">
-            {comments.map((comment) => {
+            {comments?.map((comment) => {
               return (
                 <Comment
-                  key={comment.id}
-                  accountName={comment.user}
-                  comment={comment.text}
+                  key={comment.id_con}
+                  accountName="HOLDER"
+                  comment={comment.content}
                 />
               );
             })}
@@ -86,12 +108,20 @@ function CommentModal(props) {
           <div className="post__comment">
             <form className="form">
               <div className="addComment">
-                <div className="commentText">
+                {/* <div className="commentText">
                   <input
-                    text="text"
-                    className="post__commentbox"
+                    text="textarea"
+                    className="post__modalcommentbox"
                     placeholder="Add a comment..."
                   />
+                </div> */}
+                <div className="commentText">
+                  <textarea
+                    className="post__modalcommentbox"
+                    name="caption"
+                    rows="4"
+                    cols="50"
+                  ></textarea>
                 </div>
                 {/* <div className="postText">Post</div> */}
                 <button className="post_comment">Đăng</button>

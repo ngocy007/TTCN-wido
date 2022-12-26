@@ -6,6 +6,7 @@ import { KeyNumbers } from "./key-numbers";
 import * as Icons from "./icons";
 
 const Header = styled.header`
+  margin-top: 100px;
   margin-bottom: 44px;
   background: var(--ins-background-primary);
   color: var(--ins-content-primary);
@@ -157,5 +158,5 @@ export function Profile() {
   );
 }
 Profile.defaultProps = {
-  profileImage: "../../images/profile-logo.jpg"
+  profileImage: "../../images/profile-logo.jpg",
 };

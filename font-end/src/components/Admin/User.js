@@ -25,7 +25,7 @@ class User extends Component {
       id: item.id_user,
     };
     axios
-      .post("http://localhost:8000/api/user/info/{id_uesr}", userId)
+      .post("http://localhost:8000/api/user/info/" + userId)
       .then((res) => {
         this.setState((prevState) => ({
           news: prevState.news.filter((el) => el.id !== item.id_user),

@@ -18,6 +18,7 @@ exports.getAllUsers = async (req, res) => {
     });
   }
 };
+
 // Đăng ký
 exports.createUser = async (req, res) => {
   try {
@@ -113,7 +114,21 @@ exports.logoutUser = async (req, res) => {
 
 // Chi tiết thông tin cá nhân
 exports.userDetails = async (req, res) => {
-  const user = await User.findByPk(req.params.id, { include: { model: Post,attributes:["id_post"],include:{model: Photo,limit:1} } });
+  const rawUser = await User.findByPk(req.params.id, {
+    include: {
+      model: Post,
+      attributes: ["id_post"],
+      include: { model: Photo, limit: 1 },
+    },
+  });
+  const processUser = rawUser.get({ plain: true });
+  const countFollower = await Follow.findAll({
+    where: { id_follower: processUser.id_user },
+  }).then((e) => e.length);
+  const countFollowee = await Follow.findAll({
+    where: { id_followee:  processUser.id_user },
+  }).then((e) => e.length);
+  const user = { ...processUser, countFollower, countFollowee };
   res.status(200).json({
     success: true,
     user,
@@ -141,13 +156,14 @@ exports.followUser = async (req, res) => {
 
     if (!result) {
       await Follow.create({ id_followee: userId, id_follower: id });
-      res
-        .status(200)
-        .json({ like: true, msg: `Theo dõi thành công người dùng: ${id}` });
+      res.status(200).json({
+        isFollowed: true,
+        msg: `Theo dõi thành công người dùng: ${id}`,
+      });
     } else {
       await Follow.destroy({ where: { id_fol: result.id_fol } });
       res.status(200).json({
-        like: false,
+        isfollowed: false,
         msg: `Hủy theo dõi thành công người dùng: ${id}`,
       });
     }
@@ -169,7 +185,7 @@ exports.checkFollow = async (req, res) => {
     } else {
       res.status(200).json({ status: false });
     }
-  } catch (error) {
+  } catch (err) {
     res.sendStatus(500).send(err);
   }
 };
@@ -217,14 +233,16 @@ exports.getUsersFLg = async (req, res) => {
 // Tìm kiếm
 exports.searchUser = async (req, res) => {
   try {
-    const { q } = req.params;
+    const  q  = req.query.q || "";
     const users = await User.findAll({
       where: {
         name: {
           [Op.like]: `%${q.toLowerCase()}%`,
         },
       },
-      attributes: ["name", "image", "id_user"],
+      attributes: ["name", "image", "id_user","email"],
+      limit: !req.body.limit ? null : 5  ,
+      
     });
     res.json({ users, success: true });
   } catch (error) {
@@ -280,16 +298,11 @@ exports.isOTP = catchAsyncErrors((req, res, next) => {
       if (result == otp) {
         res.send({ success: true });
       } else {
-        return next(
-          new ErrorHandler(
-            `OTP sai vui lòng nhập lại`,
-            404
-          )
-        );
+        return next(new ErrorHandler(`OTP sai vui lòng nhập lại`, 404));
       }
     }
   });
-});  
+});
 
 // Đặt lại mật khẩu
 exports.resetPassword = catchAsyncErrors(async (req, res, next) => {

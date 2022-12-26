@@ -3,7 +3,6 @@ const cloudinary = require("cloudinary").v2;
 const catchAsyncErrors = require("./catchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
 const { Post } = require("../models");
-const { json } = require("body-parser");
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -13,6 +12,7 @@ cloudinary.config({
 
 // Tải ảnh của post lên cloudinary
 exports.upload = catchAsyncErrors(async (req, res, next) => {
+  
   const linkFiles = [];
   const newFiles = req.body.file;
   if (!newFiles) {
@@ -23,18 +23,18 @@ exports.upload = catchAsyncErrors(async (req, res, next) => {
       folder: "file_post",
     });
     linkFiles.push(result.url);
-  }
-  else {
+  } else {
     for (let i = 0; i < newFiles.length; i++) {
       
       const result = await cloudinary.uploader.upload(newFiles[i], {
         folder: "file_post",
       });
+     
       linkFiles.push(result.url);
     }
   }
+  
   req.newFile = linkFiles;
-  console.log("gà");
   next();
 });
 
@@ -74,4 +74,3 @@ exports.changeAva = catchAsyncErrors(async (req, res, next) => {
   req.newAva = result2.url;
   next();
 });
-

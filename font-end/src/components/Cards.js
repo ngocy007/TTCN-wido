@@ -7,8 +7,11 @@ function Cards() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [items, setItems] = useState([]);
+  const headers = {
+    "x-access-token": localStorage.getItem("token"),
+  };
   useEffect(() => {
-    fetch("http://localhost:8000/api/post/")
+    fetch("http://localhost:8000/api/post/",{headers})
       .then((res) => res.json())
       .then(
         (result) => {
@@ -125,7 +128,7 @@ function Cards() {
       <div className="cards">
         <Stories />
 
-        <Card
+        {/* <Card
           accountName="rafagrassetti"
           storyBorder={true}
           image="https://picsum.photos/800/900"
@@ -133,19 +136,22 @@ function Cards() {
           likedByText="dadatlacak"
           likedByNumber={89}
           hours={16}
-        />
-        {console.log(items.posts[0].User.name)}
+        /> */}
         {items.posts.map((item) => (
         
            <Card
            userName={item.User.name}
            profileIcon={item.User.image}
            storyBorder={true}
-           image="https://picsum.photos/800/900"
-           comments={commentsOne}
-           likedByText={item.content}
+           image={item.Photos}
+           commentsdummy={commentsOne}
+           likedByText="holder"
            likedByNumber={item.countLike}
            hours={16}
+           id_post={item.id_post}
+           id_user={item.id_user}
+           content={item.content}
+
          />
         ))}
 

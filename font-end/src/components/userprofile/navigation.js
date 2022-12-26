@@ -52,8 +52,8 @@ const Fixed = styled.div`
 
 export function Navigation() {
   return (
-    <nav>
-      <Mock></Mock>
+    <nav className="vietnav">
+      {/* <Mock></Mock>
       <Fixed>
         <NavContent>
           <div className="light-theme-only">
@@ -62,13 +62,12 @@ export function Navigation() {
           <DesktopOnly>
             <SearchGuide>
               <Icons.Search />
-              {/* <span className="search-icon"></span> */}
               <SearchPlaceholder>Search</SearchPlaceholder>
             </SearchGuide>
           </DesktopOnly>
           <div></div>
         </NavContent>
-      </Fixed>
+      </Fixed> */}
       <div className="navigation">
         <div className="container">
           <img className="logo" src={logo} alt="instagram logo" />

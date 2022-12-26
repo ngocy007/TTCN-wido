@@ -6,11 +6,22 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
+import axios from "axios";
 
 class Admin_Index extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.handleLogout = this.handleLogout.bind(this);
+  }
+  handleLogout() {
+    axios
+      .get("http://localhost:8000/api/user/logout")
+      .then((res) => {
+        window.location.assign("/");
+        localStorage.removeItem("token");
+      })
+      .catch((error) => console.log(error));
   }
   render() {
     return (
@@ -40,7 +51,12 @@ class Admin_Index extends Component {
                   <NavDropdown.Item href="#action/3.1">
                     profile
                   </NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.2">logout</NavDropdown.Item>
+                  <NavDropdown.Item
+                    href="#action/3.2"
+                    onClick={() => this.handleLogout()}
+                  >
+                    logout
+                  </NavDropdown.Item>
                 </NavDropdown>
               </div>
               {/* <Dropdown>
