@@ -9,7 +9,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Register from "./components/Auth/Register";
 import Github from "./components/Auth/Login_github";
 import Thongke from "./components/Admin/Thongke";
-import Profiles from "./components/Admin/profile";
+import Profiles from "./components/Admin/Adminprofile";
 import UserAdmin from "./components/Admin/User";
 import UserProfile from "./components/Userprofile";
 import PostAdmin from "./components/Admin/Post";

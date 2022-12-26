@@ -21,9 +21,7 @@ class User extends Component {
   }
 
   handleDetail = (item) => {
-    const userId = {
-      id: item.id_user,
-    };
+    const userId = item.id_user;
     axios
       .post("http://localhost:8000/api/user/info/" + userId)
       .then((res) => {
@@ -65,11 +63,13 @@ class User extends Component {
                 <td className="col-2">{item.email}</td>
                 <td className="col-1">
                   <button onClick={() => this.handleDetail(item)}>
-                    chi tiết
+                    <i class="fa fa-eye">chi tiết</i>
                   </button>
                 </td>
                 <td className="col-1">
-                  <button onClick={() => this.handleDelete(item)}>xóa</button>
+                  <button onClick={() => this.handleDelete(item)}>
+                    <i class="fa fa-trash">xóa</i>
+                  </button>
                 </td>
               </tr>
             ))}
