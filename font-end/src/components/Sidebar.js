@@ -18,17 +18,17 @@ class Sidebar extends React.Component {
 
   // ComponentDidMount is used to
   // execute the code
-  componentDidMount() {
-    fetch("http://192.168.2.121:8000/api/post").then((res) => res.json())
-      .then((json) => {
-        this.setState({
-          items: json,
-          DataisLoaded: true
-      });
-        console.log(json)
+  // componentDidMount() {
+  //   fetch("http://192.168.2.121:8000/api/post").then((res) => res.json())
+  //     .then((json) => {
+  //       this.setState({
+  //         items: json,
+  //         DataisLoaded: true
+  //     });
+  //       console.log(json)
       
-      });
-  }
+  //     });
+  // }
   render() {
     // const { DataisLoaded, items } = this.state;
     // if (!DataisLoaded)

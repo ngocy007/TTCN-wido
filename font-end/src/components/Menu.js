@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import UploadModal from "./uploadModal";
+import {Routes, Route, useNavigate} from 'react-router-dom';
 
 
 function Menu() {
@@ -28,9 +29,14 @@ function Menu() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const navigate = useNavigate();
+  const navigateHome = () => {
+    // 👇️ navigate to /
+    navigate('/Home');
+  };
   return (
     <div className="menu">
-      <Home className="icon" onclick="location.href='https://google.com';"></Home>
+      <Home className="icon" onClick={navigateHome}/>
       {/* <Inbox className="icon" />
       <Explore className="icon" /> */}
       <Notifications className="icon" />

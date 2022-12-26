@@ -9,7 +9,7 @@ import Modal from "@mui/material/Modal";
 import CommentModal from "./CommentModal";
 
 function Card(props) {
-  const { storyBorder, image, comments, likedByText, likedByNumber, hours } =
+  const { storyBorder, image, comments, likedByText, likedByNumber, hours, userName,profileIcon } =
     props;
   const [modalOpen, setModalOpen] = useState(false);
   const style = {
@@ -58,7 +58,7 @@ function Card(props) {
   return (
     <div className="card">
       <header>
-        <Profile iconSize="medium" storyBorder={storyBorder} />
+        <Profile iconSize="medium" storyBorder={storyBorder} username={userName} image={profileIcon} />
         <CardButton className="cardButton" />
       </header>
       <img
