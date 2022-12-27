@@ -47,6 +47,11 @@ dependencies:
   modal_bottom_sheet: ^2.1.2
   http: ^0.13.5
   shared_preferences: ^2.0.15
+  carousel_slider: ^4.2.1
+  email_validator: '^2.1.16'
+  flutter_otp_text_field: ^1.1.1
+  flutter_countdown_timer: ^4.1.0
+  image_picker_plus: ^0.5.5+2
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +79,7 @@ flutter:
   assets:
     - assets/.
     - assets/instagram.png
+    - assets/no-image-icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

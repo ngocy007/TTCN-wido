@@ -98,6 +98,7 @@ exports.getDetailsPost = async (req, res) => {
 // Thêm bài viết
 exports.createPost = async (req, res) => {
   try {
+    console.log(req.body.content);
     const newPost = await Post.create({
       content: req.body.content,
       id_user: req.user.id_user,

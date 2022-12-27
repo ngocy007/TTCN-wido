@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:social_network_app/consts.dart';
 
 class FormContainerWidget extends StatefulWidget {
@@ -11,6 +12,7 @@ class FormContainerWidget extends StatefulWidget {
   final FormFieldSetter<String>? onSaved;
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onFieldSubmitted;
+  final bool? readOnLy;
   final TextInputType? inputType;
   const FormContainerWidget({
     this.controller,
@@ -22,7 +24,8 @@ class FormContainerWidget extends StatefulWidget {
     this.onSaved,
     this.validator,
     this.onFieldSubmitted,
-    this.inputType
+    this.inputType,
+    this.readOnLy
   });
   @override
   _FormContainerWidgetState createState() => new _FormContainerWidgetState();
@@ -37,15 +40,13 @@ class _FormContainerWidgetState extends State<FormContainerWidget> {
         color: secondaryColor.withOpacity(.35),
         borderRadius: BorderRadius.circular(3),
       ),
-      child: new TextFormField(
+      child: new TextField(
+        readOnly: widget.readOnLy!,
         style: TextStyle(color: primaryColor),
         controller: widget.controller,
         keyboardType: widget.inputType,
         key: widget.fieldKey,
         obscureText: widget.isPasswordField == true? _obscureText : false,
-        onSaved: widget.onSaved,
-        validator: widget.validator,
-        onFieldSubmitted: widget.onFieldSubmitted,
         decoration: new InputDecoration(
           border: InputBorder.none,
           filled: true,

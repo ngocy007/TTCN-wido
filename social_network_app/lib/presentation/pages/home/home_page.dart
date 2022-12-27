@@ -2,203 +2,166 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker_plus/image_picker_plus.dart';
+import 'package:social_network_app/config/constant.dart';
 import 'package:social_network_app/consts.dart';
-import 'package:social_network_app/presentation/pages/post/update_post_page.dart';
+import 'package:social_network_app/data/models/api/api_respone.dart';
+import 'package:social_network_app/data/service/post_service.dart';
+import 'package:social_network_app/data/service/user_service.dart';
+import 'package:social_network_app/presentation/pages/credentail/sign_in_page.dart';
+import 'package:social_network_app/presentation/pages/post/post_card.dart';
+import 'package:social_network_app/presentation/pages/home/widgets/display_image.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final _controller = ScrollController();
+  final List<dynamic> _postlist = [];
+  int uid = 0;
+  bool _loading = true;
+  int page = 0;
+  bool _more = true;
+
+  Future<dynamic> _loadPosts() async {
+    uid = await getUserId();
+    int limit  = 5;
+    ApiResponse response = await getPosts(limit,page);
+    if (response.error == null) {
+      final List newItems = response.data as List;
+      setState(() {
+        page ++;
+        if(newItems.length < limit) {
+          _more = false;
+        }
+        _postlist.addAll(newItems);
+        _loading = false;
+      });
+    } else if (response.error == unauthorized) {
+      logout().then((value) =>
+      {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) => SignInPage(),
+            ),
+                (route) => false)
+      });
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${response.error}')));
+    }
+  }
+
+  Future refresh() async {
+    setState(() {
+      _loading = true;
+      _more = true;
+      page = 0;
+      _postlist.clear();
+    });
+    _loadPosts();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPosts();
+    _controller.addListener(() {
+      if(_controller.position.maxScrollExtent == _controller.offset){
+        _loadPosts();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-      backgroundColor: backGroundColor,
-      appBar: AppBar(
         backgroundColor: backGroundColor,
-        title: SvgPicture.asset(
-          "assets/ic_instagram.svg",
-          color: primaryColor,
-          height: 32,
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 10.0),
-            child: Icon(
-              MaterialCommunityIcons.facebook_messenger,
-              color: primaryColor,
-            ),
-          )
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                          color: secondaryColor, shape: BoxShape.circle),
-                    ),
-                    sizeHor(10),
-                    Text(
-                      "Username",
-                      style: TextStyle(
-                          color: primaryColor, fontWeight: FontWeight.bold),
-                    )
-                  ],
-                ),
-                GestureDetector(
-                    onTap: () => _openBottomModalSheet(context),
-                    child: Icon(
-                      Icons.more_vert,
-                      color: primaryColor,
-                    ))
-              ],
-            ),
-            sizeVer(10),
-            Container(
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height * 0.30,
-              color: secondaryColor,
-            ),
-            sizeVer(10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.favorite,
-                      color: primaryColor,
-                    ),
-                    sizeHor(10),
-                    Icon(
-                      Feather.message_circle,
-                      color: primaryColor,
-                    ),
-                    sizeHor(10),
-                    Icon(
-                      Feather.send,
-                      color: primaryColor,
-                    ),
-                  ],
-                ),
-                Icon(
-                  Icons.bookmark_border,
-                  color: primaryColor,
-                )
-              ],
-            ),
-            sizeVer(10),
-            Row(
-              children: [
-                Text(
-                  "Username",
-                  style: TextStyle(
-                      color: primaryColor, fontWeight: FontWeight.bold),
-                ),
-                sizeHor(10),
-                Text(
-                  "some description",
-                  style: TextStyle(color: primaryColor),
-                ),
-              ],
-            ),
-            sizeVer(10),
-            Text(
-              "View all 10 comments",
-              style: TextStyle(color: darkGreyColor),
-            ),
-            sizeVer(10),
-            Text(
-              "08/5/2022",
-              style: TextStyle(color: darkGreyColor),
-            ),
+        appBar: AppBar(
+          backgroundColor: backGroundColor,
+          title: SvgPicture.asset(
+            "assets/ic_instagram.svg",
+            color: primaryColor,
+            height: 32,
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 10.0),
+              child: Row(
+                children: [
+                  IconButton(
+                      onPressed: () async {
+                        SelectedImagesDetails? details =
+                        await ImagePickerPlus(context).pickBoth(
+                          source: ImageSource.both,
+                          multiSelection: true,
+                          galleryDisplaySettings: GalleryDisplaySettings(
+                              cropImage: true, showImagePreview: true),
+                        );
+                        if (details != null) await displayDetails(details);
+                      },
+                      icon: Icon(Icons.add_box_outlined)),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Icon(MaterialCommunityIcons.facebook_messenger,
+                      color: primaryColor, size: 28),
+                ],
+              ),
+            )
           ],
         ),
+        body: _loading
+            ? Center(
+          child: CircularProgressIndicator(
+            color: Colors.grey,
+          ),
+        )
+            : RefreshIndicator(
+          onRefresh: refresh,
+              child: ListView.builder(
+          controller: _controller,
+          itemCount: _postlist.length + 1,
+          itemBuilder: (context, index) {
+              if (index < _postlist.length) {
+                return PostCard(
+                  post: _postlist[index],
+                );
+              } else {
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 30),
+                  child: Center(
+                    child: _more ? CircularProgressIndicator(
+                      color: Colors.white,
+                    ) : Text("Bài viết đã hết :))"),
+                  ),
+                );
+              }
+          },
+        ),
+            ));
+  }
+
+  Future<void> displayDetails(SelectedImagesDetails details) async {
+    await Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: (context) {
+          return DisplayImages(
+              selectedBytes: details.selectedFiles,
+              details: details,
+              aspectRatio: details.aspectRatio);
+        },
       ),
     );
   }
-}
-
-_openBottomModalSheet(BuildContext context) {
-  return showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Container(
-          height: 150,
-          decoration: BoxDecoration(color: backGroundColor.withOpacity(.8)),
-          child: SingleChildScrollView(
-            child: Container(
-              margin: EdgeInsets.symmetric(vertical: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
-                    child: Text(
-                      "More Options",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: primaryColor),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Divider(
-                    thickness: 1,
-                    color: secondaryColor,
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
-                    child: Text(
-                      "Xóa bài viết",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                          color: primaryColor),
-                    ),
-                  ),
-                  sizeVer(7),
-                  Divider(
-                    thickness: 1,
-                    color: secondaryColor,
-                  ),
-                  sizeVer(7),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => UpdatePostPage()));
-                      },
-                      child: Text(
-                        "Cập nhật bài viết",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                            color: primaryColor),
-                      ),
-                    ),
-                  ),
-                  sizeVer(7),
-                ],
-              ),
-            ),
-          ),
-        );
-      });
 }

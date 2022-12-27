@@ -1,9 +1,29 @@
 // APi
-const baseURL = "http://192.168.1.8:8000/api/user/";
-const loginURL = baseURL + "login";
-const regisTer = baseURL + "register";
-const logoutURL = baseURL + "logout";
-const userURL = baseURL + "me";
+const baseURL = "http://192.168.1.19:8000/api/";
+
+// User
+const loginURL = baseURL + "user/login";
+const updateURL = baseURL + "user/update";
+const regisTer = baseURL + "user/register";
+const logoutURL = baseURL + "user/logout";
+const userURL = baseURL + "user/info/";
+const sendOTP1 = baseURL + "user/sendOTP/Create";
+const sendOTP2 = baseURL + "user/sendOTP/ForgotPW";
+const veOTP = baseURL + "user/isOTP";
+const followURL = baseURL + "user/";
+const followersURL = baseURL + "user/listfollower/";
+const followeesURL = baseURL + "user/listfollowing/";
+const searchURL = baseURL + "user/search?q=";
+const forgotPassURL = baseURL + "user/forgotPassword";
+
+
+// Post
+const getDetailPost = baseURL + "post/";
+const getPostUrl = baseURL + "post/home";
+const likeURl = baseURL + "like/post/";
+const createPostURL = baseURL + "post/create";
+const createCMTURL = baseURL +  "comment/create";
+
 
 // Lỗi
 const serverError = "Lỗi server";

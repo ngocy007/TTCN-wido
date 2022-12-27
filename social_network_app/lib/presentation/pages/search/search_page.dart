@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:social_network_app/consts.dart';
+import 'package:social_network_app/presentation/pages/search/list_result.dart';
 import 'package:social_network_app/presentation/widgets/search_widget.dart';
 
 class SearchPage extends StatefulWidget {
@@ -10,7 +11,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void dispose() {
@@ -30,6 +31,9 @@ class _SearchPageState extends State<SearchPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SearchWidget(
+                  autoFocus: false,
+                  readOnLy: true,
+                  onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => ListResult(),)),
                   controller: _searchController,
                 ),
                 sizeVer(10),

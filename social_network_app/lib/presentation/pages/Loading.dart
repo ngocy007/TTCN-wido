@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:social_network_app/config/constant.dart';
-import 'package:social_network_app/data/models/user/api_respone.dart';
+import 'package:social_network_app/data/models/api/api_respone.dart';
+import 'package:social_network_app/data/models/user/user.dart';
 import 'package:social_network_app/data/service/user_service.dart';
 import 'package:social_network_app/presentation/pages/credentail/sign_in_page.dart';
 import 'package:social_network_app/presentation/pages/main_screen/main_screen.dart';
@@ -15,6 +16,7 @@ class Loading extends StatefulWidget {
 class _LoadingState extends State<Loading> {
   void _loadUserInfo() async {
     String token = await getToken();
+    int id = await getUserId();
     if (token == '') {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
@@ -22,11 +24,11 @@ class _LoadingState extends State<Loading> {
           ),
           (route) => false);
     } else {
-      ApiResponse response = await getUserDetail();
+      ApiResponse response = await getUserDetail(id);
       if (response.error == null) {
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
-              builder: (context) => MainScreen(),
+              builder: (context) => MainScreen(user:response.data as User),
             ),
             (route) => false);
       } else if (response.error == unauthorized) {
@@ -36,6 +38,7 @@ class _LoadingState extends State<Loading> {
             ),
             (route) => false);
       } else {
+        logout();
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('${response.error}')));
       }

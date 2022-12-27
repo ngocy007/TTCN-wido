@@ -232,7 +232,6 @@ exports.searchUser = async (req, res) => {
         },
       },
       attributes: ["name", "image", "id_user","email"],
-      limit: !limit ? null : 5  ,
       
     });
     res.json({ users, success: true });
@@ -241,7 +240,7 @@ exports.searchUser = async (req, res) => {
   }
 };
 
-// Gửi OTP
+// Gửi OTP đăng ký
 exports.sendOTPCreate = catchAsyncErrors(async (req, res, next) => {
   try {
     const { email } = req.body;
@@ -259,7 +258,8 @@ exports.sendOTPCreate = catchAsyncErrors(async (req, res, next) => {
   }
 });
 
-exports.sendOTPForgotPW = catchAsyncErrors(async (req, res) => {
+// Gửi OTP quên mật khẩu
+exports.sendOTPForgotPW = catchAsyncErrors(async (req, res, next) => {
   try {
     const { email } = req.body;
     const user = await User.findOne({ where: { email: email } });

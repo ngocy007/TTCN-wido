@@ -12,7 +12,6 @@ cloudinary.config({
 
 // Tải ảnh của post lên cloudinary
 exports.upload = catchAsyncErrors(async (req, res, next) => {
-  
   const linkFiles = [];
   const newFiles = req.body.file;
   if (!newFiles) {

@@ -8,8 +8,10 @@ const ErrorHandler = require("./middleware/error");
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
 
 // Danh sách các Route
 const post = require("./routes/PostRoute");

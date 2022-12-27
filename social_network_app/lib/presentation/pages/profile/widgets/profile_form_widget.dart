@@ -3,7 +3,9 @@ import '../../../../consts.dart';
 class ProfileFormWidget extends StatelessWidget {
   final TextEditingController? controller;
   final String? title;
-  const ProfileFormWidget({Key? key, this.title, this.controller}) : super(key: key);
+  final bool? readonly;
+  final VoidCallback? onTap;
+  const ProfileFormWidget({Key? key, this.title, this.controller, this.readonly, this.onTap}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -12,6 +14,8 @@ class ProfileFormWidget extends StatelessWidget {
         Text("$title", style: TextStyle(color: primaryColor, fontSize: 16),),
         sizeVer(10),
         TextFormField(
+          readOnly: readonly!,
+          onTap: onTap,
           controller: controller,
           style: TextStyle(color: primaryColor),
           decoration: InputDecoration(

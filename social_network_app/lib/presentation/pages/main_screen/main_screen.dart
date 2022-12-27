@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:social_network_app/data/models/user/user.dart';
 import 'package:social_network_app/presentation/pages/activity/activity_page.dart';
 import 'package:social_network_app/presentation/pages/post/upload_post_page.dart';
 import 'package:social_network_app/presentation/pages/profile/profile_page.dart';
@@ -8,7 +9,8 @@ import 'package:social_network_app/presentation/pages/search/search_page.dart';
 import '../../../consts.dart';
 import '../home/home_page.dart';
 class MainScreen extends StatefulWidget {
-  const MainScreen({Key? key}) : super(key: key);
+  final User user;
+  const MainScreen({Key? key, required this.user}) : super(key: key);
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
@@ -44,7 +46,7 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(icon: Icon(Ionicons.md_search, color: primaryColor), label: ""),
           BottomNavigationBarItem(icon: Icon(Ionicons.md_add_circle, color: primaryColor), label: ""),
           BottomNavigationBarItem(icon: Icon(Icons.favorite, color: primaryColor), label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.account_circle_outlined, color: primaryColor), label: ""),
+          BottomNavigationBarItem(icon: CircleAvatar(radius:15,backgroundImage: NetworkImage(widget.user.image!)), label: ""),
         ],
         onTap: navigationTapped,
       ),
@@ -55,7 +57,7 @@ class _MainScreenState extends State<MainScreen> {
           SearchPage(),
           UploadPostPage(),
           ActivityPage(),
-          ProfilePage()
+          ProfilePage(name: widget.user.name,user_id: widget.user.id_user,)
         ],
         onPageChanged: onPageChanged,
       ),

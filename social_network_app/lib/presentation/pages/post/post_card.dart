@@ -4,10 +4,11 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:social_network_app/config/constant.dart';
 import 'package:social_network_app/consts.dart';
 import 'package:social_network_app/data/models/post/post.dart';
-import 'package:social_network_app/data/models/user/api_respone.dart';
+import 'package:social_network_app/data/models/api/api_respone.dart';
 import 'package:social_network_app/data/service/post_service.dart';
 import 'package:social_network_app/data/service/user_service.dart';
 import 'package:social_network_app/presentation/pages/credentail/sign_in_page.dart';
+import 'package:social_network_app/presentation/pages/post/comment_page.dart';
 import 'package:social_network_app/presentation/pages/profile/profile_page.dart';
 
 class PostCard extends StatefulWidget {
@@ -25,7 +26,7 @@ class _PostCardState extends State<PostCard> {
 
   Future<dynamic> _LikePost(int id) async {
     ApiResponse response = await likePost(id);
-    if (response.error == "") {
+    if (response.error == null) {
       setState(() {
         _isLiked = response.data as bool;
       });
@@ -82,7 +83,7 @@ class _PostCardState extends State<PostCard> {
                   color: primaryColor,
                 )),
           ),
-          widget.post.photos!.length > 0
+          widget.post.photos!.isNotEmpty
               ? CarouselSlider(
                   carouselController: _controller,
                   options: CarouselOptions(
@@ -106,7 +107,7 @@ class _PostCardState extends State<PostCard> {
                             : Image.asset("assets/no-image-icon.png",
                                 fit: BoxFit.cover),
                       )
-                      .toList() as List<Widget>,
+                      .toList(),
                 )
               : Image.asset(
                   "assets/no-image-icon.png",
@@ -159,14 +160,17 @@ class _PostCardState extends State<PostCard> {
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: IconButton(
-                      onPressed: () => {},
+                      onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => CommentPage(
+                          post: widget.post,),
+                      )),
                       icon: Icon(
                         Feather.message_circle,
                         color: primaryColor,
                       )),
                 ),
                 IconButton(
-                    onPressed: () => {},
+                    onPressed: () {},
                     icon: Icon(
                       Feather.send,
                       color: primaryColor,
@@ -229,7 +233,7 @@ class _PostCardState extends State<PostCard> {
                   height: 5,
                 ),
                 Text(
-                  'Đăng ngày',
+                  'Đăng ngày ',
                   style: TextStyle(fontSize: 13, color: darkGreyColor),
                 ),
                 SizedBox(
