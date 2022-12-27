@@ -13,7 +13,6 @@ const {
   searchUser,
   sendOTPCreate,
   isOTP,
-  myDetails,
   resetPassword,
   sendOTPForgotPW,
   forgotPassword
@@ -42,8 +41,6 @@ router.route("/update").put(isAuthenticatedUser, changeAva, updateUser);
 router.route("/logout").get(logoutUser);
 
 router.route("/info/:id").get(isAuthenticatedUser, userDetails);
-
-router.route("/info/").get(isAuthenticatedUser, myDetails);
 
 router
   .route("/:id")

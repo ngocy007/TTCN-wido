@@ -135,16 +135,6 @@ exports.userDetails = async (req, res) => {
   });
 };
 
-exports.myDetails = async (req, res) => {
-  const user = await User.findByPk(req.user.id_user, {
-    include: { model: Post },
-  });
-  res.status(200).json({
-    success: true,
-    user,
-  });
-};
-
 // Theo dõi
 exports.followUser = async (req, res) => {
   try {
@@ -234,6 +224,7 @@ exports.getUsersFLg = async (req, res) => {
 exports.searchUser = async (req, res) => {
   try {
     const  q  = req.query.q || "";
+    const limit = req.query.limit;
     const users = await User.findAll({
       where: {
         name: {
@@ -241,7 +232,7 @@ exports.searchUser = async (req, res) => {
         },
       },
       attributes: ["name", "image", "id_user","email"],
-      limit: !req.body.limit ? null : 5  ,
+      limit: !limit ? null : 5  ,
       
     });
     res.json({ users, success: true });
