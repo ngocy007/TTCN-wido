@@ -95,6 +95,7 @@ exports.login = catchAsyncErrors(async (req, res, next) => {
     id_user: user.id_user,
     name: user.name,
     image: user.image,
+    role: user.role,
   });
   sendToken(newUser, 200, res);
 });
@@ -126,7 +127,7 @@ exports.userDetails = async (req, res) => {
     where: { id_follower: processUser.id_user },
   }).then((e) => e.length);
   const countFollowee = await Follow.findAll({
-    where: { id_followee:  processUser.id_user },
+    where: { id_followee: processUser.id_user },
   }).then((e) => e.length);
   const user = { ...processUser, countFollower, countFollowee };
   res.status(200).json({
@@ -223,7 +224,7 @@ exports.getUsersFLg = async (req, res) => {
 // Tìm kiếm
 exports.searchUser = async (req, res) => {
   try {
-    const  q  = req.query.q || "";
+    const q = req.query.q || "";
     const limit = req.query.limit;
     const users = await User.findAll({
       where: {
@@ -231,9 +232,8 @@ exports.searchUser = async (req, res) => {
           [Op.like]: `%${q.toLowerCase()}%`,
         },
       },
-      attributes: ["name", "image", "id_user","email"],
-      limit: !limit ? null : 5  ,
-      
+      attributes: ["name", "image", "id_user", "email"],
+      limit: !limit ? null : 5,
     });
     res.json({ users, success: true });
   } catch (error) {

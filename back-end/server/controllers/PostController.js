@@ -14,7 +14,7 @@ exports.getAllPost = async (req, res) => {
     ],
 
     limit: req.query._limit,
-    offset:req.query._limit * req.query._page,
+    offset: req.query._limit * req.query._page,
   });
   const processPosts = rawPosts.map((e) => e.get({ plain: true }));
   const posts = [];
@@ -53,9 +53,9 @@ exports.getDetailsPost = async (req, res) => {
       { model: Photo, attributes: ["url"] },
       { model: User, attributes: ["name", "image"] },
       {
-        include: { model:User,attributes: ["name", "image","id_user"]},
+        include: { model: User, attributes: ["name", "image", "id_user"] },
         model: Comment,
-        attributes: ["id_com", "id_post" , "content", "created_at"],
+        attributes: ["id_com", "id_post", "content", "created_at"],
         separate: true,
         limit: 15,
         where: { reply: null },
@@ -81,7 +81,7 @@ exports.getDetailsPost = async (req, res) => {
   });
   countLike = count;
   for (cmt of processPosts.Comments) {
-    console.log(cmt)
+    console.log(cmt);
     cmt.countRep = await Comment.findAll({
       where: {
         [Op.and]: [{ id_post: cmt.id_post }, { reply: cmt.id_com }],
