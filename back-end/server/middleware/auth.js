@@ -13,7 +13,6 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
   const decodedData = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
   req.user = await User.findByPk(decodedData.id);
-
   next();
 });
 
@@ -21,10 +20,13 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
 exports.checkAuthor = catchAsyncErrors(async (req, res, next) => {
   id = req.user.id_user;
   result = await Comment.findOne({ where: { id_com: req.params.id } });
-  console.log(id);
+
+  if (req.user.role == 2) {
+    return next();
+  }
+
   if (result.id_user == id || (await result.getPost()).id_user == id) {
     return next();
   }
   return next(new ErrorHandler("Bạn không có quyền", 401));
 });
-

@@ -16,12 +16,14 @@ const post = require("./routes/PostRoute");
 const user = require("./routes/UserRoute");
 const comment = require("./routes/CommentRoute");
 const like = require("./routes/LikeRoute");
+const static = require("./routes/admin");
 
 
 app.use("/api/post", post);
 app.use("/api/user", user);
 app.use("/api/comment", comment);
 app.use("/api/like", like);
+app.use("/api/admin",static);
 
 app.use(ErrorHandler);
 module.exports = app;
