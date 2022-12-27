@@ -1,6 +1,15 @@
 const { Photo, Post, Like_Post, User, Comment } = require("../models");
 const Sequelize = require("sequelize");
 const { Op } = require("sequelize");
+// const cloudinary = require("../config/cloudinary");
+
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 // Lấy dữ liệu tất cả bài viết
 exports.getAllPost = async (req, res) => {
@@ -81,7 +90,7 @@ exports.getDetailsPost = async (req, res) => {
   });
   countLike = count;
   for (cmt of processPosts.Comments) {
-    console.log(cmt);
+
     cmt.countRep = await Comment.findAll({
       where: {
         [Op.and]: [{ id_post: cmt.id_post }, { reply: cmt.id_com }],

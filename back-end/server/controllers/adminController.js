@@ -46,14 +46,30 @@ exports.statistic = async (req, res) => {
 
 exports.grantPermission = async (req, res) => {
   try {
-    const user = await User.update(
-      { role: 2 },
-      {
-        where: {
-          id_user: req.params.id,
-        },
-      }
-    );
+    const { id } = req.params;
+
+    if (id == req.user.id_user) {
+      return res.status(401).json({
+        success: false,
+        message: "khong duoc tu suong",
+      });
+    }
+
+    const user = await User.findOne({
+      where: {
+        id_user: id,
+      },
+    });
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "user not find",
+      });
+    }
+
+    user.role = user.role == 2 ? 1 : 2;
+    user.save();
+
     res.json({ user, success: true });
   } catch (error) {
     res.status(500).json({
