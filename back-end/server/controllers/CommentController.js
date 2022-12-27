@@ -9,7 +9,12 @@ exports.commentCreate = async (req, res) => {
       id_post: req.body.id_post,
       id_user: req.user.id_user,
     });
-    res.json({ comment, success: true });
+    const User = {
+      id_user: req.user.id_user,
+      image: req.user.image,
+      name: req.user.name,
+    };
+    res.json({ comment, User, success: true });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -38,7 +43,7 @@ exports.getReplyCom = async (req, res) => {
   try {
     const replies = await Comment.findAll({
       where: { reply: req.params.id },
-      include: {model: User, attributes: ["name", "image", "id_user"]},
+      include: { model: User, attributes: ["name", "image", "id_user"] },
       order: [["id_com", "DESC"]],
       limit: 10,
       offset: req.body.more ?? 0,
@@ -51,7 +56,7 @@ exports.getReplyCom = async (req, res) => {
 
 // Xóa bình luận
 exports.commentDelete = async (req, res) => {
-  console.log("aa")
+  console.log("aa");
   try {
     const comment = await Comment.destroy({
       where: {

@@ -13,8 +13,8 @@ exports.getAllPost = async (req, res) => {
       },
     ],
 
-    limit: 5,
-    offset: req.body.offset ?? 0,
+    limit: req.query._limit,
+    offset:req.query._limit * req.query._page,
   });
   const processPosts = rawPosts.map((e) => e.get({ plain: true }));
   const posts = [];
@@ -53,8 +53,9 @@ exports.getDetailsPost = async (req, res) => {
       { model: Photo, attributes: ["url"] },
       { model: User, attributes: ["name", "image"] },
       {
+        include: { model:User,attributes: ["name", "image","id_user"]},
         model: Comment,
-        attributes: ["id_com", "id_post" , "content"],
+        attributes: ["id_com", "id_post" , "content", "created_at"],
         separate: true,
         limit: 15,
         where: { reply: null },
@@ -87,10 +88,10 @@ exports.getDetailsPost = async (req, res) => {
       },
     }).then((e) => e.length);
   }
-  const posts = { ...processPosts, isLike, countLike };
+  const post = { ...processPosts, isLike, countLike };
   res.status(200).json({
     success: true,
-    posts,
+    post,
   });
 };
 
@@ -130,20 +131,6 @@ exports.updatePost = async (req, res) => {
 };
 
 // Xóa bài viết
-exports.deletePost = async (req, res) => {
-  try {
-    await Post.destroy({
-      where: {
-        id_post: req.params.id,
-      },
-    });
-    res.json({ success: true });
-  } catch (err) {
-    res.sendStatus(500).send(err);
-  }
-};
-
-// Xóa bài
 exports.deletePost = async (req, res) => {
   try {
     await Post.destroy({
