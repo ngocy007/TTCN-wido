@@ -25,21 +25,8 @@ exports.uploadCloudinary = catchAsyncErrors(async (req, res, next) => {
       folder: "file_post",
     });
     linkFiles.push(result.url);
-<<<<<<< Updated upstream
-  } else {
-    for (let i = 0; i < newFiles.length; i++) {
-      
-      const result = await cloudinary.uploader.upload(newFiles[i], {
-        folder: "file_post",
-      });
-     
-      linkFiles.push(result.url);
-    }
-=======
     fs.unlinkSync(path);
->>>>>>> Stashed changes
   }
-
   req.newFile = linkFiles;
   next();
 });
