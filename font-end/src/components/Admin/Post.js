@@ -25,16 +25,20 @@ class Post extends Component {
       .catch((error) => console.log(error));
   }
   handleDelete = (item) => {
-    const newsId = {
-      id: item.id_post,
-    };
+    const newsId = item.id_post;
+    console.log(newsId);
 
     axios
-      .post("http://localhost:8000/api/post/" + newsId)
+      .delete("http://localhost:8000/api/post/" + newsId, {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+      })
       .then((res) => {
         this.setState((prevState) => ({
-          news: prevState.news.filter((el) => el.id !== item.id_post),
+          posts: prevState.posts.filter((el) => el.id !== item.id_post),
         }));
+        this.componentDidMount();
       })
       .catch((error) => console.log(error));
   };
@@ -60,7 +64,9 @@ class Post extends Component {
                   </button>
                 </td>
                 <td className="col-1">
-                  <button onClick={() => this.handleDelete(item)}>xóa</button>
+                  <button onClick={() => this.handleDelete(item)}>
+                    <i class="fa fa-trash">xóa</i>
+                  </button>
                 </td>
               </tr>
             ))}
