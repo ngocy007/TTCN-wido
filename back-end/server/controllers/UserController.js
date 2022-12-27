@@ -79,7 +79,7 @@ exports.login = catchAsyncErrors(async (req, res, next) => {
   }
 
   const user = await User.findOne({
-    attributes: ["name", "id_user", "image", "password"],
+    attributes: ["name", "id_user", "image", "password", "role"],
     where: { email: req.body.email },
   });
 
@@ -91,12 +91,14 @@ exports.login = catchAsyncErrors(async (req, res, next) => {
   if (!isPasswordMatched) {
     return next(new ErrorHandler("Mật khẩu không đúng", 401));
   }
+
   const newUser = new User({
     id_user: user.id_user,
     name: user.name,
     image: user.image,
     role: user.role,
   });
+
   sendToken(newUser, 200, res);
 });
 
