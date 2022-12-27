@@ -5,7 +5,7 @@ import Sidebar from "./Sidebar";
 import Stories from "./Stories";
 import { Gallery } from "./userprofile/gallery";
 import { KeyNumbers } from "./userprofile/key-numbers";
-import { Profile } from "./userprofile/profile";
+import { ProfileUser } from "./userprofile/profile";
 import { Story } from "./userprofile/story";
 import { Tabs } from "./userprofile/tabs";
 import { MobileOnly } from "./userprofile//mobile";
@@ -66,7 +66,7 @@ function ProfilePage(props) {
     <ThemeWrap className={`__insta-${theme}-mode`}>
       <Navigation />
       <Main>
-        <Profile
+        <ProfileUser
           image={userdetail?.user?.image}
           userName={userdetail?.user?.name}
           countFollower={userdetail?.user?.countFollower}

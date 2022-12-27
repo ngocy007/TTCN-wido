@@ -15,11 +15,12 @@ export function KeyNumbers(props) {
   const {
     countPost,
     countFollowee,
-    countFollower
+    countFollower,
+    id_user
   } = props;
   return (
     <ProfileDetailUl>
-      <KeyNumber label="posts" number={countPost} />
+      <KeyNumber label="posts" number={countPost} id_user={id_user} />
       <KeyNumber label="followers" number={countFollower} />
       <KeyNumber label="following" number={countFollowee} />
     </ProfileDetailUl>
