@@ -54,7 +54,7 @@ exports.getDetailsPost = async (req, res) => {
       { model: User, attributes: ["name", "image"] },
       {
         model: Comment,
-        attributes: ["id_com", "id_post" , "content"],
+        attributes: ["id_com", "id_post", "content"],
         separate: true,
         limit: 15,
         where: { reply: null },
@@ -80,7 +80,7 @@ exports.getDetailsPost = async (req, res) => {
   });
   countLike = count;
   for (cmt of processPosts.Comments) {
-    console.log(cmt)
+    console.log(cmt);
     cmt.countRep = await Comment.findAll({
       where: {
         [Op.and]: [{ id_post: cmt.id_post }, { reply: cmt.id_com }],
@@ -181,7 +181,7 @@ exports.likePost = async (req, res) => {
 // Lấy ra user like bài
 exports.getUsersLP = async (req, res) => {
   try {
-    const users = await Post.findOne({
+    const users = await Like_Post.findAll({
       attributes: [],
       where: { id_post: req.params.id },
       include: { model: User, attributes: ["name", "image", "id_user"] },
