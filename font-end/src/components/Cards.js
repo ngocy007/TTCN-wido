@@ -27,89 +27,7 @@ function Cards() {
         }
       );
   }, []);
-  const commentsOne = [
-    {
-      user: "raffagrassetti",
-      text: "Woah dude, this is awesome! 🔥",
-      id: 1,
-    },
-    {
-      user: "therealadamsavage",
-      text: "Like!",
-      id: 2,
-    },
-    {
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 3,
-    },
-    {
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 4,
-    },
-    {
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 5,
-    },
-    {
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 6,
-    },
-    {
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 7,
-    },
-    {
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 8,
-    },
-    {
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 9,
-    },
-    {
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 10,
-    },
-    {
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 10,
-    },
-    {
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 10,
-    },
-    {
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 10,
-    },
-  ];
-
-  const commentsTwo = [
-    {
-      user: "mapvault",
-      text: "Amazing content, keep it up!",
-      id: 4,
-    },
-  ];
-
-  const commentsThree = [
-    {
-      user: "dadatlacak",
-      text: "Love this!",
-      id: 5,
-    },
-  ];
+  
   if (error) {
     return <div>Error: {error.message}</div>;
   } else if (!isLoaded) {
@@ -144,7 +62,6 @@ function Cards() {
            profileIcon={item.User.image}
            storyBorder={true}
            image={item.Photos}
-           commentsdummy={commentsOne}
            likedByText="holder"
            likedByNumber={item.countLike}
            hours={16}

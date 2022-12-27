@@ -1,7 +1,8 @@
 import "../styles/profileIcon.scss";
-
+import {useNavigate} from 'react-router-dom';
+import ProfilePage from "./Userprofile";
 function ProfileIcon(props) {
-  const { iconSize, storyBorder, image } = props;
+  const { iconSize, storyBorder, image, id_user } = props;
 
   function getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -14,6 +15,15 @@ function ProfileIcon(props) {
   let profileImage = image
     ? image
     : `https://i.pravatar.cc/150?img=${randomId}`;
+    const navigate = useNavigate();
+    const navigateUser = () => {
+      // 👇️ navigate to /
+      navigate('/user', {
+        state: {
+          userId: id_user,
+        }
+      });
+    };
 
   return (
     <div className={storyBorder ? "storyBorder" : ""}>
@@ -21,6 +31,7 @@ function ProfileIcon(props) {
         className={`profileIcon ${iconSize}`}
         src={profileImage}
         alt="profile"
+        onClick={navigateUser}
       />
     </div>
   );

@@ -46,7 +46,7 @@ class Thongke extends Component {
               <p className="text-thongke"></p>
             </div>
           </div>
-          <div>
+          <div className="Adminchart">
             <ResponsiveContainer className="chart" height={300}>
               <LineChart
                 width={600}

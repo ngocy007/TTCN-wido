@@ -11,22 +11,26 @@ import axios from "axios";
 class Admin_Index extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      users: [],
+      user: JSON.parse(localStorage.getItem("info")),
+    };
     this.handleLogout = this.handleLogout.bind(this);
   }
   handleLogout() {
     axios
       .get("http://localhost:8000/api/user/logout")
-      .then((res) => {
+      .then(() => {
         window.location.assign("/");
         localStorage.removeItem("token");
+        localStorage.removeItem("info");
       })
       .catch((error) => console.log(error));
   }
   render() {
     return (
       <div>
-        <nav>
+        <nav className="nav-admin">
           <div class="brand">
             <h2>Admin-Nhóm 1</h2>
           </div>
@@ -40,21 +44,18 @@ class Admin_Index extends Component {
               <div>
                 <img
                   class="img-xs rounded-circle avata"
-                  src="../../images/gallery-1.jpg"
+                  src={this.state.user.user.image}
                   alt="Profile"
                 ></img>
                 <NavDropdown
                   id="nav-dropdown"
                   title="trang cá nhân"
-                  menuVariant="dark"
+                  menuVariant="White"
                 >
-                  <NavDropdown.Item href="#action/3.1">
-                    profile
+                  <NavDropdown.Item>
+                    <Link to="/Admin/profile">Profile</Link>
                   </NavDropdown.Item>
-                  <NavDropdown.Item
-                    href="#action/3.2"
-                    onClick={() => this.handleLogout()}
-                  >
+                  <NavDropdown.Item onClick={() => this.handleLogout()}>
                     logout
                   </NavDropdown.Item>
                 </NavDropdown>

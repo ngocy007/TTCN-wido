@@ -50,6 +50,7 @@ class Login extends Component {
         if (response.status === 200) {
           //console.log(response.data.token);
           localStorage.setItem("token", response.data.token);
+          localStorage.setItem("info", JSON.stringify(response.data));
           window.location.assign("/Home");
           //return response.json();
         }

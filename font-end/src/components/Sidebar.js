@@ -5,6 +5,7 @@ import Suggestions from "./Suggestions";
 import Footer from "./Footer";
 import image from "../images/profile.jpg";
 import React from "react";
+import axios from "axios";
 class Sidebar extends React.Component {
   // Constructor
   constructor(props) {
@@ -12,42 +13,38 @@ class Sidebar extends React.Component {
 
     this.state = {
       items: [],
-      DataisLoaded: false,
+      info: JSON.parse(localStorage.getItem("info")),
     };
   }
+  componentDidMount(event) {
+    axios
+      .get(
+        "http://localhost:8000/api/user/info/" + this.state.info.user.id_user,
+        {
+          headers: {
+            "x-access-token": localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        this.state.items = res.data;
+        this.setState({});
+      })
+      .catch((error) => console.log(error));
+  }
 
-  // ComponentDidMount is used to
-  // execute the code
-  // componentDidMount() {
-  //   fetch("http://192.168.2.121:8000/api/post").then((res) => res.json())
-  //     .then((json) => {
-  //       this.setState({
-  //         items: json,
-  //         DataisLoaded: true
-  //     });
-  //       console.log(json)
-      
-  //     });
-  // }
   render() {
-    // const { DataisLoaded, items } = this.state;
-    // if (!DataisLoaded)
-    //   return (
-    //     <div>
-    //       <h1> Pleses wait some time.... </h1>{" "}
-    //     </div>
-    //   );
-
     return (
       <div className="container">
         <Sticky topOffset={-80}>
           <div className="sidebar">
             <Profile
-              username="aleks.popovic"
-              caption="Aleksandar Popović"
+              username={this.state.items?.user?.name}
+              caption=""
               urlText="Switch"
               iconSize="big"
-              image={image}
+              image={this.state.items?.user?.image}
+              id_user={this.state.items?.user?.id_user}
             />
             <Suggestions />
             <Footer />

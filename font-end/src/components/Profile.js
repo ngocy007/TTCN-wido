@@ -12,6 +12,7 @@ function Profile(props) {
     storyBorder,
     hideAccountName,
     image,
+    id_user
   } = props;
  
   let accountName = username
@@ -24,6 +25,7 @@ function Profile(props) {
         iconSize={iconSize}
         storyBorder={storyBorder}
         image={image}
+        id_user={id_user}
       />
       {(accountName || caption) && !hideAccountName && ( 
         <div className="textContainer">

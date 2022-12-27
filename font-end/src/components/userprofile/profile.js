@@ -104,17 +104,29 @@ const ProfileRow = styled.div`
   margin-bottom: 20px;
 `;
 
-export function Profile() {
+export function Profile(props) {
+  const {
+    storyBorder,
+    image,
+    commentsdummy,
+    likedByText,
+    likedByNumber,
+    userName,
+    profileIcon,
+    id_post,
+    id_user,
+    content,
+  } = props;
   return (
     <Header>
       <HeaderWrap>
         <ProfilePic>
-          <ProfileImg src="../../images/profile-logo.jpg" alt="profile-logo" />
+          <ProfileImg src={image} alt="profile-logo" />
         </ProfilePic>
         <div>
           <ProfileRow>
             <ProfileTitle>
-              <ProfileH2>apple h2</ProfileH2>
+              <ProfileH2>{userName}</ProfileH2>
               <ProfileIcon>
                 <Icons.Verified />
               </ProfileIcon>

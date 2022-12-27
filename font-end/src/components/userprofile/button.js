@@ -26,7 +26,7 @@ const Wrap = styled.button`
     primary &&
     css`
       background: var(--ins-primary);
-      color: white;
+      color: black;
       -webkit-text-fill-color: white;
     `}
 `;

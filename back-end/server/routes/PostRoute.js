@@ -10,7 +10,7 @@ const { isAuthenticatedUser } = require("../middleware/auth");
 const { upload, deletefile } = require("../middleware/cloudinary");
 
 
-router.route("/").get(getAllPost);
+router.route("/").get(isAuthenticatedUser,getAllPost);
 router.route("/create").post(isAuthenticatedUser, upload, createPost);
 
 router

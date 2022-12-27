@@ -64,6 +64,7 @@ function CommentModal(props) {
               storyBorder={storyBorder}
               username={userName}
               image={profileIcon}
+              id_user={id_user}
             />
             <CardButton className="cardButton" />
           </header>
@@ -94,10 +95,10 @@ function CommentModal(props) {
 
           <CardMenu />
           <div className="likedBy">
-            <Profile iconSize="small" hideAccountName={true} />
+          
             <span>
-              Liked by <strong>{likedByText}</strong> and{" "}
-              <strong>{likedByNumber} others</strong>
+              Liked by {" "}
+              <strong>{likedByNumber}</strong>
             </span>
           </div>
           <div className="timePosted">{hours} HOURS AGO</div>

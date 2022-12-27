@@ -17,7 +17,7 @@ const Icon = styled.span`
 
 export function GalleryItem({ imagePath, icon }) {
   const IconComp = Icons[icon];
-  console.log("imagePath - GalleryItem", imagePath);
+  //console.log("imagePath - GalleryItem", imagePath);
   return (
     <Wrap>
       <Img alt="gallery-post" src={imagePath} />

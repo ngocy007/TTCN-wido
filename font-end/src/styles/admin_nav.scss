@@ -4,7 +4,7 @@ body {
 }
 
 
-nav {
+.nav-admin {
     position: fixed;
     top: 0;
     left: 0;
@@ -19,31 +19,31 @@ nav {
         0 16px 16px rgba(0, 0, 0, 0.12);
 }
 
-nav .brand {
+.nav-admin .brand {
     float: left;
     height: 100%;
     line-height: 80px;
 }
 
-nav .brand h2 {
+.nav-admin .brand h2 {
     margin: 20px;
     padding: 0;
     color: blue;
 }
 
 
-nav ul {
+.nav-admin ul {
     float: right;
     display: flex;
     margin: 0;
     padding: 0;
 }
 
-nav ul li {
+.nav-admin ul li {
     list-style: none;
 }
 
-nav ul li a {
+.nav-admin ul li a {
     position: relative;
     display: block;
     height: 80px;
@@ -56,7 +56,7 @@ nav ul li a {
     transition: 0.5s
 }
 
-nav ul li a:before {
+.nav-admin ul li a:before {
     content: '';
     position: absolute;
     top: 0;
@@ -70,19 +70,20 @@ nav ul li a:before {
     transition: transform 0.5s;
 }
 
-nav ul li a:hover:before {
+.nav-admin ul li a:hover:before {
     transform-origin: left;
     transform: scaleX(1);
 }
 
-nav ul li a:hover {
+.nav-admin ul li a:hover {
     color: #262626;
 }
 
 section.section2 {
-    margin-left: 8%;
+    margin-left: 18%;
     margin-top: 8%;
     margin-right: 2%;
+    
 }
 .thongke-contain{
     width: 23%;
@@ -97,6 +98,11 @@ section.section2 {
         font-size: xx-large;
     }
     background-color: aqua;
+    
+}
+.Adminchart {
+    margin-top: 100px;
+    padding-top: 200px;
 }
 .nav-text{
    font-size: x-large;
@@ -106,16 +112,13 @@ section.section2 {
     margin-top: 100px;
     margin-left: 10px;
 }
-.section2{
-   padding-left: 12%;
-}
 
 #dropdown{
-    margin: -8px;
+    margin: 1px;
     text-align: center;
     color: #fff;
     .avata {
-        margin-top: 30px;
+        margin-top: 20px;
             width: 35px;
             aspect-ratio: auto 35 / 35;
             height: 35px;
@@ -125,4 +128,23 @@ section.section2 {
             float: left;
         }
 
+}
+.form-admin{
+    .img-profile
+    {
+        width: 400px;
+        height: 100%;
+        float: left;
+        .profile-admin {
+                width: 300px;
+                height: 300px;
+                border-radius: 30px;
+            }
+        .btn-adprofile{
+            text-align: center;
+            margin: 30px 10px;
+            background-color: coral;
+        }
+    }
+    
 }

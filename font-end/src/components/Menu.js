@@ -10,11 +10,10 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import UploadModal from "./uploadModal";
-import {Routes, Route, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
 
 function Menu() {
-  const [modalOpen, setModalOpen] = useState(false);
   const style = {
     position: "fixed",
     top: "50%",
@@ -34,6 +33,8 @@ function Menu() {
     // 👇️ navigate to /
     navigate('/Home');
   };
+  const saved = localStorage.getItem("info");
+  const userData = JSON.parse(saved);
   return (
     <div className="menu">
       <Home className="icon" onClick={navigateHome}/>
@@ -41,7 +42,7 @@ function Menu() {
       <Explore className="icon" /> */}
       <Notifications className="icon" />
       <Upload className="icon" onClick={handleOpen}/>
-      <ProfileIcon iconSize="small" image={image} />
+      <ProfileIcon iconSize="small" image={userData?.user?.image} />
       <Modal
         open={open}
         onClose={handleClose}

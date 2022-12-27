@@ -9,6 +9,14 @@ import Modal from "@mui/material/Modal";
 import CommentModal from "./CommentModal";
 import Carousel from "react-bootstrap/Carousel";
 import ShowMoreText from "react-show-more-text";
+import { ReactComponent as Comments } from "../images/comments.svg";
+import { ReactComponent as Notifications } from "../images/notifications.svg";
+import "../styles/cardMenu.scss";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
+import Button from "@mui/material/Button";
 
 function Card(props) {
   const {
@@ -24,7 +32,6 @@ function Card(props) {
     id_user,
     content,
   } = props;
-  const [modalOpen, setModalOpen] = useState(false);
   const style = {
     position: "fixed",
     top: "50%",
@@ -36,33 +43,36 @@ function Card(props) {
     boxShadow: 24,
     p: 4,
   };
+  const styleLike = {
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 450,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
 
+  //handle cho comment modal
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const commentsOne = [
-    {
-      user: "raffagrassetti",
-      text: "Woah dude, this is awesome! 🔥",
-      id: 1,
-    },
-    {
-      user: "therealadamsavage",
-      text: "Like!",
-      id: 2,
-    },
-    {
-      user: "mapvault",
-      text: "Niceeeee!",
-      id: 3,
-    },
-  ];
+
+  //handle cho like modal
+  const [openLike, setOpenLike] = React.useState(false);
+  const handleOpenLike = () => setOpenLike(true);
+  const handleCloseLike = () => setOpenLike(false);
+
+  //State cho fetch detailpost
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [postdetail, setItems] = useState([]);
   const headers = {
     "x-access-token": localStorage.getItem("token"),
   };
+  //Lay api detail
   useEffect(() => {
     fetch("http://localhost:8000/api/post/" + id_post, { headers })
       .then((res) => res.json())
@@ -80,6 +90,27 @@ function Card(props) {
         }
       );
   }, []);
+  //State cho fetch get all like
+  const [postLike, setLike] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:8000/api/like/post/" + id_post, { headers })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          setIsLoaded(true);
+          setLike(result);
+        },
+        // Note: it's important to handle errors here
+        // instead of a catch() block so that we don't swallow
+        // exceptions from actual bugs in components.
+        (error) => {
+          setIsLoaded(true);
+          setError(error);
+        }
+      );
+  }, []);
+  console.log("HERE are all like fetch");
+  console.log(postLike?.users);
   function executeOnClick(isExpanded) {
     console.log(isExpanded);
   }
@@ -91,6 +122,7 @@ function Card(props) {
           storyBorder={storyBorder}
           username={userName}
           image={profileIcon}
+          id_user={id_user}
         />
         <CardButton className="cardButton" />
       </header>
@@ -114,11 +146,28 @@ function Card(props) {
           );
         })}
       </Carousel>
-      <CardMenu />
+      {/* <CardMenu /> */}
+      <div className="cardMenu">
+        <div className="interactions">
+          <Notifications className="icon" />
+          <Comments className="icon" onClick={handleOpen} />
+          {/* <Inbox className="icon" /> */}
+        </div>
+        {/* <Bookmark className="icon" /> */}
+      </div>
       <div className="likedBy">
         <span>
-          Liked by <strong>{likedByText}</strong> and{" "}
-          <strong>{likedByNumber} others</strong>
+          <Button
+            variant="text"
+            size="small"
+            sx={{
+              marginBottom: 0.2,
+            }}
+            onClick={handleOpenLike}
+          >
+            Liked By
+          </Button>{" "}
+          <strong>{likedByNumber}</strong>
         </span>
       </div>
       <div className="comments">
@@ -169,6 +218,7 @@ function Card(props) {
             console.log("HERE2","HERE 3")
           );
         })} */}
+      {/*Modal popup comment*/}
       <Modal
         open={open}
         onClose={handleClose}
@@ -189,6 +239,45 @@ function Card(props) {
             userName={userName}
             profileIcon={profileIcon}
           />
+        </Box>
+      </Modal>
+      {/*Modal popup like*/}
+      <Modal
+        open={openLike}
+        onClose={handleCloseLike}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={styleLike}>
+          <List
+            sx={{
+              width: "100%",
+              maxWidth: 360,
+              bgcolor: "background.paper",
+              position: "relative",
+              overflow: "auto",
+              maxHeight: 300,
+              "& ul": { padding: 0 },
+            }}
+            subheader={<li />}
+          >
+            <li key={`likedby`}>
+              <ul>
+                <ListSubheader>{`Liked By`}</ListSubheader>
+                {postLike?.users?.map((user) => {
+                  return (
+                    <Profile
+                      iconSize="medium"
+                      storyBorder={true}
+                      username={user.User.name}
+                      image={user.User.image}
+                      id_user={user.User.id_user}
+                    />
+                  );
+                })}
+              </ul>
+            </li>
+          </List>
         </Box>
       </Modal>
     </div>
