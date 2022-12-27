@@ -72,6 +72,7 @@ function ProfilePage(props) {
           countFollower={userdetail?.user?.countFollower}
           countFollowee={userdetail?.user?.countFollowee}
           countPost={length}
+          id_user={userId}
         />
         <Story />
         <MobileOnly>

@@ -48,7 +48,7 @@ export function GalleryItem({ imagePath, icon, id_post }) {
   };
   //Lay api detail
   useEffect(() => {
-    fetch("http://localhost:8000/api/post/5" , { headers })
+    fetch("http://localhost:8000/api/post/"+id_post , { headers })
       .then((res) => res.json())
       .then(
         (result) => {

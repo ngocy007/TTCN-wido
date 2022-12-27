@@ -4,6 +4,13 @@ import { DesktopOnly, MobileOnly } from "../userprofile/mobile";
 import { Button } from "./button";
 import { KeyNumbers } from "./key-numbers";
 import * as Icons from "./icons";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
+import { useState, useEffect } from "react";
 
 const Header = styled.header`
   margin-top: 100px;
@@ -117,6 +124,75 @@ export function Profile(props) {
     countFollowee,
     countFollower,
   } = props;
+
+  //header xac thuc
+  const headers = {
+    "x-access-token": localStorage.getItem("token"),
+  };
+  // state debug
+  const [error, setError] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  //handle cho following modal
+  const [opening, setOpenIng] = React.useState(false);
+  const handleOpenIng = () => setOpenIng(true);
+  const handleCloseIng = () => setOpenIng(false);
+
+  const styleLike = {
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 450,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
+
+  //handle cho follower modal
+  const [opener, setOpenEr] = React.useState(false);
+  const handleOpenEr = () => setOpenEr(true);
+  const handleCloseEr = () => setOpenEr(false);
+
+  //State cho fetch get following
+  const [following, setIng] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:8000/api/user/listfollowing/" + id_user, { headers })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          setIsLoaded(true);
+          setIng(result);
+        },
+        // Note: it's important to handle errors here
+        // instead of a catch() block so that we don't swallow
+        // exceptions from actual bugs in components.
+        (error) => {
+          setIsLoaded(true);
+          setError(error);
+        }
+      );
+  }, []);
+
+  //State cho fetch get follower
+  const [follower, setEr] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:8000/api/user/listfollower/" + id_user, { headers })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          setIsLoaded(true);
+          setEr(result);
+        },
+        // Note: it's important to handle errors here
+        // instead of a catch() block so that we don't swallow
+        // exceptions from actual bugs in components.
+        (error) => {
+          setIsLoaded(true);
+          setError(error);
+        }
+      );
+  }, []);
   return (
     <Header>
       <HeaderWrap>
@@ -170,6 +246,84 @@ export function Profile(props) {
           </ProfileDescriptions> */}
         </ProfileRow>
       </MobileOnly>
+      {/*Modal popup following*/}
+      <Modal
+        open={opening}
+        onClose={handleCloseIng}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={styleLike}>
+          <List
+            sx={{
+              width: "100%",
+              maxWidth: 360,
+              bgcolor: "background.paper",
+              position: "relative",
+              overflow: "auto",
+              maxHeight: 300,
+              "& ul": { padding: 0 },
+            }}
+            subheader={<li />}
+          >
+            <li key={`likedby`}>
+              <ul>
+                <ListSubheader>{`Liked By`}</ListSubheader>
+                {following?.users?.map((user) => {
+                  return (
+                    <Profile
+                      iconSize="medium"
+                      storyBorder={true}
+                      username={user.followee.name}
+                      image={user.followee.image}
+                      id_user={user.followee.id_user}
+                    />
+                  );
+                })}
+              </ul>
+            </li>
+          </List>
+        </Box>
+      </Modal>
+      {/*Modal popup follower*/}
+      <Modal
+        open={opener}
+        onClose={handleCloseEr}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={styleLike}>
+          <List
+            sx={{
+              width: "100%",
+              maxWidth: 360,
+              bgcolor: "background.paper",
+              position: "relative",
+              overflow: "auto",
+              maxHeight: 300,
+              "& ul": { padding: 0 },
+            }}
+            subheader={<li />}
+          >
+            <li key={`likedby`}>
+              <ul>
+                <ListSubheader>{`Liked By`}</ListSubheader>
+                {postLike?.users?.map((user) => {
+                  return (
+                    <Profile
+                      iconSize="medium"
+                      storyBorder={true}
+                      username={user.User.name}
+                      image={user.User.image}
+                      id_user={user.User.id_user}
+                    />
+                  );
+                })}
+              </ul>
+            </li>
+          </List>
+        </Box>
+      </Modal>
     </Header>
   );
 }

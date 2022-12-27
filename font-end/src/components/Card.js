@@ -109,8 +109,6 @@ function Card(props) {
         }
       );
   }, []);
-  console.log("HERE are all like fetch");
-  console.log(postLike?.users);
   function executeOnClick(isExpanded) {
     console.log(isExpanded);
   }
