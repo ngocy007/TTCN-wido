@@ -32,7 +32,7 @@ const Wrap = styled.button`
 `;
 
 export function Button({ children, content, primary, onClick }) {
-  console.log("children", children);
+  //console.log("children", children);
   return (
     <Wrap primary={primary} onClick={onClick}>
       {(children.length > 0 && children) || content}

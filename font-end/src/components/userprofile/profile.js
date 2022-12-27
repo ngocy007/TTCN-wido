@@ -108,14 +108,14 @@ export function Profile(props) {
   const {
     storyBorder,
     image,
-    commentsdummy,
-    likedByText,
-    likedByNumber,
     userName,
     profileIcon,
     id_post,
     id_user,
     content,
+    countPost,
+    countFollowee,
+    countFollower,
   } = props;
   return (
     <Header>
@@ -137,9 +137,13 @@ export function Profile(props) {
           </ProfileRow>
           <DesktopOnly>
             <ProfileRow>
-              <KeyNumbers />
+              <KeyNumbers
+                countPost={countPost}
+                countFollowee={countFollowee}
+                countFollower={countFollower}
+              />
             </ProfileRow>
-            <ProfileDescriptions
+            {/* <ProfileDescriptions
             // class="row last"
             >
               <ProfileDescriptionH1>apple h1</ProfileDescriptionH1>
@@ -149,13 +153,13 @@ export function Profile(props) {
                 Tag <ProfileDescriptionA>#ShotoniPhone</ProfileDescriptionA> to
                 take part.
               </ProfileDescriptionSpan>
-            </ProfileDescriptions>
+            </ProfileDescriptions> */}
           </DesktopOnly>
         </div>
       </HeaderWrap>
       <MobileOnly>
         <ProfileRow>
-          <ProfileDescriptions>
+          {/* <ProfileDescriptions>
             <ProfileDescriptionH1>apple</ProfileDescriptionH1>
             <ProfileDescriptionSpan>
               Everyone has a story to tell 222222.
@@ -163,7 +167,7 @@ export function Profile(props) {
               Tag <ProfileDescriptionA>#ShotoniPhone</ProfileDescriptionA> to
               take part.
             </ProfileDescriptionSpan>
-          </ProfileDescriptions>
+          </ProfileDescriptions> */}
         </ProfileRow>
       </MobileOnly>
     </Header>

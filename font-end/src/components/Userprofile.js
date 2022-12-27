@@ -58,19 +58,31 @@ function ProfilePage(props) {
         }
       );
   }, []);
-  console.log("here are fetach user");
-  console.log(userdetail?.user)
+  // console.log("here are fetach user");
+  // console.log(userdetail?.user);
+  const array = userdetail?.user?.Posts;
+  const length = array?.length;
   return (
     <ThemeWrap className={`__insta-${theme}-mode`}>
       <Navigation />
       <Main>
-        <Profile image={userdetail?.user?.image} userName={userdetail?.user?.name} />
+        <Profile
+          image={userdetail?.user?.image}
+          userName={userdetail?.user?.name}
+          countFollower={userdetail?.user?.countFollower}
+          countFollowee={userdetail?.user?.countFollowee}
+          countPost={length}
+        />
         <Story />
         <MobileOnly>
-          <KeyNumbers />
+          <KeyNumbers
+            countFollower={userdetail?.user?.countFollower}
+            countFollowee={userdetail?.user?.countFollowee}
+            countPost={length}
+          />
         </MobileOnly>
         <Tabs />
-        <Gallery />
+        <Gallery  Posts={userdetail?.user?.Posts}/>
       </Main>
     </ThemeWrap>
   );

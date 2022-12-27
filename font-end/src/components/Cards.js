@@ -11,7 +11,7 @@ function Cards() {
     "x-access-token": localStorage.getItem("token"),
   };
   useEffect(() => {
-    fetch("http://localhost:8000/api/post/",{headers})
+    fetch("http://localhost:8000/api/post/home?_limit=5&_page=0",{headers})
       .then((res) => res.json())
       .then(
         (result) => {
