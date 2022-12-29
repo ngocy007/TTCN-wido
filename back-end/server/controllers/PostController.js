@@ -95,7 +95,6 @@ exports.getDetailsPost = async (req, res) => {
   });
   countLike = count;
   for (cmt of processPosts.Comments) {
-
     cmt.countRep = await Comment.findAll({
       where: {
         [Op.and]: [{ id_post: cmt.id_post }, { reply: cmt.id_com }],

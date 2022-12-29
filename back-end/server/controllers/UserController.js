@@ -1,4 +1,5 @@
 const { User, Follow, Post, Photo } = require("../models");
+const UserMess = require("../models/mongo/userModel");
 const sendToken = require("../utils/jwtToken.js");
 const ErrorHandler = require("../utils/errorHandler.js");
 const { Op } = require("sequelize");
@@ -28,6 +29,11 @@ exports.createUser = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Tài khoản đã tồn tại" });
     }
+
+    await UserMess.create({
+      name: req.body.name,
+      email: req.body.email,
+    });
 
     user = await User.create({
       name: req.body.name,
@@ -79,7 +85,7 @@ exports.login = catchAsyncErrors(async (req, res, next) => {
   }
 
   const user = await User.findOne({
-    attributes: ["name", "id_user", "image", "password"],
+    attributes: ["name", "id_user", "image", "password", "role"],
     where: { email: req.body.email },
   });
 
@@ -91,12 +97,14 @@ exports.login = catchAsyncErrors(async (req, res, next) => {
   if (!isPasswordMatched) {
     return next(new ErrorHandler("Mật khẩu không đúng", 401));
   }
+
   const newUser = new User({
     id_user: user.id_user,
     name: user.name,
     image: user.image,
     role: user.role,
   });
+
   sendToken(newUser, 200, res);
 });
 
