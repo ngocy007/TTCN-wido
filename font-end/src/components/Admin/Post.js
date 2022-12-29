@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import axios, * as others from "axios";
-import Admin_Index from "./Admin_Index";
 
 class Post extends Component {
   constructor(props) {
@@ -12,7 +11,7 @@ class Post extends Component {
 
   componentDidMount() {
     axios
-      .get("http://localhost:8000/api/post", {
+      .get("http://localhost:8000/api/post/home", {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
@@ -20,7 +19,6 @@ class Post extends Component {
       .then((res) => {
         const post = res.data;
         this.setState({ posts: post.posts });
-        console.log(post.posts);
       })
       .catch((error) => console.log(error));
   }
@@ -45,7 +43,6 @@ class Post extends Component {
   render() {
     return (
       <div>
-        <Admin_Index />
         <section className="section2">
           <table className="table">
             <tr className="col-9">

@@ -2,20 +2,44 @@ import React, { Component } from "react";
 import "../../styles/navigation.scss";
 import "../../styles/admin_nav.scss";
 import { Link } from "react-router-dom";
-import Dropdown from "react-bootstrap/Dropdown";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import axios from "axios";
+import Thongke from "./Thongke";
+import User from "./User";
+import Profile from "./Adminprofile";
+import Post from "./Post";
 
 class Admin_Index extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      users: [],
+      //users: [],
       user: JSON.parse(localStorage.getItem("info")),
+      img: "",
+      isshowuser: false,
+      isshowpost: false,
+      isshowindex: true,
+      isshowprofile: false,
     };
     this.handleLogout = this.handleLogout.bind(this);
+  }
+  componentDidMount(event) {
+    axios
+      .get(
+        "http://localhost:8000/api/user/info/" + this.state.user.user.id_user,
+        {
+          headers: {
+            "x-access-token": localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        const user = res.data;
+        this.state.img = user.user.image;
+        this.setState({});
+        console.log(user);
+      })
+      .catch((error) => console.log(error));
   }
   handleLogout() {
     axios
@@ -24,10 +48,49 @@ class Admin_Index extends Component {
         window.location.assign("/");
         localStorage.removeItem("token");
         localStorage.removeItem("info");
+        localStorage.removeItem("isadmin");
       })
       .catch((error) => console.log(error));
   }
+  showdiv(event) {
+    switch (event) {
+      case "isshowuser":
+        this.setState({
+          isshowuser: (this.state.isshowuser = true),
+          isshowindex: (this.state.isshowindex = false),
+          isshowpost: (this.state.isshowpost = false),
+          isshowprofile: (this.state.isshowprofile = false),
+        });
+        break;
+      case "isshowindex":
+        this.setState({
+          isshowuser: (this.state.isshowuser = false),
+          isshowindex: (this.state.isshowindex = true),
+          isshowpost: (this.state.isshowpost = false),
+          isshowprofile: (this.state.isshowprofile = false),
+        });
+        break;
+      case "isshowprofile":
+        this.setState({
+          isshowuser: (this.state.isshowuser = false),
+          isshowindex: (this.state.isshowindex = false),
+          isshowpost: (this.state.isshowpost = false),
+          isshowprofile: (this.state.isshowprofile = true),
+        });
+        break;
+      case "isshowpost":
+        this.setState({
+          isshowuser: (this.state.isshowuser = false),
+          isshowindex: (this.state.isshowindex = false),
+          isshowpost: (this.state.isshowpost = true),
+          isshowprofile: (this.state.isshowprofile = false),
+        });
+        break;
+      default:
+    }
+  }
   render() {
+    const { isshowindex, isshowpost, isshowuser, isshowprofile } = this.state;
     return (
       <div>
         <nav className="nav-admin">
@@ -36,15 +99,19 @@ class Admin_Index extends Component {
           </div>
           <ul>
             <li>
-              <Link to="/Admin">
-                <i class="fa fa-home" aria-hidden="true"></i> Trang Chủ
-              </Link>
+              <i
+                class="fa fa-home nav-text-top"
+                aria-hidden="true"
+                onClick={() => this.showdiv("isshowindex")}
+              >
+                Trang Chủ
+              </i>
             </li>
             <li id="dropdown">
               <div>
                 <img
                   class="img-xs rounded-circle avata"
-                  src={this.state.user.user.image}
+                  src={this.state.img}
                   alt="Profile"
                 ></img>
                 <NavDropdown
@@ -53,50 +120,43 @@ class Admin_Index extends Component {
                   menuVariant="White"
                 >
                   <NavDropdown.Item>
-                    <Link to="/Admin/profile">Profile</Link>
+                    <i onClick={() => this.showdiv("isshowprofile")}>Profile</i>
                   </NavDropdown.Item>
                   <NavDropdown.Item onClick={() => this.handleLogout()}>
                     logout
                   </NavDropdown.Item>
                 </NavDropdown>
               </div>
-              {/* <Dropdown>
-                <Dropdown.Toggle
-                  variant="secondary"
-                  id="nav-dropdown-dark-example"
-                >
-                  <img
-                    class="img-xs rounded-circle avata"
-                    src="../../images/gallery-1.jpg"
-                    alt="Profile"
-                  ></img>{" "}
-                  Trang cá nhân
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item href="#/action-1">profile</Dropdown.Item>
-                  <Dropdown.Item href="#/action-2">logout</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown> */}
             </li>
             <li>
-              <Link to="">
-                <i class="fa fa-telegram" aria-hidden="true"></i>Thông tin
-              </Link>
+              <i class="fa fa-telegram nav-text-top" aria-hidden="true">
+                Thông tin
+              </i>
             </li>
           </ul>
           <div className="navigation2">
             <div className="div-left">
-              <Link to="/Admin/user">
-                <i className="nav-text fa fa-user">Người dùng</i>
-              </Link>
+              <i
+                className="nav-text fa fa-user"
+                onClick={() => this.showdiv("isshowuser")}
+              >
+                người dùng
+              </i>
             </div>
             <div className="div-left">
-              <Link to="/Admin/post">
-                <i className="nav-text fa fa-book">Bài viết</i>
-              </Link>
+              <i
+                className="nav-text fa fa-book"
+                onClick={() => this.showdiv("isshowpost")}
+              >
+                Bài viết
+              </i>
             </div>
           </div>
         </nav>
+        {isshowindex && <Thongke />}
+        {isshowuser && <User />}
+        {isshowprofile && <Profile />}
+        {isshowpost && <Post />}
       </div>
     );
   }

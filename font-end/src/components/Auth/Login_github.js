@@ -39,8 +39,10 @@ class Login_github extends React.Component {
       })
       .then(function (response) {
         console.log(response.status);
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("info", JSON.stringify(response.data));
         //if (response.status === 200) {
-        window.location.assign("/Home");
+        // window.location.assign("/Home");
         //}
       })
       .catch(function (error) {

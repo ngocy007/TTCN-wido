@@ -1,23 +1,23 @@
 import React, { Component } from "react";
-import Admin_Index from "./Admin_Index";
 import axios from "axios";
 class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      info: JSON.parse(localStorage.getItem("info")),
+      user: JSON.parse(localStorage.getItem("info")),
       name: "",
       email: "",
       gender: "",
       dob: "",
       image: "",
       content: "",
+      input: "",
     };
   }
   componentDidMount(event) {
     axios
       .get(
-        "http://localhost:8000/api/user/info/" + this.state.info.user.id_user,
+        "http://localhost:8000/api/user/info/" + this.state.user.user.id_user,
         {
           headers: {
             "x-access-token": localStorage.getItem("token"),
@@ -26,6 +26,7 @@ class Profile extends Component {
       )
       .then((res) => {
         const user = res.data;
+
         this.state.name = user.user.name;
         this.state.email = user.user.email;
         this.state.gender = user.user.gender;
@@ -37,10 +38,10 @@ class Profile extends Component {
       })
       .catch((error) => console.log(error));
   }
-  uploadImage(e) {
+  async uploadImage(e) {
     console.log(e.target.files);
     const file = e.target.files[0];
-    const base64 = this.convertBase64(file);
+    const base64 = await this.convertBase64(file);
     console.log(base64);
   }
   convertBase64(file) {
@@ -58,9 +59,8 @@ class Profile extends Component {
   render() {
     return (
       <div>
-        <Admin_Index />
         <section className="section2">
-          <form className="form-admin">
+          <form className="form-admin detail">
             <div className="img-profile">
               <img
                 className="img-xs rounded-circle profile-admin"

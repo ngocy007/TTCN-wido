@@ -1,9 +1,7 @@
 import React from "react";
 import "./Register.scss";
 import axios, * as others from "axios";
-import { Link } from "react-router-dom";
-import Code from "./SendMail";
-var a = 0;
+import { Await, Link } from "react-router-dom";
 class Register extends React.Component {
   constructor() {
     super();
@@ -57,11 +55,8 @@ class Register extends React.Component {
           config,
         })
         .then(function (response) {
-          console.log(response.status);
-          if (response.status === 201) {
-            //window.location.assign("/Admin");
-            alert("Đăng ký thành công");
-          }
+          alert("Đăng ký thành công");
+          window.location.assign("/");
         })
         .catch(function (error) {
           console.log(error);
@@ -109,42 +104,29 @@ class Register extends React.Component {
           config,
         })
         .then(function (response) {
-          console.log(response.status);
-          if (response.status === 200) {
-            //console.log(response.data.token);
-            alert("thành công");
-            //return response.json();
-          }
+          alert(response.data.message);
         })
         .catch(function (error) {
-          console.log(error);
-          alert("email  không đúng");
+          alert("email đã tồn tại");
         });
     }
   }
-  showdiv(event) {
+  async showdiv(event) {
     switch (event) {
-      case "checkedmail":
-        // this.setState({
-        //   checkedmail: !this.state.checkedmail,
-        //   checkedcode: !this.state.checkedcode,
-        // });
-        break;
       case "checkedcode":
-        if (this.validotp()) {
+        if (await this.validotp()) {
           this.setState({
             checkedmail: !this.state.checkedmail,
             checkedcode: !this.state.checkedcode,
           });
         }
-        console.log(this.state.input.email);
         break;
       case "confim":
         this.setState({});
       default:
     }
   }
-  validotp() {
+  async validotp() {
     let input = this.state.input;
     let errors = {};
     let isValid = true;
@@ -153,39 +135,26 @@ class Register extends React.Component {
       errors["code"] = "hãy nhập mã xác nhận";
     }
     if (typeof input["code"] !== "undefined") {
-      if (
-        input["code"].length < 6 ||
-        input["code"].length > 6 ||
-        this.validateCode() !== 1
-      ) {
+      if (input["code"].length < 6 || input["code"].length > 6) {
         isValid = false;
 
         errors["code"] = "mã không hợp lệ";
       }
     }
-    this.setState({
-      errors: errors,
-    });
-    return isValid;
-  }
-  validateCode() {
-    axios
+    await axios
       .post("http://localhost:8000/api/user/isOTP", {
         email: this.state.input.email,
         otp: this.state.input.code,
       })
-      .then(function (response) {
-        if (response.status === 200) {
-          a = 1;
-        } else {
-          a = 2;
-        }
-      })
+      .then(function (response) {})
       .catch(function (error) {
-        a = 2;
+        isValid = false;
+        errors["code"] = "mã không hợp lệ";
       });
-    console.log(a);
-    return a;
+    this.setState({
+      errors: errors,
+    });
+    return isValid;
   }
   validate() {
     let input = this.state.input;
@@ -200,20 +169,6 @@ class Register extends React.Component {
       if (input["username"].length < 6 || !re.test(input["username"])) {
         isValid = false;
         errors["username"] = "nhập không hợp lệ.";
-      }
-    }
-    if (!input["email"]) {
-      isValid = false;
-      errors["email"] = "hãy nhập email";
-    }
-    if (typeof input["email"] !== "undefined") {
-      var pattern = new RegExp(
-        /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i
-      );
-
-      if (!pattern.test(input["email"])) {
-        isValid = false;
-        errors["email"] = "email không hợp lệ.";
       }
     }
 
@@ -242,21 +197,6 @@ class Register extends React.Component {
         errors["password"] = "không khớp mật khẩu.";
       }
     }
-    if (!input["code"]) {
-      isValid = false;
-      errors["code"] = "hãy nhập mã xác nhận";
-    }
-    if (typeof input["code"] !== "undefined") {
-      if (
-        input["code"].length < 6 ||
-        input["code"].length > 6 ||
-        this.validateCode() !== 1
-      ) {
-        isValid = false;
-
-        errors["code"] = "mã không hợp lệ";
-      }
-    }
     this.setState({
       errors: errors,
     });
@@ -273,7 +213,6 @@ class Register extends React.Component {
             <div className="form-group col-12">
               {checkedmail && (
                 <div>
-                  {/* <Code /> */}
                   <div>
                     <lable>Nhập email:</lable>
                     <br></br>
@@ -317,6 +256,11 @@ class Register extends React.Component {
                     onClick={() => this.showdiv("checkedcode")}
                   >
                     gửi
+                  </button>
+                  <button className="btn-login">
+                    <Link to="/" style={{ color: "white " }}>
+                      trở về
+                    </Link>
                   </button>
                 </div>
               )}

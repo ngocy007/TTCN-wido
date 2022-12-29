@@ -35,7 +35,7 @@ class Login extends Component {
     const config = {
       headers: {
         "Content-Type": "application/json",
-        "x-access-token": localStorage.getItem("token"),
+        // "x-access-token": localStorage.getItem("token"),
       },
     };
 
@@ -51,7 +51,13 @@ class Login extends Component {
           //console.log(response.data.token);
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("info", JSON.stringify(response.data));
-          window.location.assign("/Home");
+          const check = JSON.parse(localStorage.getItem("info"));
+          if (check.user.role === 2) {
+            localStorage.setItem("isadmin", "true");
+            window.location.assign("/Admin");
+          } else {
+            window.location.assign("/Home");
+          }
           //return response.json();
         }
       })
