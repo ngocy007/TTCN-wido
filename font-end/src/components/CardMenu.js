@@ -9,10 +9,10 @@ function CardMenu() {
     <div className="cardMenu">
       <div className="interactions">
         <Notifications className="icon" />
-        <Comments className="icon" />
-        <Inbox className="icon" />
+        <Comments className="icon"/>
+        {/* <Inbox className="icon" /> */}
       </div>
-      <Bookmark className="icon" />
+      {/* <Bookmark className="icon" /> */}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 // APi
-const baseURL = "http://192.168.1.19:8000/api/";
+const baseURL = "http://192.168.1.10:8000/api/";
 
 // User
 const loginURL = baseURL + "user/login";
@@ -23,7 +23,7 @@ const getPostUrl = baseURL + "post/home";
 const likeURl = baseURL + "like/post/";
 const createPostURL = baseURL + "post/create";
 const createCMTURL = baseURL +  "comment/create";
-
+const deleteCMTURL = baseURL + "comment/";
 
 // Lỗi
 const serverError = "Lỗi server";

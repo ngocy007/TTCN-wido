@@ -1,8 +1,8 @@
-require("dotenv").config();
 const cloudinary = require("cloudinary").v2;
 const catchAsyncErrors = require("./catchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
 const { Post } = require("../models");
+const fs = require("fs");
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -11,28 +11,22 @@ cloudinary.config({
 });
 
 // Tải ảnh của post lên cloudinary
-exports.upload = catchAsyncErrors(async (req, res, next) => {
+
+exports.uploadCloudinary = catchAsyncErrors(async (req, res, next) => {
   const linkFiles = [];
-  const newFiles = req.body.file;
-  if (!newFiles) {
+  const newFiles = req.files;
+  if (!newFiles || newFiles.length === 0) {
     return next(new ErrorHandler("Rỗng", 404));
   }
-  if (typeof newFiles == "string") {
-    const result = await cloudinary.uploader.upload(newFiles, {
+
+  for (const file of newFiles) {
+    const { path } = file;
+    const result = await cloudinary.uploader.upload(path, {
       folder: "file_post",
     });
     linkFiles.push(result.url);
-  } else {
-    for (let i = 0; i < newFiles.length; i++) {
-      console.log(newFiles[i]);
-      const result = await cloudinary.uploader.upload(newFiles[i], {
-        folder: "file_post",
-      });
-     
-      linkFiles.push(result.url);
-    }
+    fs.unlinkSync(path);
   }
-  
   req.newFile = linkFiles;
   next();
 });
@@ -57,18 +51,21 @@ exports.deletefile = catchAsyncErrors(async (req, res, next) => {
 // Đổi avatar
 exports.changeAva = catchAsyncErrors(async (req, res, next) => {
   const avatar = req.user.image;
-  if (!req.body.file) {
+
+  if (!req.file) {
     return next();
   }
+
   if (req.user.image != "https://bulma.io/images/placeholders/128x128.png") {
     const result1 = await cloudinary.uploader.destroy(
       avatar.slice(avatar.indexOf("avatars"), avatar.lastIndexOf("."))
     );
   }
 
-  const result2 = await cloudinary.uploader.upload(req.body.file, {
+  const result2 = await cloudinary.uploader.upload(req.file.path, {
     folder: "avatars",
   });
+  fs.unlinkSync(req.file.path);
 
   req.newAva = result2.url;
   next();

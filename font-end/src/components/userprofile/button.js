@@ -26,13 +26,13 @@ const Wrap = styled.button`
     primary &&
     css`
       background: var(--ins-primary);
-      color: white;
+      color: black;
       -webkit-text-fill-color: white;
     `}
 `;
 
 export function Button({ children, content, primary, onClick }) {
-  console.log("children", children);
+  //console.log("children", children);
   return (
     <Wrap primary={primary} onClick={onClick}>
       {(children.length > 0 && children) || content}

@@ -233,7 +233,7 @@ class _PostCardState extends State<PostCard> {
                   height: 5,
                 ),
                 Text(
-                  'Đăng ngày ',
+                  'Đăng ngày ${cvDate(widget.post.createdAt)}',
                   style: TextStyle(fontSize: 13, color: darkGreyColor),
                 ),
                 SizedBox(

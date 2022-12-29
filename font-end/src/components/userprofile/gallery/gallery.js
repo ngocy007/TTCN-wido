@@ -12,12 +12,22 @@ const Grid = styled.div`
   }
 `;
 
-export function Gallery() {
+export function Gallery({ Posts }) {
+  console.log("get all img item here");
+  console.log(Posts);
   return (
     <Grid>
-      {data.map((item, id) => (
-        <GalleryItem key={id} imagePath={item.imagepath} icon={item.icon} />
+
+      {Posts?.map((items) => (
+          <div>
+            {items?.Photos.map((item) => (
+              <GalleryItem imagePath={item.url} id_post={items.id_post}/>
+            ))}
+          </div>
       ))}
+      {/* {Posts?.map((items) => (
+          console.log("here",items.Photos)
+      ))} */}
       {/* <GalleryItem>
         <Img alt="gallery-post" src="/images/gallery-1.jpg" />
         <Icon>

@@ -1,16 +1,17 @@
 import 'dart:convert';
-import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:social_network_app/config/constant.dart';
 import 'package:social_network_app/data/models/post/post.dart';
 import 'package:social_network_app/data/models/api/api_respone.dart';
 import 'package:social_network_app/data/service/user_service.dart';
-import 'package:http/http.dart' as http;
 
-Future<ApiResponse> getPosts(int limit , int page) async {
+// Tải bài viết
+Future<ApiResponse> getPosts(int limit, int page) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
-    final response = await http.get(Uri.parse("$getPostUrl?_limit=$limit&_page=$page"),
+    final response = await http.get(
+        Uri.parse("$getPostUrl?_limit=$limit&_page=$page"),
         headers: {'Accept': 'application/json', "x-access-token": '$token'});
     switch (response.statusCode) {
       case 200:
@@ -32,12 +33,37 @@ Future<ApiResponse> getPosts(int limit , int page) async {
   return apiResponse;
 }
 
+// Xem chi tiết bài viết
+Future<ApiResponse> getDetail(int id) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    final response = await http.get(Uri.parse("$getDetailPost$id"),
+        headers: {'Accept': 'application/json', "x-access-token": '$token'});
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = Post.fromJson(jsonDecode(response.body)["post"]);
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = wrong;
+        break;
+    }
+  } catch (e) {
+    print(e);
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
 // Bình luận
 Future<ApiResponse> getComments(int id) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
-    final response = await http.get(Uri.parse("$getDetailPost${id}"),
+    final response = await http.get(Uri.parse("$getDetailPost$id"),
         headers: {'Accept': 'application/json', "x-access-token": '$token'});
     switch (response.statusCode) {
       case 200:
@@ -61,51 +87,80 @@ Future<ApiResponse> getComments(int id) async {
   return apiResponse;
 }
 
-// Tạo bài viết
-Future<ApiResponse> createPost(String content, List file) async {
-  // ApiResponse apiResponse = ApiResponse();
-  // String token = await getToken();
-  // var headersList = {
-  //   "x-access-token": '$token',
-  //   'Accept': '*/*',
-  //   'Content-Type': 'application/x-www-form-urlencoded'
-  // };
-  // var url = Uri.parse(createPost);
-  //
-  //
-  // var req = http.Request('POST', url);
-  // req.headers.addAll(headersList);
-  // req.bodyFields = {
-  //   'file' : file[0]!
-  // };
-  //
-  // var res = await req.send();
-  // final resBody = await res.stream.bytesToString();
-  //
-  // if (res.statusCode >= 200 && res.statusCode < 300) {
-  //   print(resBody);
-  // }
-  // else {
-  //   print(res.reasonPhrase);
-  // }
-  // return apiResponse;
+// Xóa bình luận
+Future<ApiResponse> deleteComment(int id) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
-    // final listFile = {};
-    // file.forEach((element) {
-    //   listFile.addAll({'file':element});
-    // });
-    var data = {
-      "file": file,
-    };
-    print(data);
-    final response =
-        await http.post(body: data, Uri.parse(createPostURL), headers: {
-      'Accept': '*/*',
-      'Content-Type': 'application/x-www-form-urlencoded',
+    final response = await http.delete(Uri.parse("$deleteCMTURL$id"),
+        headers: {'Accept': 'application/json', "x-access-token": '$token'});
+    switch (response.statusCode) {
+      case 200:
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = wrong;
+        break;
+    }
+  } catch (e) {
+    print(e);
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+// Tạo bài viết
+Future<ApiResponse> createPost(String content, List<String> files) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    var client = http.Client();
+    var headersList = {
       "x-access-token": '$token'
-    });
+    };
+    var uri = Uri.parse(createPostURL);
+    var req = http.MultipartRequest('POST', uri);
+    req.headers.addAll(headersList);
+    req.fields.addAll({"content": content});
+    if(files.isNotEmpty){
+      files.forEach((element) async {
+        http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
+            "multiple", element);
+        req.files.add(multipartFile);
+      });
+    }
+
+    var response = await req.send();
+    print(response.statusCode);
+    switch (response.statusCode) {
+      case 200:
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = wrong;
+        break;
+    }
+  } catch (e) {
+    print(e);
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+// Xóa bài viết
+Future<ApiResponse> deletePost(int id) async {
+  print(id);
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    final response = await http.delete(
+        Uri.parse("$getDetailPost$id"),
+        headers: {'Accept': 'application/json', "x-access-token": '$token'});
+    print(Uri.parse("$getDetailPost$id"));
     print(response.statusCode);
     switch (response.statusCode) {
       case 200:
@@ -132,7 +187,6 @@ Future<ApiResponse> createCMT(String content, int id) async {
     final response = await http.post(Uri.parse(createCMTURL),
         headers: {'Accept': 'application/json', "x-access-token": '$token'},
         body: {"content": content, "id_post": "${id}"});
-    print(response.body);
     switch (response.statusCode) {
       case 200:
         apiResponse.data = Comment.fromJson2(jsonDecode(response.body));
@@ -178,8 +232,3 @@ Future<ApiResponse> likePost(int id) async {
   return apiResponse;
 }
 
-// Xóa bài viết
-String? getStringImage(File? file) {
-  if (file == null) return null;
-  return "data:image/png;base64,${base64Encode(file.readAsBytesSync())}";
-}

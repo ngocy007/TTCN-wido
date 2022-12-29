@@ -1,6 +1,15 @@
 const { Photo, Post, Like_Post, User, Comment } = require("../models");
 const Sequelize = require("sequelize");
 const { Op } = require("sequelize");
+// const cloudinary = require("../config/cloudinary");
+
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 // Lấy dữ liệu tất cả bài viết
 exports.getAllPost = async (req, res) => {
@@ -12,9 +21,11 @@ exports.getAllPost = async (req, res) => {
         attributes: ["name", "image", "id_user"],
       },
     ],
-
+    order: [
+      ['id_post', 'DESC'],
+    ],
     limit: req.query._limit,
-    offset:req.query._limit * req.query._page,
+    offset: req.query._limit * req.query._page,
   });
   const processPosts = rawPosts.map((e) => e.get({ plain: true }));
   const posts = [];
@@ -53,12 +64,15 @@ exports.getDetailsPost = async (req, res) => {
       { model: Photo, attributes: ["url"] },
       { model: User, attributes: ["name", "image"] },
       {
-        include: { model:User,attributes: ["name", "image","id_user"]},
+        include: { model: User, attributes: ["name", "image", "id_user"] },
         model: Comment,
-        attributes: ["id_com", "id_post" , "content", "created_at"],
+        attributes: ["id_com", "id_post", "content", "created_at"],
         separate: true,
         limit: 15,
         where: { reply: null },
+        order: [
+          ['id_com', 'DESC'],
+        ],
       },
     ],
   });
@@ -81,7 +95,7 @@ exports.getDetailsPost = async (req, res) => {
   });
   countLike = count;
   for (cmt of processPosts.Comments) {
-    console.log(cmt)
+
     cmt.countRep = await Comment.findAll({
       where: {
         [Op.and]: [{ id_post: cmt.id_post }, { reply: cmt.id_com }],
@@ -169,7 +183,7 @@ exports.likePost = async (req, res) => {
 // Lấy ra user like bài
 exports.getUsersLP = async (req, res) => {
   try {
-    const users = await Post.findOne({
+    const users = await Like_Post.findAll({
       attributes: [],
       where: { id_post: req.params.id },
       include: { model: User, attributes: ["name", "image", "id_user"] },

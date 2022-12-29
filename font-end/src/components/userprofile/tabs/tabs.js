@@ -19,7 +19,6 @@ export function Tabs() {
   return (
     <TabsWrap>
       <TabItem active label="POSTS" icon="Posts" />
-      <TabItem label="TAGGED" icon="Tagged" />
     </TabsWrap>
   );
 }

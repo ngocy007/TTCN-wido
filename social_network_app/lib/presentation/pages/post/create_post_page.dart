@@ -1,17 +1,19 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker_plus/image_picker_plus.dart';
 import 'package:social_network_app/config/constant.dart';
 import 'package:social_network_app/consts.dart';
 import 'package:social_network_app/data/models/api/api_respone.dart';
 import 'package:social_network_app/data/service/post_service.dart';
 import 'package:social_network_app/data/service/user_service.dart';
 import 'package:social_network_app/presentation/pages/credentail/sign_in_page.dart';
+import 'package:social_network_app/presentation/pages/home/home_page.dart';
 
 class CreatePostPage extends StatefulWidget {
-  final List<SelectedByte> selectedBytes;
+  final List<String> files;
 
-  const CreatePostPage({Key? key, required this.selectedBytes})
-      : super(key: key);
+  const CreatePostPage({Key? key, required this.files}) : super(key: key);
 
   @override
   State<CreatePostPage> createState() => _CreatePostPageState();
@@ -19,25 +21,22 @@ class CreatePostPage extends StatefulWidget {
 
 class _CreatePostPageState extends State<CreatePostPage> {
   bool _loading = false;
-  late SelectedByte selectedByte;
+  String selectedFile = "";
   TextEditingController content = TextEditingController();
 
   @override
   void initState() {
-    selectedByte = widget.selectedBytes.first;
+    selectedFile = widget.files.first;
     super.initState();
   }
 
-  void _createPost() async {
-    List urls = [];
-    widget.selectedBytes.forEach((element) {
-      urls.add(element.selectedFile);
-
+  Future<dynamic> _createPost() async {
+    setState(() {
+      _loading = true;
     });
-    ApiResponse response = await createPost(content.text, urls);
+    ApiResponse response = await createPost(content.text, widget.files);
     if (response.error == null) {
       setState(() {
-        print("Thành công");
         _loading = false;
       });
     } else if (response.error == unauthorized) {
@@ -52,6 +51,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
     }
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -63,10 +64,20 @@ class _CreatePostPageState extends State<CreatePostPage> {
           title: Text("Bài viết mới"),
           actions: [
             IconButton(
-                onPressed: () {
-                  _createPost();
+                onPressed: () async {
+                  await _createPost().then((value) {
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                          builder: (context) => HomePage(),
+                        ),
+                        (route) => false);
+                  });
                 },
-                icon: Icon(Icons.add))
+                icon: _loading == true
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Icon(Icons.add))
           ],
         ),
         body: Column(
@@ -81,7 +92,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 decoration: InputDecoration(
                     prefixIcon: Container(
                       padding: EdgeInsets.fromLTRB(0, 5, 5, 0),
-                      child: widget.selectedBytes.length > 1
+                      child: widget.files.length > 1
                           ? Stack(
                               alignment: Alignment.topRight,
                               children: [
@@ -95,8 +106,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           : null,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: FileImage(selectedByte.selectedFile),
-                          fit: BoxFit.contain,
+                          image: FileImage(File(selectedFile)),
+                          fit: BoxFit.cover,
                         ),
                       ),
                       margin: EdgeInsets.only(right: 10),
@@ -115,4 +126,5 @@ class _CreatePostPageState extends State<CreatePostPage> {
       ),
     );
   }
+
 }

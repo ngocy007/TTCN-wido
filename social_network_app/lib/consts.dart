@@ -13,6 +13,9 @@ Widget sizeHor(double width) {
 }
 
 String cvDate(String? date){
-  var string = date!.substring(0, 10).split('-');
-  return string.reversed.join("-");
+  //Chuyển thành múi giờ địa phương
+  // Chuyển thành Thời gian + ngày, Ex: 16:25:59 29-12-2022
+  var parsedDate = DateTime.parse(date!).toLocal().toString();
+  var day = parsedDate.substring(0, 10).split('-');
+  return "${parsedDate.substring(11, 19)} ${day.reversed.join("-")}";
 }

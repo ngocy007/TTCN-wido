@@ -11,12 +11,18 @@ const ProfileDetailUl = styled.ul`
     border-top: 1px solid var(--ins-border-primary);
   }
 `;
-export function KeyNumbers() {
+export function KeyNumbers(props) {
+  const {
+    countPost,
+    countFollowee,
+    countFollower,
+    id_user
+  } = props;
   return (
     <ProfileDetailUl>
-      <KeyNumber label="posts" number={722} />
-      <KeyNumber label="followers" number="25.1m" />
-      <KeyNumber label="following" number={6} />
+      <KeyNumber label="posts" number={countPost} id_user={id_user} />
+      <KeyNumber label="followers" number={countFollower} />
+      <KeyNumber label="following" number={countFollowee} />
     </ProfileDetailUl>
   );
 }

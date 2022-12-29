@@ -15,10 +15,12 @@ const {
   isOTP,
   resetPassword,
   sendOTPForgotPW,
-  forgotPassword
+  forgotPassword,
 } = require("../controllers/UserController");
 const { isAuthenticatedUser } = require("../middleware/auth");
 const { changeAva } = require("../middleware/cloudinary");
+
+const upload = require("../config/multet");
 
 router.route("/search").get(isAuthenticatedUser, searchUser);
 
@@ -36,7 +38,9 @@ router.route("/register").post(createUser);
 
 router.route("/login").post(login);
 
-router.route("/update").put(isAuthenticatedUser, changeAva, updateUser);
+router
+  .route("/update")
+  .put(isAuthenticatedUser, upload.single("image"), changeAva, updateUser);
 
 router.route("/logout").get(logoutUser);
 

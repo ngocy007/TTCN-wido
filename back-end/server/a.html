@@ -1,0 +1,23 @@
+<script>
+async function test () {
+  var headersList =  {
+    Accept: "*/*",
+    "x-access-token":
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjcyMjI0MzM2LCJleHAiOjE2NzIzMTA3MzZ9.29X4jot2GWhXzcLUEVYmsS69LFkVpIFWoN-k9T7txao",
+  };
+
+  let bodyContent = new FormData();
+  bodyContent.append("content", "");
+  bodyContent.append("image", "d:Ảnh\1.jpg");
+  bodyContent.append("image", "c:\Users\tho\Downloads\cbimage.png");
+  let response = await fetch("http://localhost:8000/api/post/create", {
+    method: "POST",
+    body: bodyContent,
+    headers: headersList,
+  });
+
+  let data = await response.text();
+  console.log(bodyContent);
+}
+test();
+</script>
