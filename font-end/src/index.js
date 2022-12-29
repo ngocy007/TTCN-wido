@@ -8,15 +8,10 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Register from "./components/Auth/Register";
 import Github from "./components/Auth/Login_github";
-import Thongke from "./components/Admin/Thongke";
-import Profiles from "./components/Admin/Adminprofile";
-import UserAdmin from "./components/Admin/User";
+import Admin_Index from "./components/Admin/Admin_Index";
 import UserProfile from "./components/Userprofile";
-import PostAdmin from "./components/Admin/Post";
-
 const login = ReactDOM.createRoot(document.getElementById("login"));
 let headers = new Headers();
-
 headers.append("Content-Type", "application/json");
 headers.append("Accept", "application/json");
 
@@ -24,6 +19,7 @@ headers.append("Access-Control-Allow-Origin", "*");
 headers.append("Access-Control-Allow-Credentials", "true");
 
 headers.append("GET", "POST", "OPTIONS");
+
 login.render(
   <React.StrictMode>
     <BrowserRouter>
@@ -32,12 +28,21 @@ login.render(
         <Route path="/register" element={<Register />} />
         <Route path="/login_github" element={<Github />} />
         <Route path="/fogotpass" element={<ForgotPass />} />
-        <Route path="/Home" element={<App />} />
-        <Route path="/Admin" element={<Thongke />} />
-        <Route path="/Admin/profile" element={<Profiles />} />
+        <Route
+          path="/Home"
+          element={localStorage.getItem("token") ? <App /> : <Login />}
+        />
+        <Route
+          path="/Admin"
+          element={
+            localStorage.getItem("token") && localStorage.getItem("isadmin") ? (
+              <Admin_Index />
+            ) : (
+              <Login />
+            )
+          }
+        />
         <Route path="/user" element={<UserProfile />} />
-        <Route path="/Admin/user" element={<UserAdmin />} />
-        <Route path="/Admin/post" element={<PostAdmin />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
