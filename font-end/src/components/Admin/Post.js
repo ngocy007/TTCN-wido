@@ -6,25 +6,40 @@ class Post extends Component {
     super(props);
     this.state = {
       posts: [],
+      limit: "",
     };
   }
 
-  componentDidMount() {
-    axios
-      .get("http://localhost:8000/api/post/home", {
+  async componentDidMount() {
+    await axios
+      .get("http://localhost:8000/api/admin/statistic", {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
       })
       .then((res) => {
+        const sum_post = res.data;
+        this.state.limit = sum_post.statistic.sum_post;
+      });
+    axios
+      .get(
+        "http://localhost:8000/api/post/home?_limit=" +
+          this.state.limit +
+          "&_page=0",
+        {
+          headers: {
+            "x-access-token": localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
         const post = res.data;
         this.setState({ posts: post.posts });
-      })
-      .catch((error) => console.log(error));
+      });
   }
+  //xóa bài viết
   handleDelete = (item) => {
     const newsId = item.id_post;
-    console.log(newsId);
 
     axios
       .delete("http://localhost:8000/api/post/" + newsId, {
@@ -37,8 +52,7 @@ class Post extends Component {
           posts: prevState.posts.filter((el) => el.id !== item.id_post),
         }));
         this.componentDidMount();
-      })
-      .catch((error) => console.log(error));
+      });
   };
   render() {
     return (
@@ -49,12 +63,14 @@ class Post extends Component {
               <td className="col-2">id</td>
               <td className="col-2">nội dung</td>
               <td className="col-2">ngày đăng</td>
+              <td className="col-2">người đăng</td>
             </tr>
             {this.state.posts.map((item) => (
               <tr key={item.id_post} className="col-9">
                 <td className="col-2">{item.id_post}</td>
                 <td className="col-2 content">{item.content}</td>
-                <td className="col-2">{item.created_At}</td>
+                <td className="col-2">{item.createdAt}</td>
+                <td className="col-2">{item.User.name}</td>
                 <td className="col-1">
                   <button onClick={() => this.handleDetail(item)}>
                     chi tiết

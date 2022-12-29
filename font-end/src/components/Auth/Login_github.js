@@ -22,34 +22,51 @@ class Login_github extends React.Component {
       password: event.target.value,
     });
   };
-  handleLogin = (email, password) => {
-    console.log("email: ", this.state.email, "password: ", this.state.password);
-    console.log("all state", this.state);
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    axios
-      .get("http://api.github.com/users", {
-        email: this.state.email,
-        password: this.state.password,
-        config,
-      })
-      .then(function (response) {
-        console.log(response.status);
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("info", JSON.stringify(response.data));
-        //if (response.status === 200) {
-        // window.location.assign("/Home");
-        //}
-      })
+  //check tài khoản github
+  async handleLogin() {
+    const git = true;
+    await axios
+      .get("http://api.github.com/users", {})
+      .then(function (response) {})
       .catch(function (error) {
         console.log(error);
-        alert("email hoặc mật khẩu không đúng");
+        git = false;
+        alert("tên đăng nhập hoặc mật khẩu không đúng");
       });
-  };
+    return git;
+  }
+  //đăng kí vào database and login
+  async register() {
+    if (await this.handleLogin()) {
+      await axios
+        .post("http://localhost:8000/api/user/register", {
+          name: this.state.username,
+          email: this.state.username + "@gmail.com",
+          password: this.state.password,
+        })
+        .then(function (response) {
+          alert("thành công");
+        })
+        .catch(function (error) {});
+      axios
+        .post("http://localhost:8000/api/user/login", {
+          email: this.state.username + "@gmail.com",
+          password: this.state.password,
+        })
+        .then(function (response) {
+          localStorage.setItem("token", response.data.token);
+          localStorage.setItem("info", JSON.stringify(response.data));
+          const check = JSON.parse(localStorage.getItem("info"));
+          if (check.user.role === 2) {
+            localStorage.setItem("isadmin", "true");
+            window.location.assign("/Admin");
+          } else {
+            window.location.assign("/Home");
+          }
+        })
+        .catch(function (error) {});
+    }
+  }
   ishowpass = () => {
     this.setState({
       ishowpassword: !this.state.ishowpassword,
@@ -102,7 +119,7 @@ class Login_github extends React.Component {
               <button
                 className="btn-login"
                 onClick={() => {
-                  this.handleLogin();
+                  this.register();
                 }}
               >
                 Đăng Nhập

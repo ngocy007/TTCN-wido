@@ -1,7 +1,7 @@
 import React from "react";
 import "./Register.scss";
 import axios, * as others from "axios";
-import { Await, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 class Register extends React.Component {
   constructor() {
     super();
@@ -17,7 +17,6 @@ class Register extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.showdiv = this.showdiv.bind(this);
     this.handleSubmitEmail = this.handleSubmitEmail.bind(this);
-    //this.sendmail = this.sendmail.bind(this);
   }
   ishowpass = () => {
     this.setState({
@@ -58,9 +57,7 @@ class Register extends React.Component {
           alert("Đăng ký thành công");
           window.location.assign("/");
         })
-        .catch(function (error) {
-          console.log(error);
-        });
+        .catch(function (error) {});
     }
   }
   validateEmail() {
@@ -90,9 +87,6 @@ class Register extends React.Component {
     event.preventDefault();
 
     if (this.validateEmail()) {
-      console.log("email: ", this.state.input.email);
-      console.log("all state", this.state);
-
       const config = {
         headers: {
           "Content-Type": "application/json",
@@ -269,14 +263,14 @@ class Register extends React.Component {
             {checkedcode && (
               <div>
                 <div className="form-group col-12">
-                  <label htmlFor="username">Họ tên:</label>
+                  <label htmlFor="username">Tên tài khoản:</label>
                   <input
                     type="text"
                     name="username"
                     value={this.state.input.username}
                     onChange={this.handleChange}
                     className="form-control input-login"
-                    placeholder="nhập họ tên"
+                    placeholder="nhập tên người dùng"
                     id="username"
                   />
                   <div className="text-danger err">

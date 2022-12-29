@@ -13,7 +13,6 @@ class Admin_Index extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      //users: [],
       user: JSON.parse(localStorage.getItem("info")),
       img: "",
       isshowuser: false,
@@ -38,19 +37,15 @@ class Admin_Index extends Component {
         this.state.img = user.user.image;
         this.setState({});
         console.log(user);
-      })
-      .catch((error) => console.log(error));
+      });
   }
   handleLogout() {
-    axios
-      .get("http://localhost:8000/api/user/logout")
-      .then(() => {
-        window.location.assign("/");
-        localStorage.removeItem("token");
-        localStorage.removeItem("info");
-        localStorage.removeItem("isadmin");
-      })
-      .catch((error) => console.log(error));
+    axios.get("http://localhost:8000/api/user/logout").then(() => {
+      window.location.assign("/");
+      localStorage.removeItem("token");
+      localStorage.removeItem("info");
+      localStorage.removeItem("isadmin");
+    });
   }
   showdiv(event) {
     switch (event) {

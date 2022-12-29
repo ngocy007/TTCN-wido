@@ -47,8 +47,7 @@ class Thongke extends Component {
             { name: "Tin Nhắn", value: this.state.mess },
           ],
         });
-      })
-      .catch((error) => console.log(error));
+      });
   }
   render() {
     const { data } = this.state;
@@ -77,7 +76,7 @@ class Thongke extends Component {
             <ResponsiveContainer className="chart" height={300}>
               <LineChart
                 width={600}
-                height={300}
+                height={400}
                 data={data}
                 margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
               >

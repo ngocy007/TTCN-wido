@@ -35,7 +35,6 @@ class Login extends Component {
     const config = {
       headers: {
         "Content-Type": "application/json",
-        // "x-access-token": localStorage.getItem("token"),
       },
     };
 
@@ -48,7 +47,6 @@ class Login extends Component {
       .then(function (response) {
         console.log(response.status);
         if (response.status === 200) {
-          //console.log(response.data.token);
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("info", JSON.stringify(response.data));
           const check = JSON.parse(localStorage.getItem("info"));
@@ -58,11 +56,9 @@ class Login extends Component {
           } else {
             window.location.assign("/Home");
           }
-          //return response.json();
         }
       })
       .catch(function (error) {
-        console.log(error);
         alert("email hoặc mật khẩu không đúng");
       });
   };

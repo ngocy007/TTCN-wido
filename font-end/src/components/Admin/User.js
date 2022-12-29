@@ -15,6 +15,7 @@ class User extends Component {
       content: "",
       post: "",
       follow: "",
+      followee: "",
       role: "",
       isshowdetail: false,
       isshowdelete: false,
@@ -22,14 +23,10 @@ class User extends Component {
   }
 
   componentDidMount() {
-    axios
-      .get("http://localhost:8000/api/user")
-      .then((res) => {
-        const user = res.data;
-        this.setState({ users: user.users });
-      })
-      .catch((error) => console.log(error));
-    this.setState({});
+    axios.get("http://localhost:8000/api/user").then((res) => {
+      const user = res.data;
+      this.setState({ users: user.users });
+    });
   }
   // xem chi tiết user
   handleDetail = (item) => {
@@ -43,7 +40,6 @@ class User extends Component {
       })
       .then((res) => {
         const user = res.data;
-        console.log(user);
         this.state.name = user.user.name;
         this.state.email = user.user.email;
         this.state.dob = user.user.dob;
@@ -52,22 +48,12 @@ class User extends Component {
         this.state.image = user.user.image;
         this.state.content = user.user.content;
         this.state.role = user.user.role;
+        this.state.follow = user.user.countFollower;
+        this.state.followee = user.user.countFollowee;
         this.setState({
           isshowdetail: !this.state.isshowdetail,
         });
-      })
-      .catch((error) => console.log(error));
-    axios
-      .get("http://localhost:8000/api/user/listfollower/" + userId, {
-        headers: {
-          "x-access-token": localStorage.getItem("token"),
-        },
-      })
-      .then((res) => {
-        const folow = res.data;
-        this.state.follow = folow.users.length;
-      })
-      .catch((error) => console.log(error));
+      });
   };
   back() {
     this.setState({
@@ -81,7 +67,6 @@ class User extends Component {
     const newsname = item.name;
     this.state.id = newsId;
     this.state.name = newsname;
-    console.log(this.state.id);
     switch (event) {
       case "isshowdelete":
         this.setState({
@@ -97,8 +82,6 @@ class User extends Component {
   }
   handleDelete() {
     const newsId = this.state.id;
-
-    console.log(newsId);
     axios
       .delete("http://localhost:8000/api/admin/" + newsId, {
         headers: {
@@ -110,8 +93,7 @@ class User extends Component {
           isshowdelete: !this.state.isshowdelete,
         }));
         this.componentDidMount();
-      })
-      .catch((error) => console.log(error));
+      });
   }
   //cấp quyền
   ConfimRole() {
@@ -228,7 +210,11 @@ class User extends Component {
                       </tr>
                       <tr className="col-9">
                         <td className="col-2 th">lượt theo dõi</td>
-                        <td className="col-2">{this.state.post}</td>
+                        <td className="col-2">{this.state.follow}</td>
+                      </tr>
+                      <tr className="col-9">
+                        <td className="col-2 th">đang theo dõi</td>
+                        <td className="col-2">{this.state.followee}</td>
                       </tr>
                       <tr className="col-9">
                         <td className="col-2 th">mô tả</td>
