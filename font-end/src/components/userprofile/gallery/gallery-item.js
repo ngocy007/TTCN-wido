@@ -65,8 +65,6 @@ export function GalleryItem({ imagePath, icon, id_post }) {
       );
   }, []);
   //console.log("imagePath - GalleryItem", imagePath);
-  console.log("detail post here");
-  console.log(userpostdetail,"id",id_post,userpostdetail?.post?.User?.name);
   return (
     <Wrap>
       <Img alt="gallery-post" src={imagePath} onClick={handleOpen} />

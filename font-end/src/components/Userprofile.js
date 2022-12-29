@@ -37,6 +37,9 @@ function ProfilePage(props) {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [userdetail, setItems] = useState([]);
+
+  //state call back
+  const [isCall, setCallBack] = useState(false);
   const headers = {
     "x-access-token": localStorage.getItem("token"),
   };
@@ -57,11 +60,15 @@ function ProfilePage(props) {
           setError(error);
         }
       );
-  }, []);
+  },[isCall,userId]);
   // console.log("here are fetach user");
   // console.log(userdetail?.user);
   const array = userdetail?.user?.Posts;
   const length = array?.length;
+  const callbackProfile = () => {
+    setCallBack(!isCall);
+    // do something with value in parent component, like save to state
+  };
   return (
     <ThemeWrap className={`__insta-${theme}-mode`}>
       <Navigation />
@@ -73,6 +80,7 @@ function ProfilePage(props) {
           countFollowee={userdetail?.user?.countFollowee}
           countPost={length}
           id_user={userId}
+          parentCallback={callbackProfile}
         />
         <Story />
         <MobileOnly>
@@ -83,7 +91,7 @@ function ProfilePage(props) {
           />
         </MobileOnly>
         <Tabs />
-        <Gallery  Posts={userdetail?.user?.Posts}/>
+        <Gallery Posts={userdetail?.user?.Posts} />
       </Main>
     </ThemeWrap>
   );

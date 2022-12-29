@@ -10,7 +10,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { BsFillEyeFill } from "react-icons/bs";
 import Button from "@mui/material/Button";
 import Profile from "../Profile";
@@ -37,7 +37,21 @@ const ProfileDetailUl = styled.ul`
 const ProfileDetailLi = styled.li`
   font-size: 16px;
   font-weight: 400;
-  margin-right: 120px;
+  margin-right: 55px;
+  list-style-type: none;
+  @media only screen and (max-width: 735px) {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgb(142, 142, 142);
+    line-height: 18px;
+    text-align: center;
+    margin-right: 0;
+  }
+`;
+const ProfileDetailLi2 = styled.li`
+  font-size: 16px;
+  font-weight: 400;
+  margin-right: 100px;
   list-style-type: none;
   @media only screen and (max-width: 735px) {
     font-size: 14px;
@@ -149,8 +163,9 @@ export function ProfileUser(props) {
     countPost,
     countFollowee,
     countFollower,
+    parentCallback
   } = props;
-
+  let btnRef = useRef();
   //header xac thuc
   const headers = {
     "x-access-token": localStorage.getItem("token"),
@@ -181,16 +196,37 @@ export function ProfileUser(props) {
   const handleCloseEr = () => setOpenEr(false);
 
   //State cho fetch check follow
-  const [checkfollow, setCheck] = useState([]);
+  const [checkfollow, setCheck] = useState(false);
+
+  //State cho fetch get following va follower
+  const [following, setIng] = useState([]);
+  const [follower, setEr] = useState([]);
+  // console.log("current user id: ", id_user);
+
+  //State cho xu ly check following
+  //let countlike = postdetail?.post?.countLike;
+
+  // const [countLike, setCLike] = useState(null);
+  // useEffect(() => {
+  //   setCLike(1);
+  // }, [countLike]);
+  // const [isLike, setIsLike] = useState(1);
+  // useEffect(() => {
+  //   setIsLike(check);
+  // }, [check]);
+  // const [isLike2, setIsLike2] = useState(true);
+
+  //xu ly fetch check follow
   useEffect(() => {
     fetch("http://localhost:8000/api/user/" + id_user, {
-      headers,
+      method: "GET",
+      headers: headers,
     })
       .then((res) => res.json())
       .then(
         (result) => {
           setIsLoaded(true);
-          setCheck(result);
+          setCheck(result.status);
         },
         // Note: it's important to handle errors here
         // instead of a catch() block so that we don't swallow
@@ -200,10 +236,9 @@ export function ProfileUser(props) {
           setError(error);
         }
       );
-  }, []);
+  }, [checkfollow,id_user]);
 
-  //State cho fetch get following
-  const [following, setIng] = useState([]);
+  //xu ly fetch following
   useEffect(() => {
     fetch("http://localhost:8000/api/user/listfollowing/" + id_user, {
       headers,
@@ -222,10 +257,9 @@ export function ProfileUser(props) {
           setError(error);
         }
       );
-  }, []);
+  }, [checkfollow,id_user]);
 
-  //State cho fetch get follower
-  const [follower, setEr] = useState([]);
+  //Xu ly cho fetch get follower
   useEffect(() => {
     fetch("http://localhost:8000/api/user/listfollower/" + id_user, { headers })
       .then((res) => res.json())
@@ -242,78 +276,99 @@ export function ProfileUser(props) {
           setError(error);
         }
       );
-  }, []);
+  }, [checkfollow,id_user]);
+  // xu ly fetch button follow
+  const HandleFollow = (e) => {
+    console.log(e);
+    //e.preventDefault();
+    //setIsLike2((prevLike) => !prevLike);
+    if (btnRef.current) {
+      btnRef.current.setAttribute("disabled", "disabled");
+    }
+    fetch("http://localhost:8000/api/user/" + id_user, {
+      method: "POST",
+      headers: headers,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        
+        setCheck(data.isFollowed);
+        parentCallback();
+      })
+      .catch((err) => console.log("hey"));
+    // if (isLike) setCLike(countLike - 1);
+    // else setCLike(countLike + 1);
+  };
 
-  //xu ly render follwo button
-
-  let button;
-  if (checkfollow.status) {
-    button = <Button primary>Follow</Button>;
-  } else {
-    button = <Button primary>Followed</Button>;
-  }
   // get userId
   const saved = localStorage.getItem("info");
   const userData = JSON.parse(saved);
   const userId = userData?.user?.id_user;
-  if (id_user==userId)
-  {
-    button = <Button primary></Button>;
-  }
-    return (
-      <Header>
-        <HeaderWrap>
-          <ProfilePic>
-            <ProfileImg src={image} alt="profile-logo" />
-          </ProfilePic>
-          <div>
+
+  return (
+    <Header>
+      <HeaderWrap>
+        <ProfilePic>
+          <ProfileImg src={image} alt="profile-logo" />
+        </ProfilePic>
+        <div>
+          <ProfileRow>
+            <ProfileTitle>
+              <ProfileH2>{userName}</ProfileH2>
+              <ProfileIcon>
+                <Icons.Verified />
+              </ProfileIcon>
+              <ProfileButtonWrap>
+                {userId==id_user ? "" :checkfollow ? (
+                  <Button primary onClick={HandleFollow}>
+                    Followed
+                  </Button>
+                ) : (
+                  <Button primary onClick={HandleFollow}>
+                    Follow
+                  </Button>
+                )}
+              </ProfileButtonWrap>
+            </ProfileTitle>
+          </ProfileRow>
+          <DesktopOnly>
             <ProfileRow>
-              <ProfileTitle>
-                <ProfileH2>{userName}</ProfileH2>
-                <ProfileIcon>
-                  <Icons.Verified />
-                </ProfileIcon>
-                <ProfileButtonWrap>{button}</ProfileButtonWrap>
-              </ProfileTitle>
+              <KeyNumbers
+                countPost={countPost}
+                countFollowee={countFollowee}
+                countFollower={countFollower}
+              />
             </ProfileRow>
-            <DesktopOnly>
-              <ProfileRow>
-                <KeyNumbers
-                  countPost={countPost}
-                  countFollowee={countFollowee}
-                  countFollower={countFollower}
-                />
-              </ProfileRow>
-              <ProfileRow>
-                <ProfileDetailUl>
-                  <ProfileDetailLi></ProfileDetailLi>
-                  <ProfileDetailLi>
-                    <Button
-                      variant="text"
-                      size="small"
-                      sx={{
-                        marginBottom: 0.2,
-                      }}
-                      onClick={handleOpenEr}
-                    >
-                      <BsFillEyeFill />
-                    </Button>
-                  </ProfileDetailLi>
-                  <ProfileDetailLi>
-                    <Button
-                      variant="text"
-                      size="small"
-                      sx={{
-                        marginBottom: 0.2,
-                      }}
-                      onClick={handleOpenIng}
-                    >
-                      <BsFillEyeFill />
-                    </Button>
-                  </ProfileDetailLi>
-                </ProfileDetailUl>
-              </ProfileRow>
-              {/* <ProfileDescriptions
+            <ProfileRow>
+              <ProfileDetailUl>
+                <ProfileDetailLi2></ProfileDetailLi2>
+                <ProfileDetailLi>
+                  <Button
+                    variant="text"
+                    size="small"
+                    sx={{
+                      marginBottom: 0.2,
+                    }}
+                    onClick={handleOpenEr}
+                  >
+                    <BsFillEyeFill />
+                  </Button>
+                </ProfileDetailLi>
+                <ProfileDetailLi>
+                  <Button
+                    variant="text"
+                    size="small"
+                    sx={{
+                      marginBottom: 0.2,
+                    }}
+                    onClick={handleOpenIng}
+                  >
+                    <BsFillEyeFill />
+                  </Button>
+                </ProfileDetailLi>
+              </ProfileDetailUl>
+            </ProfileRow>
+            {/* <ProfileDescriptions
             // class="row last"
             >
               <ProfileDescriptionH1>apple h1</ProfileDescriptionH1>
@@ -324,12 +379,12 @@ export function ProfileUser(props) {
                 take part.
               </ProfileDescriptionSpan>
             </ProfileDescriptions> */}
-            </DesktopOnly>
-          </div>
-        </HeaderWrap>
-        <MobileOnly>
-          <ProfileRow>
-            {/* <ProfileDescriptions>
+          </DesktopOnly>
+        </div>
+      </HeaderWrap>
+      <MobileOnly>
+        <ProfileRow>
+          {/* <ProfileDescriptions>
             <ProfileDescriptionH1>apple</ProfileDescriptionH1>
             <ProfileDescriptionSpan>
               Everyone has a story to tell 222222.
@@ -338,88 +393,88 @@ export function ProfileUser(props) {
               take part.
             </ProfileDescriptionSpan>
           </ProfileDescriptions> */}
-          </ProfileRow>
-        </MobileOnly>
-        {/*Modal popup following*/}
-        <Modal
-          open={opening}
-          onClose={handleCloseIng}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={styleLike}>
-            <List
-              sx={{
-                width: "100%",
-                maxWidth: 360,
-                bgcolor: "background.paper",
-                position: "relative",
-                overflow: "auto",
-                maxHeight: 300,
-                "& ul": { padding: 0 },
-              }}
-              subheader={<li />}
-            >
-              <li key={`likedby`}>
-                <ul>
-                  <ListSubheader>{`Following`}</ListSubheader>
-                  {following?.users?.map((user) => {
-                    return (
-                      <Profile
-                        iconSize="medium"
-                        storyBorder={true}
-                        username={user.followee.name}
-                        image={user.followee.image}
-                        id_user={user.followee.id_user}
-                      />
-                    );
-                  })}
-                </ul>
-              </li>
-            </List>
-          </Box>
-        </Modal>
-        {/*Modal popup follower*/}
-        <Modal
-          open={opener}
-          onClose={handleCloseEr}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={styleLike}>
-            <List
-              sx={{
-                width: "100%",
-                maxWidth: 360,
-                bgcolor: "background.paper",
-                position: "relative",
-                overflow: "auto",
-                maxHeight: 300,
-                "& ul": { padding: 0 },
-              }}
-              subheader={<li />}
-            >
-              <li key={`likedby`}>
-                <ul>
-                  <ListSubheader>{`Follower`}</ListSubheader>
-                  {follower?.users?.map((user) => {
-                    return (
-                      <Profile
-                        iconSize="medium"
-                        storyBorder={true}
-                        username={user.follower.name}
-                        image={user.follower.image}
-                        id_user={user.follower.id_user}
-                      />
-                    );
-                  })}
-                </ul>
-              </li>
-            </List>
-          </Box>
-        </Modal>
-      </Header>
-    );
+        </ProfileRow>
+      </MobileOnly>
+      {/*Modal popup following*/}
+      <Modal
+        open={opening}
+        onClose={handleCloseIng}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={styleLike}>
+          <List
+            sx={{
+              width: "100%",
+              maxWidth: 360,
+              bgcolor: "background.paper",
+              position: "relative",
+              overflow: "auto",
+              maxHeight: 300,
+              "& ul": { padding: 0 },
+            }}
+            subheader={<li />}
+          >
+            <li key={`likedby`}>
+              <ul>
+                <ListSubheader>{`Following`}</ListSubheader>
+                {following?.users?.map((user) => {
+                  return (
+                    <Profile
+                      iconSize="medium"
+                      storyBorder={true}
+                      username={user.followee.name}
+                      image={user.followee.image}
+                      id_user={user.followee.id_user}
+                    />
+                  );
+                })}
+              </ul>
+            </li>
+          </List>
+        </Box>
+      </Modal>
+      {/*Modal popup follower*/}
+      <Modal
+        open={opener}
+        onClose={handleCloseEr}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={styleLike}>
+          <List
+            sx={{
+              width: "100%",
+              maxWidth: 360,
+              bgcolor: "background.paper",
+              position: "relative",
+              overflow: "auto",
+              maxHeight: 300,
+              "& ul": { padding: 0 },
+            }}
+            subheader={<li />}
+          >
+            <li key={`likedby`}>
+              <ul>
+                <ListSubheader>{`Follower`}</ListSubheader>
+                {follower?.users?.map((user) => {
+                  return (
+                    <Profile
+                      iconSize="medium"
+                      storyBorder={true}
+                      username={user.follower.name}
+                      image={user.follower.image}
+                      id_user={user.follower.id_user}
+                    />
+                  );
+                })}
+              </ul>
+            </li>
+          </List>
+        </Box>
+      </Modal>
+    </Header>
+  );
 }
 Profile.defaultProps = {
   profileImage: "../../images/profile-logo.jpg",

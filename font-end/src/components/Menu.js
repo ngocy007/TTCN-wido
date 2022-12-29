@@ -42,7 +42,7 @@ function Menu() {
       <Explore className="icon" /> */}
       <Notifications className="icon" />
       <Upload className="icon" onClick={handleOpen}/>
-      <ProfileIcon iconSize="small" image={userData?.user?.image} />
+      <ProfileIcon iconSize="small" image={userData?.user?.image} id_user={userData?.user?.id_user}/>
       <Modal
         open={open}
         onClose={handleClose}

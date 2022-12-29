@@ -13,8 +13,8 @@ const Grid = styled.div`
 `;
 
 export function Gallery({ Posts }) {
-  console.log("get all img item here");
-  console.log(Posts);
+  // console.log("get all img item here");
+  // console.log(Posts);
   return (
     <Grid>
 
