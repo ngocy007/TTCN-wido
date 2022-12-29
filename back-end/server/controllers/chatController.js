@@ -1,4 +1,3 @@
-const Chat = require("../models/mongo/chatModel");
 const Chats = require("../models/mongo/chatModel");
 const Users = require("../models/mongo/userModel");
 
