@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:social_network_app/config/constant.dart';
+import 'package:social_network_app/data/models/message/message.dart';
 import 'package:social_network_app/data/models/post/post.dart';
 import 'package:social_network_app/data/models/api/api_respone.dart';
 import 'package:social_network_app/data/service/user_service.dart';
@@ -42,7 +43,7 @@ Future<ApiResponse> getDetail(int id) async {
         headers: {'Accept': 'application/json', "x-access-token": '$token'});
     switch (response.statusCode) {
       case 200:
-        apiResponse.data = Post.fromJson(jsonDecode(response.body)["post"]);
+        apiResponse.data = Message.fromJson(jsonDecode(response.body)["post"]);
         break;
       case 401:
         apiResponse.error = unauthorized;

@@ -167,6 +167,7 @@ class _SignInPageState extends State<SignInPage> {
     await pref.setInt('id_user', user.id_user ?? 0);
     await pref.setString('image', user.image ?? "");
     await pref.setString('name', user.name ?? '');
+    await pref.setString('email', user.email ?? '');
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(

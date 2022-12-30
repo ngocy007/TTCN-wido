@@ -79,7 +79,7 @@ class _CommentPageState extends State<CommentPage> {
     ApiResponse response = await deleteComment(id);
     if (response.error == null) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Đã xóa bình luận')));
+          .showSnackBar(SnackBar(content: Text('Đã xóa bình luận'),duration: Duration(seconds: 3),));
     } else if (response.error == unauthorized) {
       logout().then((value) =>
           Navigator.of(context).pushAndRemoveUntil(
@@ -292,35 +292,13 @@ class _CommentPageState extends State<CommentPage> {
               icon: Icon(Icons.clear),
             ),
             trailing: IconButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text("Thông báo?"),
-                    content: Text("Bạn muốn xóa bình luận"),
-                    actions: [
-                      TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text("Hủy",
-                              style: TextStyle(color: Colors.white))),
-                      TextButton(
-                          onPressed: () async {
-                            await _deleteCmt(id).then((value) {
-                              setState(() {
-                                comments.removeAt(index);
-                              });
-                              Navigator.of(context).pop();
-                            });
-                          },
-                          child: Text(
-                            "OK",
-                            style: TextStyle(color: Colors.white),
-                          )),
-                    ],
-                  ),
-                );
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await _deleteCmt(id).then((value) {
+                  setState(() {
+                    comments.removeAt(index);
+                  });
+              });
               },
               icon: Icon(Icons.delete_forever),
             ),

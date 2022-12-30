@@ -1,5 +1,5 @@
 // APi
-const baseURL = "http://192.168.1.10:8000/api/";
+const baseURL = "http://192.168.2.122:8000/api/";
 
 // User
 const loginURL = baseURL + "user/login";
@@ -24,6 +24,11 @@ const likeURl = baseURL + "like/post/";
 const createPostURL = baseURL + "post/create";
 const createCMTURL = baseURL +  "comment/create";
 const deleteCMTURL = baseURL + "comment/";
+
+// Chat
+const getRoomURL = baseURL + "chat";
+const getMessURL = baseURL + "mess/";
+const sendMessURL = baseURL + "mess/send";
 
 // Lỗi
 const serverError = "Lỗi server";

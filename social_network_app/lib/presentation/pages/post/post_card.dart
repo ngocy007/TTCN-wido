@@ -10,6 +10,7 @@ import 'package:social_network_app/data/service/user_service.dart';
 import 'package:social_network_app/presentation/pages/credentail/sign_in_page.dart';
 import 'package:social_network_app/presentation/pages/post/comment_page.dart';
 import 'package:social_network_app/presentation/pages/profile/profile_page.dart';
+import 'package:expandable_text/expandable_text.dart';
 
 class PostCard extends StatefulWidget {
   const PostCard({Key? key, required this.post}) : super(key: key);
@@ -23,6 +24,7 @@ class _PostCardState extends State<PostCard> {
   bool? _isLiked;
   int _current = 0;
   final CarouselController _controller = CarouselController();
+  bool isReadMore = false;
 
   Future<dynamic> _LikePost(int id) async {
     ApiResponse response = await likePost(id);
@@ -160,10 +162,12 @@ class _PostCardState extends State<PostCard> {
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: IconButton(
-                      onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => CommentPage(
-                          post: widget.post,),
-                      )),
+                      onPressed: () =>
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => CommentPage(
+                              post: widget.post,
+                            ),
+                          )),
                       icon: Icon(
                         Feather.message_circle,
                         color: primaryColor,
@@ -205,20 +209,30 @@ class _PostCardState extends State<PostCard> {
                         height: 0,
                       ),
                 widget.post.content != ""
-                    ? RichText(
-                        text: TextSpan(
-                            text: '${widget.post.user!.name}',
-                            style: TextStyle(
-                                color: primaryColor,
-                                fontWeight: FontWeight.bold),
-                            children: [
-                            TextSpan(
-                              text: ' ${widget.post.content}',
+                    ? GestureDetector(
+                  onTap: (){
+                    setState(() {
+                      isReadMore = !isReadMore;
+                      print(isReadMore);
+                    });
+                  },
+                      child: RichText(
+                          maxLines: isReadMore ? null : 3,
+                          overflow: isReadMore ? TextOverflow.clip : TextOverflow.ellipsis,
+                          text: TextSpan(
+                              text: '${widget.post.user!.name}',
                               style: TextStyle(
-                                  fontWeight: FontWeight.normal,
-                                  color: primaryColor),
-                            )
-                          ]))
+                                  color: primaryColor,
+                                  fontWeight: FontWeight.bold, fontSize: 16),
+                              children: [
+                                TextSpan(
+                                  text: ' ${widget.post.content}',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.normal,
+                                      color: primaryColor,fontSize: 16),
+                                )
+                              ])),
+                    )
                     : SizedBox(),
                 SizedBox(
                   height: 5,

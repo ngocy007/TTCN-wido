@@ -25,8 +25,8 @@ const server = app.listen(
 const io = socket(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "http://localhost:3000",
-    credentials: true,
+    origin: "http://localhost:8000",
+    // credentials: true,
   },
 });
 const scanner = async (id) => {

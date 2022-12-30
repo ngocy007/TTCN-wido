@@ -393,6 +393,18 @@ Future<String> getToken() async {
   return pref.getString("token") ?? "";
 }
 
+// Lấy Email
+Future<String> getEmail() async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  return pref.getString("email") ?? "";
+}
+
+// Lấy tên
+Future<String> getName() async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  return pref.getString("name") ?? "";
+}
+
 // Lấy id người dùng
 Future<int> getUserId() async {
   SharedPreferences pref = await SharedPreferences.getInstance();
@@ -410,3 +422,4 @@ Future<String> getImage() async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   return pref.getString("image") ?? "";
 }
+

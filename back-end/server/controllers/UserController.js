@@ -103,6 +103,7 @@ exports.login = catchAsyncErrors(async (req, res, next) => {
     name: user.name,
     image: user.image,
     role: user.role,
+    email: req.body.email
   });
 
   sendToken(newUser, 200, res);
