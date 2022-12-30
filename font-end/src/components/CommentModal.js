@@ -48,15 +48,18 @@ function CommentModal(props) {
     boxShadow: 24,
     p: 4,
   };
+  //require
   const headers = {
     "x-access-token": localStorage.getItem("token"),
   };
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  //bien cho form comment
+
   // get userId
   const saved = localStorage.getItem("info");
   const userData = JSON.parse(saved);
+
+  //bien xu ly form
   const formElement = useRef(null);
   const additionalData = {
     id_post: id_post,
@@ -64,9 +67,6 @@ function CommentModal(props) {
   //xu ly handle call back
   //state call back
   const [isCall, setCallBack] = useState(false);
-  const handleCallBackComment = (e) => {
-    parentCallback2();
-  };
   const handleCallBackClear = (e) => {
     setCallBack(!isCall);
     parentCallback2();
@@ -228,6 +228,8 @@ function CommentModal(props) {
                       comment={comment.content}
                       image={comment.User.image}
                       id_user={comment.User.id_user}
+                      id_com={comment.id_com}
+                      id_post={comment.id_post}
                     ></Comment>
                   ))}
                 </ul>

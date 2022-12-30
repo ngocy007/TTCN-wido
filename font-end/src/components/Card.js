@@ -18,6 +18,10 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
 import Button from "@mui/material/Button";
+import useForm from "./UseForm";
+import { useRef } from "react";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 
 function Card(props) {
   const {
@@ -61,6 +65,16 @@ function Card(props) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  //handle cho menu button
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const openMenu = Boolean(anchorEl);
+  const handleClickMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
   //handle cho like modal
   const [openLike, setOpenLike] = React.useState(false);
   // const handleOpenLike = () => setOpenLike(true);
@@ -82,6 +96,7 @@ function Card(props) {
   const headers = {
     "x-access-token": localStorage.getItem("token"),
   };
+  const apiCreate = "http://localhost:8000/api/comment/create";
   //state call back
   const [isCall, setCallBack] = useState(false);
   const [isCallCom, setCallBackCom] = useState(false);
@@ -103,8 +118,39 @@ function Card(props) {
           setError(error);
         }
       );
-  }, [isCall,isLike,isCallCom]);
+  }, [isCall, isLike, isCallCom]);
 
+  //state xu ly post comment
+  //xu ly handle call back
+  //state call back
+  //const [isCall, setCallBack] = useState(false);
+  const handleCallBackClear = () => {
+    setCallBackCom(!isCallCom);
+    //parentCallback2();
+  };
+  //xu ly post
+  const formElement = useRef(null);
+  const additionalData = {
+    id_post: id_post,
+  };
+  const { handleSubmit, status, message } = useForm({
+    form: formElement.current,
+    additionalData,
+    callbackfield: handleCallBackClear,
+  });
+
+  // xu ly clear comment
+  const [text, setText] = useState("");
+  const handleChangeInput = (event) => {
+    setText(event.target.value);
+  };
+
+  useEffect(() => {
+    if (status === "success") {
+      console.log("chay effect?");
+      setText("");
+    } else if (status === "error") console.log("loi?");
+  }, [isCallCom]);
   //State cho xu ly check like
   //let countlike = postdetail?.post?.countLike;
   const ccc = postdetail?.post?.countLike;
@@ -216,7 +262,28 @@ function Card(props) {
           image={profileIcon}
           id_user={id_user}
         />
-        <CardButton className="cardButton" />
+        <Button
+          id="basic-button"
+          aria-controls={openMenu ? "basic-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={openMenu ? "true" : undefined}
+          onClick={handleClickMenu}
+        >
+          <CardButton className="cardButton" />
+        </Button>
+        <Menu
+          id="basic-menu"
+          anchorEl={anchorEl}
+          open={openMenu}
+          onClose={handleCloseMenu}
+          MenuListProps={{
+            "aria-labelledby": "basic-button",
+          }}
+        >
+          <MenuItem onClick={handleCloseMenu}>Profile</MenuItem>
+          <MenuItem onClick={handleCloseMenu}>My account</MenuItem>
+          <MenuItem onClick={handleCloseMenu}>Logout</MenuItem>
+        </Menu>
       </header>
       {/* <img
         className="cardImage"
@@ -317,17 +384,31 @@ function Card(props) {
       </div>
       <div className="timePosted">{hours} HOURS AGO</div>
       <div className="post__comment">
-        <form className="form">
+        <form
+          className="form"
+          action={apiCreate}
+          onSubmit={handleSubmit}
+          method="POST"
+          ref={formElement}
+        >
           <div className="addComment">
             <div className="commentText">
               <input
                 text="text"
                 className="post__commentbox"
+                name="content"
                 placeholder="Add a comment..."
+                onChange={handleChangeInput}
+                value={text}
+                required
               />
             </div>
             {/* <div className="postText">Post</div> */}
-            <button className="post_comment">Đăng</button>
+            {status !== "loading" && (
+              <button className="post_comment" type="submit">
+                Đăng
+              </button>
+            )}
           </div>
         </form>
       </div>
