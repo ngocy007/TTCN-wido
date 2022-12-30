@@ -35,8 +35,9 @@ class Admin_Index extends Component {
       .then((res) => {
         const user = res.data;
         this.state.img = user.user.image;
+
+        this.state.img = user.user.image;
         this.setState({});
-        console.log(user);
       });
   }
   handleLogout() {
