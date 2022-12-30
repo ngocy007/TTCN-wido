@@ -19,8 +19,10 @@ router.put("/groupadd", isAuthenticatedUser, chatCtrl.AddToGroup);
 //Remove From Group
 router.put("/groupremove", isAuthenticatedUser, chatCtrl.RemoveFromGroup);
 
-
 //Access user to Group
 router.post("/access", isAuthenticatedUser, chatCtrl.accessChat);
+
+//get all users chat
+router.post("/users", isAuthenticatedUser, chatCtrl.getAllUsers);
 
 module.exports = router;

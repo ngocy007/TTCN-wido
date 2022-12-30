@@ -45,7 +45,7 @@ const chatCtrl = {
     })
       .populate("latestMessage")
       .sort({ updatedAt: -1 });
-
+    _io.emit("fetch");
     res.status(200).json(allGroupChat);
   },
 
@@ -183,6 +183,17 @@ const chatCtrl = {
           msg: error.message,
         });
       }
+    }
+  },
+  getAllUsers: async (req, res, next) => {
+    try {
+      const fullUser = await Users.find();
+
+      res.status(200).json(fullUser);
+    } catch (error) {
+      res.status(400).json({
+        msg: error.message,
+      });
     }
   },
 };
