@@ -1,3 +1,4 @@
+const { Console } = require("console");
 const { Comment, User, Like_Comment } = require("../models");
 
 // Tạo bình luận
