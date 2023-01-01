@@ -56,7 +56,7 @@ exports.getAllPost = async (req, res) => {
   });
 };
 
-// Xem chi tiết Post
+// Xem chi tiết bài viết
 exports.getDetailsPost = async (req, res) => {
   const rawPosts = await Post.findOne({
     where: { id_post: req.params.id },

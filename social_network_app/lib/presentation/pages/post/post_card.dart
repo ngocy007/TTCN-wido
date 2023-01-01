@@ -13,8 +13,10 @@ import 'package:social_network_app/presentation/pages/profile/profile_page.dart'
 import 'package:expandable_text/expandable_text.dart';
 
 class PostCard extends StatefulWidget {
-  const PostCard({Key? key, required this.post}) : super(key: key);
+  const PostCard({Key? key, required this.post, required this.avatar})
+      : super(key: key);
   final Post post;
+  final String avatar;
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -33,13 +35,14 @@ class _PostCardState extends State<PostCard> {
         _isLiked = response.data as bool;
       });
     } else if (response.error == unauthorized) {
-      logout().then((value) => {
-            Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(
-                  builder: (context) => SignInPage(),
-                ),
+      logout().then((value) =>
+      {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) => SignInPage(),
+            ),
                 (route) => false)
-          });
+      });
     } else {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('${response.error}')));
@@ -61,12 +64,14 @@ class _PostCardState extends State<PostCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GestureDetector(
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ProfilePage(
-                user_id: widget.post.id_user,
-                name: widget.post.user!.name,
-              ),
-            )),
+            onTap: () =>
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      ProfilePage(
+                        user_id: widget.post.id_user,
+                        name: widget.post.user!.name,
+                      ),
+                )),
             child: ListTile(
                 dense: true,
                 title: Text(
@@ -87,35 +92,42 @@ class _PostCardState extends State<PostCard> {
           ),
           widget.post.photos!.isNotEmpty
               ? CarouselSlider(
-                  carouselController: _controller,
-                  options: CarouselOptions(
-                    height: MediaQuery.of(context).size.height * 0.6,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        _current = index;
-                      });
-                    },
-                    viewportFraction: 1,
-                    autoPlayAnimationDuration: Duration(seconds: 1),
-                  ),
-                  items: widget.post.photos!
-                      .map(
-                        (item) => item.url != ""
-                            ? Image.network(
-                                '${item.url}',
-                                width: double.infinity,
-                                fit: BoxFit.contain,
-                              )
-                            : Image.asset("assets/no-image-icon.png",
-                                fit: BoxFit.cover),
-                      )
-                      .toList(),
-                )
+            carouselController: _controller,
+            options: CarouselOptions(
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height * 0.6,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  _current = index;
+                });
+              },
+              viewportFraction: 1,
+              autoPlayAnimationDuration: Duration(seconds: 1),
+            ),
+            items: widget.post.photos!
+                .map(
+                  (item) =>
+              item.url != ""
+                  ? Image.network(
+                '${item.url}',
+                width: double.infinity,
+                fit: BoxFit.contain,
+              )
+                  : Image.asset("assets/no-image-icon.png",
+                  fit: BoxFit.cover),
+            )
+                .toList(),
+          )
               : Image.asset(
-                  "assets/no-image-icon.png",
-                  fit: BoxFit.cover,
-                  height: MediaQuery.of(context).size.height * 0.6,
-                ),
+            "assets/no-image-icon.png",
+            fit: BoxFit.cover,
+            height: MediaQuery
+                .of(context)
+                .size
+                .height * 0.6,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: widget.post.photos!.asMap().entries.map((entry) {
@@ -127,9 +139,11 @@ class _PostCardState extends State<PostCard> {
                   margin: EdgeInsets.symmetric(vertical: 6, horizontal: 4.0),
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: (Theme.of(context).brightness == Brightness.dark
-                              ? Colors.white
-                              : Colors.black)
+                      color: (Theme
+                          .of(context)
+                          .brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black)
                           .withOpacity(_current == entry.key ? 0.9 : 0.4)),
                 ),
               );
@@ -145,29 +159,35 @@ class _PostCardState extends State<PostCard> {
                   padding: const EdgeInsets.only(right: 8),
                   child: _isLiked == false
                       ? IconButton(
-                          onPressed: () => _LikePost(widget.post.id_post!),
-                          icon: Icon(
-                            Icons.favorite_outline,
-                            size: 32,
-                            color: primaryColor,
-                          ))
+                      onPressed: () => _LikePost(widget.post.id_post!),
+                      icon: Icon(
+                        Icons.favorite_outline,
+                        size: 32,
+                        color: primaryColor,
+                      ))
                       : IconButton(
-                          onPressed: () => _LikePost(widget.post.id_post!),
-                          icon: Icon(
-                            Icons.favorite_sharp,
-                            size: 32,
-                            color: Colors.pinkAccent,
-                          )),
+                      onPressed: () => _LikePost(widget.post.id_post!),
+                      icon: Icon(
+                        Icons.favorite_sharp,
+                        size: 32,
+                        color: Colors.pinkAccent,
+                      )),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: IconButton(
-                      onPressed: () =>
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => CommentPage(
-                              post: widget.post,
-                            ),
-                          )),
+                      onPressed: () async {
+                       int numCom = await Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) =>
+                              CommentPage(
+                                post: widget.post,
+                                avatar: widget.avatar,
+                              ),
+                        ));
+                       setState(() {
+                         widget.post.countCmt = numCom;
+                       });
+                      },
                       icon: Icon(
                         Feather.message_circle,
                         color: primaryColor,
@@ -196,52 +216,53 @@ class _PostCardState extends State<PostCard> {
               children: [
                 widget.post.countLike != 0
                     ? SizedBox(
-                        child: Text(
-                          '${widget.post.countLike} lượt thích',
-                          style: TextStyle(
-                              color: primaryColor,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        height: 20,
-                      )
+                  child: Text(
+                    '${widget.post.countLike} lượt thích',
+                    style: TextStyle(
+                        color: primaryColor,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  height: 20,
+                )
                     : SizedBox(
-                        height: 0,
-                      ),
+                  height: 0,
+                ),
                 widget.post.content != ""
                     ? GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     setState(() {
                       isReadMore = !isReadMore;
                       print(isReadMore);
                     });
                   },
-                      child: RichText(
-                          maxLines: isReadMore ? null : 3,
-                          overflow: isReadMore ? TextOverflow.clip : TextOverflow.ellipsis,
-                          text: TextSpan(
-                              text: '${widget.post.user!.name}',
+                  child: RichText(
+                      maxLines: isReadMore ? null : 3,
+                      overflow: isReadMore ? TextOverflow.clip : TextOverflow
+                          .ellipsis,
+                      text: TextSpan(
+                          text: '${widget.post.user!.name}',
+                          style: TextStyle(
+                              color: primaryColor,
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                          children: [
+                            TextSpan(
+                              text: ' ${widget.post.content}',
                               style: TextStyle(
-                                  color: primaryColor,
-                                  fontWeight: FontWeight.bold, fontSize: 16),
-                              children: [
-                                TextSpan(
-                                  text: ' ${widget.post.content}',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.normal,
-                                      color: primaryColor,fontSize: 16),
-                                )
-                              ])),
-                    )
+                                  fontWeight: FontWeight.normal,
+                                  color: primaryColor, fontSize: 16),
+                            )
+                          ])),
+                )
                     : SizedBox(),
                 SizedBox(
                   height: 5,
                 ),
                 widget.post.countCmt != 0
                     ? Text(
-                        'Xem tất cả ${widget.post.countCmt} bình luận',
-                        style: TextStyle(color: darkGreyColor),
-                      )
+                  'Xem tất cả ${widget.post.countCmt} bình luận',
+                  style: TextStyle(color: darkGreyColor),
+                )
                     : SizedBox(),
                 SizedBox(
                   height: 5,

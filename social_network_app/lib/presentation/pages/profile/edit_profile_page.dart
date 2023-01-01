@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:social_network_app/config/constant.dart';
 import 'package:social_network_app/consts.dart';
 import 'package:social_network_app/data/models/api/api_respone.dart';
@@ -21,24 +22,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
   TextEditingController dobTXT = TextEditingController();
   TextEditingController imgTXT = TextEditingController();
 
+  int? _default;
+  var optionList = [ 'Nữ', 'Nam'];
+
+  DateTime _dateTime = DateTime.now();
   User? user;
   bool _loading = true;
+  bool _loading2 = false;
+
   Future<dynamic> _updateUser() async{
-    ApiResponse response = await updateUser(contentTXT.text, dobTXT.text, int.parse(genderTXT.text), nameTXT.text);
+
+    ApiResponse response = await updateUser(contentTXT.text, dobTXT.text, _default!, nameTXT.text);
     if (response.error == null) {
       setState(() {
-        user = response.data as User;
-        nameTXT.text = user?.name ?? "";
-        genderTXT.text = user?.gender == 0 ? "nữ" : "nam";
-        dobTXT.text = user?.dob ?? DateTime.now().toString();
-        contentTXT.text = user?.content ?? "";
-        imgTXT.text = user?.image ?? "";
-        _loading = false;
+        _loading2 = false;
       });
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Thay đổi thông tin thành công',),duration: Duration(seconds: 3),));
     } else if (response.error == unauthorized) {
       logout().then((value) => Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
-            builder: (context) => SignInPage(),
+            builder: (context) => const SignInPage(),
           ),
               (route) => false));
     } else {
@@ -52,17 +56,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (response.error == null) {
       setState(() {
         user = response.data as User;
-        nameTXT.text = user?.name ?? "";
-        genderTXT.text = user?.gender == 0 ? "nữ" : "nam";
-        dobTXT.text = user?.dob ?? DateTime.now().toString();
-        contentTXT.text = user?.content ?? "";
-        imgTXT.text = user?.image ?? "";
+        nameTXT.text = user!.name ?? "";
+        _default = user!.gender;
+        dobTXT.text = user!.dob!;
+        contentTXT.text = user!.content ?? "";
+        imgTXT.text = user!.image ?? "";
         _loading = false;
       });
     } else if (response.error == unauthorized) {
       logout().then((value) => Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
-            builder: (context) => SignInPage(),
+            builder: (context) => const SignInPage(),
           ),
           (route) => false));
     } else {
@@ -80,7 +84,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
     return _loading
-        ? Center(
+        ? const Center(
             child: CircularProgressIndicator(),
           )
         : GestureDetector(
@@ -91,20 +95,29 @@ class _EditProfilePageState extends State<EditProfilePage> {
               backgroundColor: backGroundColor,
               appBar: AppBar(
                 backgroundColor: backGroundColor,
-                title: Text("Chỉnh sửa thông tin"),
+                title: const Text("Chỉnh sửa thông tin"),
                 leading: GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Icon(
+                    child: const Icon(
                       Icons.close,
                       size: 32,
                     )),
                 actions: [
                   Padding(
                     padding: const EdgeInsets.only(right: 10.0),
-                    child: Icon(
-                      Icons.done,
-                      color: blueColor,
-                      size: 32,
+                    child: _loading2 == true ? Center(child: CircularProgressIndicator(),) : IconButton(
+                      onPressed: () {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        setState(() {
+                          _loading2 = true;
+                          _verifyName() ? _updateUser() : _loading2 = false;
+                        });
+                      },
+                      icon: const Icon(
+                        Icons.done,
+                        color: blueColor,
+                        size: 32,
+                      ),
                     ),
                   )
                 ],
@@ -129,7 +142,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                       ),
                       sizeVer(15),
-                      Center(
+                      const Center(
                         child: Text(
                           "Đổi ảnh đại diện",
                           style: TextStyle(
@@ -145,10 +158,30 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         controller: nameTXT,
                       ),
                       sizeVer(15),
-                      ProfileFormWidget(
-                        readonly: false,
-                        title: "Giới tính",
-                        controller: genderTXT,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Text("Giới tính:",style: TextStyle(fontSize: 16),),
+                          sizeHor(10),
+                          DropdownButton(
+                            value: _default,
+                            items: <DropdownMenuItem<int>>[
+                              DropdownMenuItem(
+                                value: 0,
+                                child: Text('Nữ',style: TextStyle(fontSize: 17),),
+                              ),
+                              DropdownMenuItem(
+                                value: 1,
+                                child: Text('Nam',style: TextStyle(fontSize: 17),),
+                              ),
+                            ],
+                            onChanged: (int? value) {
+                              setState(() {
+                                _default = value!;
+                              });
+                            },
+                          ),
+                        ],
                       ),
                       sizeVer(15),
                       ProfileFormWidget(
@@ -171,11 +204,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
           );
   }
 
+
   void _showDatePicker() {
     showDatePicker(
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
         context: context,
-        initialDate: DateTime.now(),
+        initialDate: _dateTime,
         firstDate: DateTime(1900),
-        lastDate: DateTime(3000));
+        lastDate: DateTime(3000)).then((value) {
+          setState(() {
+            dobTXT.text = DateFormat('dd-MM-yyyy').format(value!);
+          });
+    });
+  }
+
+  bool _verifyName() {
+    if (nameTXT.text.trim().length > 50) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Tên chỉ được nhập tối đa 50 ký tự")));
+      return false;
+    } else {
+      return true;
+    }
   }
 }

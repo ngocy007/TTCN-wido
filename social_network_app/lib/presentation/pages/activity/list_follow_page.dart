@@ -32,7 +32,6 @@ class _ListFollowPageState extends State<ListFollowPage> {
 
   void searchFollower(String value) {
     setState(() {
-      print("a");
       followers = followers!
           .where((element) =>
               element.name!.toLowerCase().contains(value.toLowerCase()))

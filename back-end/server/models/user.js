@@ -40,7 +40,7 @@ User.init(
       defaultValue: 1,
     },
     dob: {
-      type: DataTypes.DATE,
+      type:DataTypes.STRING(10),
     },
     image: {
       type: DataTypes.STRING,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:social_network_app/config/constant.dart';
 import 'package:social_network_app/consts.dart';
+import 'package:social_network_app/data/models/comment/comment.dart';
 import 'package:social_network_app/data/models/post/post.dart';
 import 'package:social_network_app/data/models/api/api_respone.dart';
 import 'package:social_network_app/data/service/post_service.dart';
@@ -11,8 +12,8 @@ import 'package:social_network_app/presentation/widgets/form_container_widget.da
 
 class CommentPage extends StatefulWidget {
   final Post post;
-
-  const CommentPage({Key? key, required this.post}) : super(key: key);
+  final String avatar;
+  const CommentPage({Key? key, required this.post, required this.avatar}) : super(key: key);
 
   @override
   State<CommentPage> createState() => _CommentPageState();
@@ -23,7 +24,6 @@ class _CommentPageState extends State<CommentPage> {
   bool _btnEnabled = false;
   bool _loading = true;
   bool _isCreate = false;
-  String? imageUser;
   List<Comment> comments = [];
   final TextEditingController cmtTXT = TextEditingController();
   int? uid;
@@ -94,13 +94,6 @@ class _CommentPageState extends State<CommentPage> {
   }
 
   @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
-    imageUser = await getImage();
-    super.setState(() {}); // to update widget data
-  }
-
-  @override
   void initState() {
     _loadCmt();
     cmtTXT.addListener(() {
@@ -112,121 +105,126 @@ class _CommentPageState extends State<CommentPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: backGroundColor,
-      appBar: AppBar(
+  Widget build(BuildContext context) => WillPopScope(
+    onWillPop: ()async {
+      Navigator.pop(context,comments.length);
+
+      return true;
+    },
+    child: Scaffold(
         backgroundColor: backGroundColor,
-        title: Text("Bình luận"),
-      ),
-      body: _loading == true
-          ? Center(
-        child: CircularProgressIndicator(),
-      )
-          : SingleChildScrollView(
-        child: Column(
-          children: [
-            Column(
-              children: [
-                ListView(
+        appBar: AppBar(
+          backgroundColor: backGroundColor,
+          title: Text("Bình luận"),
+        ),
+        body: _loading == true
+            ? Center(
+          child: CircularProgressIndicator(),
+        )
+            : SingleChildScrollView(
+          child: Column(
+            children: [
+              Column(
+                children: [
+                  ListView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    children: [
+                      ListTile(
+                        leading: Container(
+                          width: 40,
+                          height: 40,
+                          child: CircleAvatar(
+                            backgroundColor: secondaryColor,
+                            backgroundImage:
+                            NetworkImage(widget.post.user!.image!),
+                          ),
+                        ),
+                        title: RichText(
+                          text: TextSpan(children: [
+                            TextSpan(
+                              text: widget.post.user!.name! + " ",
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: primaryColor),
+                            ),
+                            TextSpan(
+                                text: widget.post.content,
+                                style: TextStyle(
+                                    fontSize: 18, color: primaryColor))
+                          ]),
+                        ),
+                        subtitle: Text(cvDate(widget.post.createdAt)),
+                      ),
+                    ],
+                  ),
+                  Divider(
+                    color: darkGreyColor,
+                  )
+                ],
+              ),
+              comments.isEmpty
+                  ? Center(
+                child: Text(
+                  "Hãy là người bình luận đầu tiên",
+                  style: TextStyle(fontSize: 16),
+                ),
+              )
+                  : ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
+                  itemCount: comments.length,
                   shrinkWrap: true,
-                  children: [
-                    ListTile(
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      onLongPress: comments[index].user!.id_user == uid || widget.post.id_user == uid
+                          ? () => _openBottomModalSheet(context, comments[index].id_com!, index) : null,
+                      onTap: () =>
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                ProfilePage(
+                                    name: comments[index].user!.name,
+                                    user_id: comments[index].user!.id_user),
+                          )),
                       leading: Container(
                         width: 40,
                         height: 40,
                         child: CircleAvatar(
                           backgroundColor: secondaryColor,
-                          backgroundImage:
-                          NetworkImage(widget.post.user!.image!),
+                          backgroundImage: NetworkImage(
+                              comments[index].user!.image!),
                         ),
                       ),
                       title: RichText(
                         text: TextSpan(children: [
                           TextSpan(
-                            text: widget.post.user!.name! + " ",
+                            text: "${comments[index].user!.name} ",
                             style: TextStyle(
                                 fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w500,
                                 color: primaryColor),
                           ),
                           TextSpan(
-                              text: widget.post.content,
+                              text: comments[index].content,
                               style: TextStyle(
                                   fontSize: 18, color: primaryColor))
                         ]),
                       ),
-                      subtitle: Text(cvDate(widget.post.createdAt)),
-                    ),
-                  ],
-                ),
-                Divider(
-                  color: darkGreyColor,
-                )
-              ],
-            ),
-            comments.isEmpty
-                ? Center(
-              child: Text(
-                "Hãy là người bình luận đầu tiên",
-                style: TextStyle(fontSize: 16),
-              ),
-            )
-                : ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: comments.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    onLongPress: comments[index].user!.id_user == uid || widget.post.id_user == uid
-                        ? () => _openBottomModalSheet(context, comments[index].id_com!, index) : null,
-                    onTap: () =>
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) =>
-                              ProfilePage(
-                                  name: comments[index].user!.name,
-                                  user_id: comments[index].user!.id_user),
-                        )),
-                    leading: Container(
-                      width: 40,
-                      height: 40,
-                      child: CircleAvatar(
-                        backgroundColor: secondaryColor,
-                        backgroundImage: NetworkImage(
-                            comments[index].user!.image!),
+                      subtitle: Row(
+                        children: [
+                          Text(cvDate(comments[index].createdAt)),
+                          sizeHor(10),
+                          Text("Trả lời")
+                        ],
                       ),
-                    ),
-                    title: RichText(
-                      text: TextSpan(children: [
-                        TextSpan(
-                          text: "${comments[index].user!.name} ",
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                              color: primaryColor),
-                        ),
-                        TextSpan(
-                            text: comments[index].content,
-                            style: TextStyle(
-                                fontSize: 18, color: primaryColor))
-                      ]),
-                    ),
-                    subtitle: Row(
-                      children: [
-                        Text(cvDate(comments[index].createdAt)),
-                        sizeHor(10),
-                        Text("Trả lời")
-                      ],
-                    ),
-                  );
-                }),
-          ],
+                    );
+                  }),
+            ],
+          ),
         ),
+        bottomSheet: _commentSection(),
       ),
-      bottomSheet: _commentSection(),
-    );
-  }
+  );
 
   _commentSection() {
     return Container(
@@ -242,7 +240,7 @@ class _CommentPageState extends State<CommentPage> {
               height: 40,
               child: CircleAvatar(
                 backgroundColor: secondaryColor,
-                backgroundImage: NetworkImage(imageUser!),
+                backgroundImage: NetworkImage(widget.avatar),
               ),
             ),
             sizeHor(10),

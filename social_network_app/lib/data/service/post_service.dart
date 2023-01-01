@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:social_network_app/config/constant.dart';
+import 'package:social_network_app/data/models/comment/comment.dart';
 import 'package:social_network_app/data/models/message/message.dart';
 import 'package:social_network_app/data/models/post/post.dart';
 import 'package:social_network_app/data/models/api/api_respone.dart';
@@ -12,7 +13,7 @@ Future<ApiResponse> getPosts(int limit, int page) async {
   try {
     String token = await getToken();
     final response = await http.get(
-        Uri.parse("$getPostUrl?_limit=$limit&_page=$page"),
+        Uri.parse("$getPostsURL?_limit=$limit&_page=$page"),
         headers: {'Accept': 'application/json', "x-access-token": '$token'});
     switch (response.statusCode) {
       case 200:
@@ -41,9 +42,10 @@ Future<ApiResponse> getDetail(int id) async {
     String token = await getToken();
     final response = await http.get(Uri.parse("$getDetailPost$id"),
         headers: {'Accept': 'application/json', "x-access-token": '$token'});
+    print(response.body);
     switch (response.statusCode) {
       case 200:
-        apiResponse.data = Message.fromJson(jsonDecode(response.body)["post"]);
+        apiResponse.data = Post.fromJson(jsonDecode(response.body)["post"]);
         break;
       case 401:
         apiResponse.error = unauthorized;
@@ -154,15 +156,12 @@ Future<ApiResponse> createPost(String content, List<String> files) async {
 
 // Xóa bài viết
 Future<ApiResponse> deletePost(int id) async {
-  print(id);
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
     final response = await http.delete(
         Uri.parse("$getDetailPost$id"),
         headers: {'Accept': 'application/json', "x-access-token": '$token'});
-    print(Uri.parse("$getDetailPost$id"));
-    print(response.statusCode);
     switch (response.statusCode) {
       case 200:
         break;

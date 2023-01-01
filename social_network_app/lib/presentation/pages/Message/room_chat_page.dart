@@ -11,11 +11,12 @@ import 'package:social_network_app/data/service/message_service.dart';
 import 'package:social_network_app/data/service/user_service.dart';
 import 'package:social_network_app/presentation/pages/credentail/sign_in_page.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
+
 
 class RoomChatPage extends StatefulWidget {
   final String? name;
   final String? id;
-
   const RoomChatPage({Key? key, required this.name, required this.id})
       : super(key: key);
 
@@ -24,10 +25,14 @@ class RoomChatPage extends StatefulWidget {
 }
 
 class _RoomChatPageState extends State<RoomChatPage> {
+  ApiSocket socket = ApiSocket();
+  bool check = true;
   bool _loading = true;
   List<Message> messages = [];
   String? myEmail;
   TextEditingController content = TextEditingController();
+  bool checkTyping = false;
+
   Future<dynamic> _getMess() async {
     ApiResponse response = await getMessage(widget.id!);
     myEmail = await getEmail();
@@ -35,6 +40,7 @@ class _RoomChatPageState extends State<RoomChatPage> {
       setState(() {
         messages = response.data as List<Message>;
         _loading = false;
+        print(messages.length);
       });
     } else if (response.error == unauthorized) {
       logout().then((value) => {
@@ -56,9 +62,7 @@ class _RoomChatPageState extends State<RoomChatPage> {
   Future<dynamic> _sendMess(String chatId, String content) async {
     ApiResponse response = await sendMessage(chatId,content);
     if (response.error == null) {
-      setState(() {
-        _loading = false;
-      });
+
     } else if (response.error == unauthorized) {
       logout().then((value) => {
         Navigator.of(context).pushAndRemoveUntil(
@@ -75,19 +79,36 @@ class _RoomChatPageState extends State<RoomChatPage> {
           .showSnackBar(SnackBar(content: Text('${response.error}')));
     }
   }
+
   @override
   void initState() {
-    ApiSocket socket = ApiSocket();
-    socket.socket!.onconnect((_) {
-      print('connect');
+    socket.socket.on("new message", (data) {
+      print("đã");
+      print(data);
+      Message newmess = Message.fromJson(data);
+      setState(() {
+        messages.add(newmess);
+      });
+    });
+    socket.socket.on("typing", (data) {
+      print(data);
+    });
+    socket.socket.on("stop typing", (data) {
+      print(data);
     });
     _getMess();
+
     super.initState();
   }
 
   @override
+  void dispose() {
+    socket.socket.disconnect();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
       onTap: ()=>FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
@@ -150,6 +171,16 @@ class _RoomChatPageState extends State<RoomChatPage> {
                 children: [
                   Expanded(
                     child: TextField(
+                      onChanged: (value) {
+                        if(value.trim().isNotEmpty && checkTyping == false){
+                          checkTyping = true;
+                          socket.socket.emit("typing",{"id_room":widget.id,"email": myEmail});
+                        }
+                        if(value.trim().isEmpty){
+                          checkTyping = false;
+                          socket.socket.emit("stop typing",{"id_room":widget.id,"email": myEmail});
+                        }
+                      },
                       controller: content,
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(12),
@@ -164,10 +195,10 @@ class _RoomChatPageState extends State<RoomChatPage> {
                   ),
                   SizedBox(width: 15,),
                   TextButton(onPressed: () {
-                    _sendMess( widget.id! ,content.text);
-                    // setState(() {
-                    //
-                    // });
+                    _sendMess( widget.id! ,content.text.trim());
+                    setState(() {
+                      content.text = "";
+                    });
                   }, child: Text("Gửi",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),))
                 ],
               ),

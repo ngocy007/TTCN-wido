@@ -1,5 +1,5 @@
 // APi
-const baseURL = "http://192.168.2.122:8000/api/";
+const baseURL = "http://192.168.1.5:8000/api/";
 
 // User
 const loginURL = baseURL + "user/login";
@@ -19,7 +19,7 @@ const forgotPassURL = baseURL + "user/forgotPassword";
 
 // Post
 const getDetailPost = baseURL + "post/";
-const getPostUrl = baseURL + "post/home";
+const getPostsURL = baseURL + "post/home";
 const likeURl = baseURL + "like/post/";
 const createPostURL = baseURL + "post/create";
 const createCMTURL = baseURL +  "comment/create";

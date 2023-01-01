@@ -12,6 +12,7 @@ Future<ApiResponse> login(String email, String password) async {
     final response = await http.post(Uri.parse(loginURL),
         headers: {"Accept": "application/json"},
         body: {'email': email, 'password': password});
+
     switch (response.statusCode) {
       case 200:
         apiResponse.data = User.fromJson(jsonDecode(response.body));
@@ -96,12 +97,9 @@ Future<ApiResponse> updateUser(
 
     final response = await http.put(Uri.parse(updateURL),
         headers: {"Accept": "application/json", "x-access-token": '$token'},
-        body: {"content": content, "dob": dob, "gender": gender, "name": name});
+        body: {"content": content, "dob":"$dob", "gender": "${gender}", "name": name});
     switch (response.statusCode) {
       case 200:
-        apiResponse.data = (jsonDecode(response.body)["users"] as List)
-            .map((user) => User.fromListJson(user))
-            .toList();
         break;
       case 404:
         apiResponse.error = jsonDecode(response.body)['message'];

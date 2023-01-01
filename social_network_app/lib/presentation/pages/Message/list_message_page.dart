@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:social_network_app/config/constant.dart';
 import 'package:social_network_app/consts.dart';
 import 'package:social_network_app/data/models/api/api_respone.dart';
-import 'package:social_network_app/data/models/message/chat.dart';
+import 'package:social_network_app/data/models/api/socket.dart';
+import 'package:social_network_app/data/models/message/room_chat.dart';
 import 'package:social_network_app/data/service/message_service.dart';
 import 'package:social_network_app/data/service/user_service.dart';
 import 'package:social_network_app/presentation/pages/Message/room_chat_page.dart';
@@ -10,7 +11,8 @@ import 'package:social_network_app/presentation/pages/credentail/sign_in_page.da
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class ListMessagePage extends StatefulWidget {
-  const ListMessagePage({Key? key}) : super(key: key);
+  final String? email;
+  const ListMessagePage({Key? key, required this.email}) : super(key: key);
 
   @override
   State<ListMessagePage> createState() => _ListMessagePageState();
@@ -44,7 +46,10 @@ class _ListMessagePageState extends State<ListMessagePage> {
   }
   @override
   void initState() {
+
     _getRoom();
+    ApiSocket socket = ApiSocket();
+    socket.socket.emit("setup",widget.email);
     super.initState();
   }
 
@@ -55,6 +60,11 @@ class _ListMessagePageState extends State<ListMessagePage> {
       appBar: AppBar(
         backgroundColor: backGroundColor,
         title: Text("Tin nhắn"),
+        actions: [
+          IconButton(onPressed: () {
+
+          }, icon: Icon(Icons.add))
+        ],
       ),
       body: _loading == true
           ? Center(

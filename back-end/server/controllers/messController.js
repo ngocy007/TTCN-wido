@@ -33,9 +33,9 @@ const MessageCtrl = {
     };
     try {
       var message = await Messages.create(newMessage);
-      message = await message.populate("sender", "name pic");
+      message = await message.populate("sender", "name pic email");
 
-      // message = await message.populate("chat");
+    
       // message = await Users.populate(message, {
       //   path: "chat.users",
       //   select: "name pic email",
@@ -44,6 +44,7 @@ const MessageCtrl = {
       await Chats.findByIdAndUpdate(req.body.chatId, {
         latestMessage: message,
       });
+
       _io.in(req.body.chatId).emit("new message", message);
 
       res.json(message);

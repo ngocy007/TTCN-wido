@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:social_network_app/data/models/post/post.dart';
 
 class Follow {
@@ -76,7 +77,7 @@ class User {
         image: json['user']['image']??"",
         password: json['user']['password']??"",
         content: json['user']['content']??"",
-        dob: json['user']['dob']??"",
+        dob: json['user']['dob']??DateFormat('dd-MM-yyyy').format(DateTime.now()),
         role: json['user']['role']??1,
         gender: json['user']['gender']??0,
         countFollowee: json['user']['countFollowee']??0,
