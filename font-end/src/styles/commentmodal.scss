@@ -5,12 +5,15 @@
   background-color: $background-white;
   margin-bottom: 3.5em;
   border-radius: 3px;
-  .menuModal{
+
+  .menuModal {
     width: 40%;
   }
-  .cardcontainer{
+
+  .cardcontainer {
     display: flex;
   }
+
   header {
     display: flex;
     justify-content: space-between;
@@ -49,7 +52,7 @@
 
   .commentsModal {
     margin-bottom: 0.75em;
-    height:55%;
+    height: 55%;
   }
 
   .timePosted {
@@ -74,6 +77,7 @@
       color: $link-color-secondary;
     }
   }
+
   .post__modalcommentbox {
     height: 56px;
     width: 95%;
@@ -81,7 +85,27 @@
     font-size: 16px;
     padding-left: 10px;
     resize: none;
+  }
 }
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 @media only screen and (max-width: 640px) {
@@ -89,10 +113,12 @@
     border: none;
     background-color: $background-grey;
     margin-bottom: 0.75em;
-    .cardcontainer{
+
+    .cardcontainer {
       flex-wrap: wrap;
     }
-    .comments{
+
+    .comments {
       display: none;
     }
 
@@ -105,4 +131,3 @@
     }
   }
 }
-

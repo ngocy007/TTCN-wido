@@ -13,8 +13,7 @@ function useForm({ form, additionalData, endpointUrl, callbackfield }) {
       setStatus("loading");
       setMessage("");
 
-      const finalFormEndpoint =
-        "http://localhost:8000/api/comment/create" || form.action;
+      const finalFormEndpoint = endpointUrl || form.action;
       const data = Array.from(form.elements)
         .filter((input) => input.name)
         .reduce(
@@ -25,13 +24,14 @@ function useForm({ form, additionalData, endpointUrl, callbackfield }) {
       if (additionalData) {
         Object.assign(data, additionalData);
       }
+      console.log(data);
 
       fetch(finalFormEndpoint, {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "x-access-token": localStorage.getItem("token")
+          "x-access-token": localStorage.getItem("token"),
         },
         body: JSON.stringify(data),
       })
@@ -52,7 +52,8 @@ function useForm({ form, additionalData, endpointUrl, callbackfield }) {
         .catch((err) => {
           setMessage(err.toString());
           setStatus("error");
-          console.log("loi create comment");
+          console.log("loi");
+          console.log("du lieu",data);
         });
     }
   };

@@ -10,8 +10,7 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import UploadModal from "./uploadModal";
-import {useNavigate} from 'react-router-dom';
-
+import { useNavigate } from "react-router-dom";
 
 function Menu() {
   const style = {
@@ -25,24 +24,45 @@ function Menu() {
     boxShadow: 24,
     p: 4,
   };
+  //state call back
+  const [isCall, setCallBack] = useState(false);
+  const [isCallCom, setCallBackCom] = useState(false);
+
+  //open modal
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const navigate = useNavigate();
   const navigateHome = () => {
     // 👇️ navigate to /
-    navigate('/Home');
+    navigate("/Home");
   };
   const saved = localStorage.getItem("info");
   const userData = JSON.parse(saved);
+
+  //call back
+  const callback = () => {
+    setCallBack(!isCall);
+    setOpen(false);
+    window.location.reload(false);
+    // do something with value in parent component, like save to state
+  };
+  const callbackComment = (e) => {
+    setCallBack(!isCall);
+    // do something with value in parent component, like save to state
+  };
   return (
     <div className="menu">
-      <Home className="icon" onClick={navigateHome}/>
+      <Home className="icon" onClick={navigateHome} />
       {/* <Inbox className="icon" />
       <Explore className="icon" /> */}
       <Notifications className="icon" />
-      <Upload className="icon" onClick={handleOpen}/>
-      <ProfileIcon iconSize="small" image={userData?.user?.image} id_user={userData?.user?.id_user}/>
+      <Upload className="icon" onClick={handleOpen} />
+      <ProfileIcon
+        iconSize="small"
+        image={userData?.user?.image}
+        id_user={userData?.user?.id_user}
+      />
       <Modal
         open={open}
         onClose={handleClose}
@@ -50,7 +70,7 @@ function Menu() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <UploadModal></UploadModal>
+          <UploadModal parentCallback={callback}></UploadModal>
         </Box>
       </Modal>
     </div>

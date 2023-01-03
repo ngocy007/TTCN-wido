@@ -10,8 +10,11 @@ function Cards() {
   const headers = {
     "x-access-token": localStorage.getItem("token"),
   };
+  //call back
+  const [isCall, setCall] = useState([]);
+  const handleCallBack = () => setCall(!isCall);
   useEffect(() => {
-    fetch("http://localhost:8000/api/post/home?_limit=5&_page=0",{headers})
+    fetch("http://localhost:8000/api/post/home?_limit=5&_page=0", { headers })
       .then((res) => res.json())
       .then(
         (result) => {
@@ -26,8 +29,8 @@ function Cards() {
           setError(error);
         }
       );
-  }, []);
-  
+  }, [isCall]);
+
   if (error) {
     return <div>Error: {error.message}</div>;
   } else if (!isLoaded) {
@@ -55,21 +58,20 @@ function Cards() {
           likedByNumber={89}
           hours={16}
         /> */}
-        {items.posts.map((item) => (
-        
-           <Card
-           userName={item.User.name}
-           profileIcon={item.User.image}
-           storyBorder={true}
-           image={item.Photos}
-           likedByText="holder"
-           likedByNumber={item.countLike}
-           hours={16}
-           id_post={item.id_post}
-           id_user={item.id_user}
-           content={item.content}
-
-         />
+        {items?.posts?.map((item) => (
+          <Card
+            userName={item.User.name}
+            profileIcon={item.User.image}
+            storyBorder={true}
+            image={item.Photos}
+            likedByText="holder"
+            likedByNumber={item.countLike}
+            hours={16}
+            id_post={item.id_post}
+            id_user={item.id_user}
+            content={item.content}
+            parentCallBack={handleCallBack}
+          />
         ))}
 
         {/* <Card
