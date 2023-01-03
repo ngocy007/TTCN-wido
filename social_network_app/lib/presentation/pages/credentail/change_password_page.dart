@@ -64,13 +64,13 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   }
 
   bool _verifyPass() {
-    if (txtPassword.text.trim().length < 6) {
+    if (txtPassword.text.trim().length < 6 && txtPassword.text.trim().length > 15) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Mật khẩu phải lớn hơn 6 ký tự")));
+          SnackBar(content: Text("Mật khẩu phải lớn hơn 6 và nhỏ hơn 15 ký tự")));
       return false;
     } else if (txtPassword.text.trim() != txtConfirmPassword.text.trim()) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Xác minh mật khẩu không khớp với mặt khẩu")));
+          SnackBar(content: Text("Xác nhận mật khẩu mới không khớp với mặt khẩu mới")));
       return false;
     } else {
       return true;

@@ -222,13 +222,13 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void _verifyPass() {
-    if (txtPassword.text.trim().length < 6) {
+    if (txtPassword.text.trim().length < 6 && txtPassword.text.trim().length > 15) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Mật khẩu phải lớn hơn 6 ký tự")));
+          SnackBar(content: Text("Chiều dài mật khẩu phải lớn hơn 6 và nhỏ hơn 15 ký tự")));
     }
     if (txtPassword.text.trim() != txtConfirmPassword.text.trim()) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Xác minh mật khẩu không khớp với mặt khẩu")));
+          SnackBar(content: Text("Xác nhận mật khẩu không khớp với mặt khẩu")));
     }
   }
 

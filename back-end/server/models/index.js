@@ -109,11 +109,11 @@ User.hasMany(Follow, {
 
 Follow.belongsTo(User, {
   as: "follower",
-  foreignKey: "id_followee",
+  foreignKey: "id_follower",
 });
 Follow.belongsTo(User, {
   as: "followee",
-  foreignKey: "id_follower",
+  foreignKey: "id_followee",
 });
 
 module.exports = {

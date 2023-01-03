@@ -1,64 +1,76 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:snippet_coder_utils/ProgressHUD.dart';
+import 'package:snippet_coder_utils/multi_images_utils.dart';
 import 'package:social_network_app/consts.dart';
 import 'package:social_network_app/presentation/pages/post/create_post_page.dart';
-import 'package:open_file/open_file.dart';
 
-class UploadPostPage extends StatefulWidget {
-  const UploadPostPage({Key? key}) : super(key: key);
+class UpLoadPostPage extends StatefulWidget {
+  const UpLoadPostPage({Key? key}) : super(key: key);
 
   @override
-  State<UploadPostPage> createState() => _UploadPostPageState();
+  State<UpLoadPostPage> createState() => _UpLoadPostPageState();
 }
 
-class _UploadPostPageState extends State<UploadPostPage> {
-  String fileType = 'Image';
-  var fileTypeList = [ 'Image', 'Video', 'MultipleFile'];
-  FilePickerResult? result;
-  PlatformFile? file;
+class _UpLoadPostPageState extends State<UpLoadPostPage> {
+  bool _loading = false;
+  List<String> multiple = [];
+
+  @override
+  void initState() {
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Chọn ảnh"),
+        backgroundColor: backGroundColor,
+      ),
       backgroundColor: backGroundColor,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'Chọn ảnh hoặc video: ',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                ),
-                DropdownButton(
-                  value: fileType,
-                  items: fileTypeList.map((String type) {
-                    return DropdownMenuItem(
-                        value: type,
-                        child: Text(
-                          type,
-                          style: TextStyle(fontSize: 20),
-                        ));
-                  }).toList(),
-                  onChanged: (String? value) {
-                    setState(() {
-                      fileType = value!;
-                      file = null;
-                    });
-                  },
-                ),
-              ],
-            ),
-            ElevatedButton(
-              onPressed: () async {
-              },
-              child: Text('Bước tiếp'),
-            ),
-          ],
-        ),
+      body: ProgressHUD(
+        child: upLoadUI(),
+        opacity: .3,
+        inAsyncCall: _loading,
+        key: UniqueKey(),
       ),
     );
   }
 
+  upLoadUI() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          child: MultiImagePicker(
+            totalImages: 12,
+            imageSource: ImagePickSource.gallery,
+            initialValue: const [],
+            onImageChanged: (images) => {
+              multiple = [],
+              images.forEach((image) {
+                if (image is ImageUploadModel) {
+                  multiple.add(image.imageFile);
+                }
+              }),
+
+            },
+          ),
+        ),
+        Center(
+          child: ElevatedButton(
+            child: Text("Tạo bài"),
+            onPressed: ()  {
+              if(multiple.length == 0){
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Vui lòng chọn ảnh"),duration: Duration(seconds: 1),));
+              }
+              else{
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreatePostPage(files: multiple!,),));
+              }
+            },
+          ),
+        )
+      ],
+    );
+  }
 }

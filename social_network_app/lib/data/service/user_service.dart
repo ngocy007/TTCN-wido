@@ -9,10 +9,11 @@ import 'package:social_network_app/data/models/user/user.dart';
 Future<ApiResponse> login(String email, String password) async {
   ApiResponse apiResponse = ApiResponse();
   try {
+    // Kết nối với API đăng nhập bằng thư viện http.dart
+    // link API: loginURL <=> http://localhost:8000/api/user/login
     final response = await http.post(Uri.parse(loginURL),
         headers: {"Accept": "application/json"},
         body: {'email': email, 'password': password});
-
     switch (response.statusCode) {
       case 200:
         apiResponse.data = User.fromJson(jsonDecode(response.body));
@@ -32,7 +33,6 @@ Future<ApiResponse> login(String email, String password) async {
     print(e);
     apiResponse.error = serverError;
   }
-
   return apiResponse;
 }
 
@@ -67,12 +67,12 @@ Future<ApiResponse> logoutUser() async {
 Future<ApiResponse> register(String name, String email, String password) async {
   ApiResponse apiResponse = ApiResponse();
   try {
-    final response = await http.post(Uri.parse(loginURL),
+    // link API: regisTerURL <=> http://localhost:8000/api/user/register
+    final response = await http.post(Uri.parse(regisTerURL),
         headers: {'Content-Type': 'application/json'},
         body: {'name': name, 'email': email, 'password': password});
     switch (response.statusCode) {
       case 200:
-        apiResponse.data = User.fromJson(jsonDecode(response.body));
         break;
       case 401:
         apiResponse.error = jsonDecode(response.body)['message'];
@@ -199,7 +199,7 @@ Future<ApiResponse> sendOTPForgot(String email) async {
   return apiResponse;
 }
 
-// Xác minh OTP
+// Xác thực OTP
 Future<ApiResponse> verifyOTP(String email, String otp) async {
   ApiResponse apiResponse = ApiResponse();
   try {

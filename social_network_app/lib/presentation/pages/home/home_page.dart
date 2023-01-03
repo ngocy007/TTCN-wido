@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -11,11 +8,10 @@ import 'package:social_network_app/data/models/api/api_respone.dart';
 import 'package:social_network_app/data/models/api/socket.dart';
 import 'package:social_network_app/data/service/post_service.dart';
 import 'package:social_network_app/data/service/user_service.dart';
-import 'package:social_network_app/presentation/pages/Message/list_message_page.dart';
+import 'package:social_network_app/presentation/pages/Message/list_room_page.dart';
 import 'package:social_network_app/presentation/pages/credentail/sign_in_page.dart';
-import 'package:social_network_app/presentation/pages/home/widgets/display_files.dart';
 import 'package:social_network_app/presentation/pages/post/post_card.dart';
-import 'package:social_network_app/presentation/pages/post/upload_page.dart';
+import 'package:social_network_app/presentation/pages/post/upload_post_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -109,24 +105,12 @@ class _HomePageState extends State<HomePage> {
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 10.0),
-              child: Row(
-                children: [
-                  IconButton(
-                      onPressed: () =>
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => UpLoadPage(),)),
-                      icon: Icon(Icons.add_box_outlined)),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  IconButton(
-                    onPressed: () =>
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => ListMessagePage(email: myEmail),)),
-                    icon: Icon(MaterialCommunityIcons.facebook_messenger,
-                        color: primaryColor, size: 28),
-                  ),
-                ],
+              child: IconButton(
+                onPressed: () =>
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ListMessagePage(email: myEmail),)),
+                icon: Icon(MaterialCommunityIcons.facebook_messenger,
+                    color: primaryColor, size: 28),
               ),
             )
           ],

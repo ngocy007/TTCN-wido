@@ -4,7 +4,7 @@ import 'package:social_network_app/consts.dart';
 import 'package:social_network_app/data/models/api/api_respone.dart';
 import 'package:social_network_app/data/models/user/user.dart';
 import 'package:social_network_app/data/service/user_service.dart';
-import 'package:social_network_app/presentation/pages/activity/list_follow_page.dart';
+import 'package:social_network_app/presentation/pages/profile/list_follow_page.dart';
 import 'package:social_network_app/presentation/pages/credentail/sign_in_page.dart';
 import 'package:social_network_app/presentation/pages/post/detail_post_page.dart';
 import 'package:social_network_app/presentation/pages/profile/edit_profile_page.dart';
@@ -24,7 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
   User user = User();
   bool isUser = false;
   bool? isFollowed;
-  int a = 0;
+  int fol = 0;
 
   Future<dynamic> _follow(int id) async {
     ApiResponse response = await follow(id);
@@ -78,7 +78,7 @@ class _ProfilePageState extends State<ProfilePage> {
         setState(() {
           isUser = true;
           user = response.data as User;
-          a = user.countFollower!;
+          fol = user.countFollower!;
           _loading = false;
         });
       } else {
@@ -86,7 +86,7 @@ class _ProfilePageState extends State<ProfilePage> {
         setState(() {
           isFollowed = response2.data as bool;
           user = response.data as User;
-          a = user.countFollower!;
+          fol = user.countFollower!;
           _loading = false;
         });
       }
@@ -196,7 +196,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "$a",
+                                        "$fol",
                                         style: TextStyle(
                                             color: primaryColor,
                                             fontWeight: FontWeight.bold,
@@ -287,7 +287,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   onPressed: () async {
                                                     await _follow(user.id_user!);
                                                     setState(() {
-                                                      a = a - 1;
+                                                      fol = fol - 1;
                                                     });
                                                   },
                                                   child: Row(
@@ -311,7 +311,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   onPressed: () async {
                                                     await _follow(user.id_user!);
                                                     setState(() {
-                                                      a = a + 1;
+                                                      fol = fol + 1;
                                                     });
                                                   },
                                                   child: Text("Theo dõi",

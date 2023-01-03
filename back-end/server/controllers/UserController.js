@@ -90,7 +90,7 @@ exports.login = catchAsyncErrors(async (req, res, next) => {
   });
 
   if (!user) {
-    return next(new ErrorHandler("Không tìm thấy người dùng với email", 401));
+    return next(new ErrorHandler(`Không tìm thấy người dùng với email ${req.body.email}`, 401));
   }
   const isPasswordMatched = await user.comparePassword(password);
 
@@ -151,11 +151,11 @@ exports.followUser = async (req, res) => {
     const { id } = req.params;
     const userId = req.user.id_user;
     const result = await Follow.findOne({
-      where: { id_followee: userId, id_follower: id },
+      where: { id_followee: id, id_follower:userId  },
     });
 
     if (!result) {
-      await Follow.create({ id_followee: userId, id_follower: id });
+      await Follow.create({ id_followee: id, id_follower:  userId});
       res.status(200).json({
         isFollowed: true,
         msg: `Theo dõi thành công người dùng: ${id}`,
@@ -178,7 +178,7 @@ exports.checkFollow = async (req, res) => {
     const { id } = req.params;
     const userId = req.user.id_user;
     const result = await Follow.findOne({
-      where: { id_followee: userId, id_follower: id },
+      where: { id_followee:id , id_follower: userId  },
     });
     if (result) {
       res.status(200).json({ status: true });
@@ -190,12 +190,12 @@ exports.checkFollow = async (req, res) => {
   }
 };
 
-// Lấy ra tất cả người đang theo dõi mình
+// Lấy ra tất cả người dùng đang theo dõi mình
 exports.getUsersFLr = async (req, res) => {
   try {
     const { id } = req.params;
     const users = await Follow.findAll({
-      where: { id_follower: id },
+      where: { id_followee: id },
       include: {
         as: "follower",
         model: User,
@@ -215,7 +215,7 @@ exports.getUsersFLg = async (req, res) => {
   try {
     const { id } = req.params;
     const users = await Follow.findAll({
-      where: { id_followee: id },
+      where: { id_follower: id },
       include: {
         as: "followee",
         model: User,
@@ -276,7 +276,7 @@ exports.sendOTPForgotPW = catchAsyncErrors(async (req, res, next) => {
     if (!user) {
       return next(
         new ErrorHandler(
-          `Không tìm thấy người dùng với email ${req.body.email}`,
+          `Không tìm thấy người dùng với email ${req.body.email}, vui lòng nhập lại`,
           404
         )
       );
@@ -299,7 +299,7 @@ exports.isOTP = catchAsyncErrors((req, res, next) => {
       if (result == otp) {
         res.send({ success: true });
       } else {
-        return next(new ErrorHandler(`OTP sai vui lòng nhập lại`, 404));
+        return next(new ErrorHandler(`Mã OTP sai vui lòng nhập lại`, 404));
       }
     }
   });

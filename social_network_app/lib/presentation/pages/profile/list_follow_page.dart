@@ -39,24 +39,6 @@ class _ListFollowPageState extends State<ListFollowPage> {
     });
   }
 
-  Future<dynamic> _follow(int id) async {
-    ApiResponse response = await follow(id);
-    if (response.error == null) {
-      setState(() {
-        isFollowed = response.data as bool;
-      });
-    } else if (response.error == unauthorized) {
-      logout().then((value) => Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: (context) => SignInPage(),
-          ),
-          (route) => false));
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('${response.error}')));
-    }
-  }
-
   Future<dynamic> _loadFollowers() async {
     ApiResponse response = await getFollowers(widget.user_id!);
     if (response.error == null) {

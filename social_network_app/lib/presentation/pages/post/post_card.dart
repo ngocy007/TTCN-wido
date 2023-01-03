@@ -10,7 +10,7 @@ import 'package:social_network_app/data/service/user_service.dart';
 import 'package:social_network_app/presentation/pages/credentail/sign_in_page.dart';
 import 'package:social_network_app/presentation/pages/post/comment_page.dart';
 import 'package:social_network_app/presentation/pages/profile/profile_page.dart';
-import 'package:expandable_text/expandable_text.dart';
+
 
 class PostCard extends StatefulWidget {
   const PostCard({Key? key, required this.post, required this.avatar})
@@ -27,8 +27,8 @@ class _PostCardState extends State<PostCard> {
   int _current = 0;
   final CarouselController _controller = CarouselController();
   bool isReadMore = false;
-
-  Future<dynamic> _LikePost(int id) async {
+  int numLike = 0;
+  Future<dynamic> _likePost(int id) async {
     ApiResponse response = await likePost(id);
     if (response.error == null) {
       setState(() {
@@ -52,11 +52,11 @@ class _PostCardState extends State<PostCard> {
   @override
   void initState() {
     setState(() {
+      numLike = widget.post.countLike!;
       _isLiked = widget.post.isLike;
     });
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -159,14 +159,24 @@ class _PostCardState extends State<PostCard> {
                   padding: const EdgeInsets.only(right: 8),
                   child: _isLiked == false
                       ? IconButton(
-                      onPressed: () => _LikePost(widget.post.id_post!),
+                      onPressed: () { _likePost(widget.post.id_post!);
+                        setState(() {
+                          numLike = numLike + 1;
+                        });
+                      },
                       icon: Icon(
                         Icons.favorite_outline,
                         size: 32,
                         color: primaryColor,
                       ))
                       : IconButton(
-                      onPressed: () => _LikePost(widget.post.id_post!),
+                      onPressed: () { _likePost(widget.post.id_post!);
+                        setState(() {
+                          setState(() {
+                            numLike = numLike - 1;
+                          });
+                        });
+                        },
                       icon: Icon(
                         Icons.favorite_sharp,
                         size: 32,
@@ -214,10 +224,10 @@ class _PostCardState extends State<PostCard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                widget.post.countLike != 0
+                numLike != 0
                     ? SizedBox(
                   child: Text(
-                    '${widget.post.countLike} lượt thích',
+                    '${numLike} lượt thích',
                     style: TextStyle(
                         color: primaryColor,
                         fontSize: 15,
@@ -225,9 +235,7 @@ class _PostCardState extends State<PostCard> {
                   ),
                   height: 20,
                 )
-                    : SizedBox(
-                  height: 0,
-                ),
+                    : SizedBox(),
                 widget.post.content != ""
                     ? GestureDetector(
                   onTap: () {

@@ -137,10 +137,8 @@ class _SendOTPState extends State<SendOTP> {
   void _sendOTP() async {
     ApiResponse response;
     if(widget.useCase){
-      print("a");
       response = await sendOTPCreate(txtEmail.text);
     }else {
-      print("b");
       response = await sendOTPForgot(txtEmail.text);
     }
     setState(() {

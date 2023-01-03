@@ -40,7 +40,7 @@ class _FormContainerWidgetState extends State<FormContainerWidget> {
         color: secondaryColor.withOpacity(.35),
         borderRadius: BorderRadius.circular(3),
       ),
-      child: new TextField(
+      child: TextField(
         readOnly: widget.readOnLy!,
         style: TextStyle(color: primaryColor),
         controller: widget.controller,

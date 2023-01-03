@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:social_network_app/config/constant.dart';
 import 'package:social_network_app/consts.dart';
@@ -8,7 +6,7 @@ import 'package:social_network_app/data/models/api/api_respone.dart';
 import 'package:social_network_app/data/service/post_service.dart';
 import 'package:social_network_app/data/service/user_service.dart';
 import 'package:social_network_app/presentation/pages/credentail/sign_in_page.dart';
-import 'package:social_network_app/presentation/pages/home/home_page.dart';
+import 'package:social_network_app/presentation/pages/main_screen/main_screen.dart';
 
 class CreatePostPage extends StatefulWidget {
   final List<String> files;
@@ -65,13 +63,17 @@ class _CreatePostPageState extends State<CreatePostPage> {
           actions: [
             IconButton(
                 onPressed: () async {
-                  await _createPost().then((value) {
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                          builder: (context) => HomePage(),
-                        ),
-                        (route) => false);
-                  });
+                 if(content.text.trim().length > 250){
+                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Chiều dài nội dung không quá 250 ký tự"),duration: Duration(seconds: 1),));
+                 }else{
+                   await _createPost().then((value) {
+                     Navigator.of(context).pushAndRemoveUntil(
+                         MaterialPageRoute(
+                           builder: (context) => MainScreen(),
+                         ),
+                             (route) => false);
+                   });
+                 }
                 },
                 icon: _loading == true
                     ? Center(

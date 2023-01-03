@@ -101,15 +101,15 @@ class _SignInPageState extends State<SignInPage> {
                       text: "Đăng nhập",
                     ),
               sizeVer(15),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child:
                   InkWell(
                       onTap: () => Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => SendOTP(useCase: false),
                           )),
                       child: const Text("Quên mật khẩu?")),
-                ],
+
               ),
               Flexible(
                 child: Container(),

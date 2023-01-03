@@ -9,8 +9,8 @@ import 'package:social_network_app/presentation/pages/search/search_page.dart';
 import '../../../consts.dart';
 import '../home/home_page.dart';
 class MainScreen extends StatefulWidget {
-  final User user;
-  const MainScreen({Key? key, required this.user}) : super(key: key);
+  User? user;
+  MainScreen({Key? key, this.user}) : super(key: key);
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
@@ -46,7 +46,7 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(icon: Icon(Ionicons.md_search, color: primaryColor), label: ""),
           BottomNavigationBarItem(icon: Icon(Ionicons.md_add_circle, color: primaryColor), label: ""),
           BottomNavigationBarItem(icon: Icon(Icons.favorite, color: primaryColor), label: ""),
-          BottomNavigationBarItem(icon: CircleAvatar(radius:15,backgroundImage: NetworkImage(widget.user.image!)), label: ""),
+          BottomNavigationBarItem(icon: CircleAvatar(radius:15,backgroundImage: NetworkImage(widget.user!.image!)), label: ""),
         ],
         onTap: navigationTapped,
       ),
@@ -55,9 +55,9 @@ class _MainScreenState extends State<MainScreen> {
         children: [
           HomePage(),
           SearchPage(),
-          UploadPostPage(),
+          UpLoadPostPage(),
           ActivityPage(),
-          ProfilePage(name: widget.user.name,user_id: widget.user.id_user,)
+          ProfilePage(name: widget.user!.name,user_id: widget.user!.id_user,)
         ],
         onPageChanged: onPageChanged,
       ),

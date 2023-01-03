@@ -1,10 +1,10 @@
 // APi
-const baseURL = "http://192.168.1.5:8000/api/";
+const baseURL = "http://192.168.1.21:8000/api/";
 
 // User
 const loginURL = baseURL + "user/login";
 const updateURL = baseURL + "user/update";
-const regisTer = baseURL + "user/register";
+const regisTerURL = baseURL + "user/register";
 const logoutURL = baseURL + "user/logout";
 const userURL = baseURL + "user/info/";
 const sendOTP1 = baseURL + "user/sendOTP/Create";
