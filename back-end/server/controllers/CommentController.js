@@ -3,6 +3,19 @@ const { Comment, User, Like_Comment } = require("../models");
 // Tạo bình luận
 exports.commentCreate = async (req, res) => {
   try {
+    if (req.body.reply) {
+      const isSameID = await Comment.findOne({
+        where: {
+          id_com: req.body.reply,
+        },
+      }).then((e) => e.id_post);
+
+      if (isSameID != req.body.id_post) {
+        return res.status(401).json({
+          mess: "khong ton tai comment do trong post",
+        });
+      }
+    }
     const comment = await Comment.create({
       reply: req.body.reply,
       content: req.body.content,

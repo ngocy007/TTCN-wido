@@ -1,4 +1,6 @@
 const { User, Follow, Comment, Post, Photo } = require("../models");
+const userMon = require("../models/mongo/userModel");
+const messs = require("../models/mongo/messageModel");
 const { Op } = require("sequelize");
 
 exports.statistic = async (req, res) => {
@@ -28,11 +30,13 @@ exports.statistic = async (req, res) => {
       },
     }).then((e) => e.length);
 
+    const sum_mess = await messs.find().then((e) => e.length);
+
     const statistic = {
       sum_user: sum_user,
       sum_post: sum_post,
       sum_comment: sum_comment,
-      sum_mess: 0,
+      sum_mess: sum_mess,
     };
 
     res.status(200).json({ statistic, success: true });
@@ -101,6 +105,9 @@ exports.deleteUser = async (req, res) => {
         message: "user not find",
       });
     }
+    console.log(user.email);
+
+    await userMon.deleteOne({ email: user.email });
 
     user.destroy();
     user.save();

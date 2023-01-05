@@ -67,9 +67,21 @@ exports.updateUser = async (req, res) => {
       dob: req.body.dob,
       image: newImage,
     };
+
     const user = await User.update(newData, {
       where: { id_user: req.user.id_user },
     });
+
+    await UserMess.updateOne(
+      {
+        email: req.user.email,
+      },
+      {
+        name: req.body.name,
+        image: newImage,
+      }
+    );
+
     res.json({ user, success: true });
   } catch (error) {
     res.sendStatus(500).send(err);
@@ -90,7 +102,12 @@ exports.login = catchAsyncErrors(async (req, res, next) => {
   });
 
   if (!user) {
-    return next(new ErrorHandler(`Không tìm thấy người dùng với email ${req.body.email}`, 401));
+    return next(
+      new ErrorHandler(
+        `Không tìm thấy người dùng với email ${req.body.email}`,
+        401
+      )
+    );
   }
   const isPasswordMatched = await user.comparePassword(password);
 
@@ -103,7 +120,7 @@ exports.login = catchAsyncErrors(async (req, res, next) => {
     name: user.name,
     image: user.image,
     role: user.role,
-    email: req.body.email
+    email: req.body.email,
   });
 
   sendToken(newUser, 200, res);
@@ -124,25 +141,36 @@ exports.logoutUser = async (req, res) => {
 
 // Chi tiết thông tin cá nhân
 exports.userDetails = async (req, res) => {
-  const rawUser = await User.findByPk(req.params.id, {
-    include: {
-      model: Post,
-      attributes: ["id_post"],
-      include: { model: Photo, limit: 1 },
-    },
-  });
-  const processUser = rawUser.get({ plain: true });
-  const countFollower = await Follow.findAll({
-    where: { id_follower: processUser.id_user },
-  }).then((e) => e.length);
-  const countFollowee = await Follow.findAll({
-    where: { id_followee: processUser.id_user },
-  }).then((e) => e.length);
-  const user = { ...processUser, countFollower, countFollowee };
-  res.status(200).json({
-    success: true,
-    user,
-  });
+  try {
+    const rawUser = await User.findByPk(req.params.id, {
+      include: {
+        model: Post,
+        attributes: ["id_post"],
+        include: { model: Photo, limit: 1 },
+      },
+    });
+    if (!rawUser) {
+      return res.status(401).json({ mess: "user exit" });
+    }
+
+    const processUser = rawUser.get({ plain: true });
+    const countFollower = await Follow.findAll({
+      where: { id_follower: processUser.id_user },
+    }).then((e) => e.length);
+    const countFollowee = await Follow.findAll({
+      where: { id_followee: processUser.id_user },
+    }).then((e) => e.length);
+    const user = { ...processUser, countFollower, countFollowee };
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (e) {
+    res.status(500).json({
+      success: true,
+      e,
+    });
+  }
 };
 
 // Theo dõi
@@ -151,11 +179,11 @@ exports.followUser = async (req, res) => {
     const { id } = req.params;
     const userId = req.user.id_user;
     const result = await Follow.findOne({
-      where: { id_followee: id, id_follower:userId  },
+      where: { id_followee: id, id_follower: userId },
     });
 
     if (!result) {
-      await Follow.create({ id_followee: id, id_follower:  userId});
+      await Follow.create({ id_followee: id, id_follower: userId });
       res.status(200).json({
         isFollowed: true,
         msg: `Theo dõi thành công người dùng: ${id}`,
@@ -178,7 +206,7 @@ exports.checkFollow = async (req, res) => {
     const { id } = req.params;
     const userId = req.user.id_user;
     const result = await Follow.findOne({
-      where: { id_followee:id , id_follower: userId  },
+      where: { id_followee: id, id_follower: userId },
     });
     if (result) {
       res.status(200).json({ status: true });
@@ -241,8 +269,7 @@ exports.searchUser = async (req, res) => {
           [Op.like]: `%${q.toLowerCase()}%`,
         },
       },
-      attributes: ["name", "image", "id_user","email"],
-      
+      attributes: ["name", "image", "id_user", "email"],
     });
     res.json({ users, success: true });
   } catch (error) {
