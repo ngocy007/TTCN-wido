@@ -30,6 +30,7 @@ class Register extends React.Component {
       input,
     });
   }
+  // xác nhận đăng ký
   handleSubmit(event) {
     event.preventDefault();
     if (this.validate()) {
@@ -120,6 +121,7 @@ class Register extends React.Component {
       default:
     }
   }
+  //kiểm tra mã otp
   async validotp() {
     let input = this.state.input;
     let errors = {};
@@ -159,7 +161,7 @@ class Register extends React.Component {
       errors["username"] = "hãy nhập họ tên";
     }
     if (typeof input["username"] !== "undefined") {
-      const re = /^\S*$/;
+      const re = /S*$/;
       if (input["username"].length < 6 || !re.test(input["username"])) {
         isValid = false;
         errors["username"] = "nhập không hợp lệ.";

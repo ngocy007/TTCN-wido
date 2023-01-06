@@ -4,7 +4,6 @@ import ReactDOM from "react-dom/client";
 import App from "./components/App";
 import Login from "./components/Auth/Login";
 import ForgotPass from "./components/Auth/FogotPass";
-
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Register from "./components/Auth/Register";
 import Github from "./components/Auth/Login_github";
@@ -41,9 +40,11 @@ login.render(
             )
           }
         />
-        <Route path="/user" element={<UserProfile />} />
+        <Route
+          path="/user"
+          element={localStorage.getItem("token") ? <UserProfile /> : <Login />}
+        />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
 );
-
