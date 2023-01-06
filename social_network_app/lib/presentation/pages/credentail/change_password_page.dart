@@ -202,7 +202,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Nhập mã OTP để hoàn tất đăng ký",
+                                  "Nhập mã OTP để xác thực tài khoản",
                                   style: TextStyle(
                                       color: primaryColor,
                                       fontSize: 16,
@@ -290,20 +290,15 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Chưa có tài khoản? ",
+                        "Bạn đã có tài khoản? ",
                         style: TextStyle(color: primaryColor),
                       ),
                       InkWell(
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SendOTP(
-                                        useCase: true,
-                                      )));
+                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SignInPage(),), (route) => false);
                         },
                         child: Text(
-                          "Đăng ký",
+                          "Đăng nhập",
                           style: TextStyle(
                               fontWeight: FontWeight.bold, color: primaryColor),
                         ),
