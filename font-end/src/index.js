@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
+
 import App from "./components/App";
 import Login from "./components/Auth/Login";
 import ForgotPass from "./components/Auth/FogotPass";
-import reportWebVitals from "./reportWebVitals";
+
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Register from "./components/Auth/Register";
 import Github from "./components/Auth/Login_github";
@@ -46,4 +46,4 @@ login.render(
     </BrowserRouter>
   </React.StrictMode>
 );
-reportWebVitals();
+

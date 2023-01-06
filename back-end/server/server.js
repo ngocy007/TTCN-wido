@@ -30,13 +30,12 @@ const io = socket(server, {
     // credentials: true,
   },
 });
-async function scanner(mail)  {
-  const userid = await usersMo.findOne({ email:mail}).then(e=>e._id)
+async function scanner(mail) {
+  const userid = await usersMo.findOne({ email: mail }).then((e) => e._id);
   return await Chats.find({
     users: { $elemMatch: { $eq: userid } },
-  }).then(e=> e.map(i=>i._id.toString()))
-
-};
+  }).then((e) => e.map((i) => i._id.toString()));
+}
 
 global._io = io;
 
@@ -44,15 +43,13 @@ io.on("connection", (socket) => {
   console.log("Connected to socket.io");
 
   socket.on("setup", (mail) => {
-    
-    // socket.join(mail);
-    scanner(mail).then(e=>{
-      for (const i of e) {
-      socket.join(i);
-      
-    }
-    })
-    console.log("client setuped")
+    socket.join(mail);
+    scanner(mail).then((e) => {
+      for (const id of e) {
+        socket.join(id);
+      }
+    });
+    console.log("client setuped");
     socket.emit("connected");
   });
 
@@ -61,8 +58,12 @@ io.on("connection", (socket) => {
     console.log("User Joined Room: " + room);
   });
 
-  socket.on("typing", (room) => socket.in(room.id_room).emit("typing",room.email));
-  socket.on("stop typing", (room) => socket.in(room.id_room).emit("stop typing",room.email));
+  socket.on("typing", (room) =>
+    socket.in(room.id_room).emit("typing", room.email)
+  );
+  socket.on("stop typing", (room) =>
+    socket.in(room.id_room).emit("stop typing", room.email)
+  );
 
   // socket.on("new message", (newMessageRecieved) => {
   //   var chat = newMessageRecieved.chat;

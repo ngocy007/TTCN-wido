@@ -49,6 +49,8 @@ function CommentModal(props) {
     p: 4,
   };
   //require
+  //api creat comment
+  const apiCreate = "http://localhost:8000/api/comment/create";
   const headers = {
     "x-access-token": localStorage.getItem("token"),
   };
@@ -63,6 +65,7 @@ function CommentModal(props) {
   const formElement = useRef(null);
   const additionalData = {
     id_post: id_post,
+    endpointUrl: apiCreate
   };
   //xu ly handle call back
   //state call back
@@ -75,7 +78,7 @@ function CommentModal(props) {
   const { handleSubmit, status, message } = useForm({
     form: formElement.current,
     additionalData,
-    callbackfield:  handleCallBackClear,
+    callbackfield: handleCallBackClear,
   });
 
   // xu ly clear comment
@@ -161,8 +164,6 @@ function CommentModal(props) {
   };
   const length = comments.length;
   //call back
-  //api creat comment
-  const apiCreate = "http://localhost:8000/api/comment/create";
   return (
     <div className="cardModal">
       <div className="cardcontainer">
@@ -230,6 +231,7 @@ function CommentModal(props) {
                       id_user={comment.User.id_user}
                       id_com={comment.id_com}
                       id_post={comment.id_post}
+                      parentCallback={parentCallback}
                     ></Comment>
                   ))}
                 </ul>
@@ -305,10 +307,7 @@ function CommentModal(props) {
                 </div>
                 {/* <div className="postText">Post</div> */}
                 {status !== "loading" && (
-                  <button
-                    className="post_comment"
-                    type="submit"
-                  >
+                  <button className="post_comment" type="submit">
                     Đăng
                   </button>
                 )}

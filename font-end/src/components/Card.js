@@ -22,6 +22,12 @@ import useForm from "./UseForm";
 import { useRef } from "react";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import axios from "axios";
 
 function Card(props) {
   const {
@@ -36,6 +42,7 @@ function Card(props) {
     id_post,
     id_user,
     content,
+    parentCallBack,
   } = props;
   const style = {
     position: "fixed",
@@ -59,9 +66,13 @@ function Card(props) {
     boxShadow: 24,
     p: 4,
   };
-
+  // get userId
+  const saved = localStorage.getItem("info");
+  const userData = JSON.parse(saved);
   //handle cho comment modal
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen, opend] = React.useState(false);
+  const [opendele, setOpendele] = React.useState(false);
+  const [isdele, setisdele] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -71,10 +82,32 @@ function Card(props) {
   const handleClickMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  const handleClickOpen = () => {
+    setOpendele(true);
+  };
+  const handleClickClose = () => {
+    setOpendele(false);
+  };
+
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
-
+  //handle delete post
+  const HandleDeletePost = () => {
+    axios
+      .delete("http://localhost:8000/api/post/" + id_post, {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        handleClickClose();
+        setisdele(!isdele);
+        handleCloseMenu();
+        console.log("ok");
+        parentCallBack();
+      });
+  };
   //handle cho like modal
   const [openLike, setOpenLike] = React.useState(false);
   // const handleOpenLike = () => setOpenLike(true);
@@ -280,10 +313,33 @@ function Card(props) {
             "aria-labelledby": "basic-button",
           }}
         >
-          <MenuItem onClick={handleCloseMenu}>Profile</MenuItem>
-          <MenuItem onClick={handleCloseMenu}>My account</MenuItem>
-          <MenuItem onClick={handleCloseMenu}>Logout</MenuItem>
+          <MenuItem onClick={handleCloseMenu}>cancel</MenuItem>
+          {id_user === userData.user.id_user ? (
+            <MenuItem onClick={handleClickOpen}>xóa</MenuItem>
+          ) : (
+            ""
+          )}
         </Menu>
+        <Dialog
+          open={opendele}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Xác nhận xóa bài"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Bạn có muốn xóa bài này không?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClickClose}>Disagree</Button>
+            <Button onClick={HandleDeletePost} autoFocus>
+              Agree
+            </Button>
+          </DialogActions>
+        </Dialog>
       </header>
       {/* <img
         className="cardImage"
@@ -295,12 +351,7 @@ function Card(props) {
         {image.map((img) => {
           return (
             <Carousel.Item>
-              <img
-                className="cardImage"
-                src={img.url}
-                alt="Third slide"
-                onClick={handleOpen}
-              />
+              <img className="cardImage" src={img.url} onClick={handleOpen} />
             </Carousel.Item>
           );
         })}

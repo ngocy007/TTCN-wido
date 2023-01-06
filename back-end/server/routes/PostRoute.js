@@ -5,7 +5,7 @@ const {
   deletePost,
   getDetailsPost,
 } = require("../controllers/PostController");
-const { isAuthenticatedUser } = require("../middleware/auth");
+const { isAuthenticatedUser, checkAuthorPost } = require("../middleware/auth");
 const { deletefile, uploadCloudinary } = require("../middleware/cloudinary");
 
 const upload = require("../config/multet");
@@ -23,6 +23,6 @@ router
 router
   .route("/:id")
   .get(isAuthenticatedUser, getDetailsPost)
-  .delete(isAuthenticatedUser, deletefile, deletePost);
+  .delete(isAuthenticatedUser, checkAuthorPost, deletefile, deletePost);
 
 module.exports = router;

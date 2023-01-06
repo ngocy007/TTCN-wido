@@ -30,7 +30,9 @@ const chatCtrl = {
         .populate("users")
         .populate("groupAdmin");
 
-      _io.emit("fetch");
+      users.forEach((element) => {
+        _io.in(element.email).emit("fetch");
+      });
       res.status(200).json(fullGroupChat);
     } catch (error) {
       res.status(400).json({
@@ -45,7 +47,7 @@ const chatCtrl = {
     })
       .populate("latestMessage")
       .sort({ updatedAt: -1 });
-    _io.emit("fetch");
+    // _io.emit("fetch");
     res.status(200).json(allGroupChat);
   },
 
@@ -61,7 +63,7 @@ const chatCtrl = {
         new: true,
       }
     );
-    _io.emit("fetch");
+    _io.in(updatedChat._id).emit("fetch");
 
     if (!updatedChat) {
       res.json({
@@ -95,7 +97,7 @@ const chatCtrl = {
         new: true,
       }
     );
-    _io.emit("fetch");
+    _io.in(added._id).emit("fetch");
     if (!added) {
       res.json({
         status: 400,
@@ -123,7 +125,7 @@ const chatCtrl = {
         new: true,
       }
     );
-    _io.emit("fetch");
+    _io.in(removed._id).emit("fetch");
     if (!removed) {
       res.json({
         status: 400,

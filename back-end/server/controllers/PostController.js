@@ -21,9 +21,7 @@ exports.getAllPost = async (req, res) => {
         attributes: ["name", "image", "id_user"],
       },
     ],
-    order: [
-      ['id_post', 'DESC'],
-    ],
+    order: [["id_post", "DESC"]],
     limit: req.query._limit,
     offset: req.query._limit * req.query._page,
   });
@@ -70,9 +68,7 @@ exports.getDetailsPost = async (req, res) => {
         separate: true,
         limit: 15,
         where: { reply: null },
-        order: [
-          ['id_com', 'DESC'],
-        ],
+        order: [["id_com", "DESC"]],
       },
     ],
   });
@@ -114,6 +110,14 @@ exports.createPost = async (req, res) => {
     const newPost = await Post.create({
       content: req.body.content,
       id_user: req.user.id_user,
+    }).catch(async (err) => {
+      for (let i = 0; i < req.newFile.length; i++) {
+        const photoUrl = req.newFile[i];
+        await cloudinary.uploader.destroy(
+          photoUrl.slice(photoUrl.indexOf("file"), photoUrl.lastIndexOf("."))
+        );
+      }
+      return res.sendStatus(500).send(err);
     });
 
     for (let i = 0; i < req.newFile.length; i++) {

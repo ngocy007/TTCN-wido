@@ -1,6 +1,6 @@
 const ErrorHandler = require("../utils/ErrorHandler");
 const jwt = require("jsonwebtoken");
-const { User, Comment } = require("../models");
+const { User, Comment, Post } = require("../models");
 const catchAsyncErrors = require("./catchAsyncErrors");
 
 exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
@@ -27,6 +27,23 @@ exports.checkAuthor = catchAsyncErrors(async (req, res, next) => {
   }
 
   if (result.id_user == id || (await result.getPost()).id_user == id) {
+    return next();
+  }
+  return next(new ErrorHandler("Bạn không có quyền", 401));
+});
+
+exports.checkAuthorPost = catchAsyncErrors(async (req, res, next) => {
+  id = req.user.id_user;
+  if (req.user.role == 2) {
+    return next();
+  }
+  result = await Post.findOne({ where: { id_post: req.params.id } });
+
+  if (!result) {
+    return next(new ErrorHandler("khong tim thay post", 400));
+  }
+
+  if (result.id_user == id) {
     return next();
   }
   return next(new ErrorHandler("Bạn không có quyền", 401));
