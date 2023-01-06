@@ -15,8 +15,9 @@ function Footer() {
         <li>Top Accounts</li>
         <li>Hashtags</li>
         <li>Language</li>
+        <li>!!!Đây là placeholder minh họa</li>
       </ul>
-      <div className="copyright">@ 2020 INSTAGRAM FROM FACEBOOK</div>
+      <div className="copyright">@ 2022 INSTAGRAM</div>
     </div>
   );
 }

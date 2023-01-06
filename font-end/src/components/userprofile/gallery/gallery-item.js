@@ -12,6 +12,7 @@ const Wrap = styled.div`
 `;
 const Img = styled.img`
   width: 100%;
+  height: 300px;
   display: block;
 `;
 const Icon = styled.span`

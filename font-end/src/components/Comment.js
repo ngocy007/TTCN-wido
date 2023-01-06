@@ -21,7 +21,7 @@ function Comment(props) {
     id_post,
     parentCallback,
     callRep,
-    isCall
+    isCall,
   } = props;
   const headers = {
     "x-access-token": localStorage.getItem("token"),
@@ -40,9 +40,17 @@ function Comment(props) {
   };
   //hadnle aleart xoa bai
   const [openAleart, setOpenAleart] = React.useState(false);
+  const [isDeleteRep, setIsDeleteRep] = React.useState(false);
 
   const handleClickOpenAleart = () => {
     setOpenAleart(true);
+  };
+  //xu ly xoa rep
+  const [idRepDelete, setIdRepDelete] = useState("");
+  const handleClickOpenRepAleart = (id_rep) => {
+    setOpenAleart(true);
+    setIsDeleteRep(true);
+    setIdRepDelete(id_rep);
   };
 
   const handleCloseAleart = () => {
@@ -52,9 +60,6 @@ function Comment(props) {
   const [isShow, setIsShow] = useState(false);
   const [count, setCount] = useState(0);
   const [itemRep, setRep] = useState([]);
-
-  //state truyen id cho post
-  const [idRep, setIdRep] = useState("");
 
   const HandleShow = () => {
     parentCallback();
@@ -66,14 +71,14 @@ function Comment(props) {
       .then((data) => {
         setRep(data.replies);
         setIsShow(true);
-        console.log("lay comment thanh cong");
       })
       .catch((err) => console.log("hey"));
   };
   const HandleCloseShow = () => {
     setIsShow(false);
   };
-
+  //check deleted
+  const [isDelete, setIsDelete] = useState(false);
   //Dem rep
   useEffect(() => {
     fetch("http://localhost:8000/api/comment/more/" + id_com, {
@@ -85,7 +90,6 @@ function Comment(props) {
         (result) => {
           let c = result.replies.length;
           setCount(c);
-          console.log("length", c);
         },
         // Note: it's important to handle errors here
         // instead of a catch() block so that we don't swallow
@@ -94,16 +98,15 @@ function Comment(props) {
           console.log("Loi get length");
         }
       );
-  }, [isCall]);
+  }, [isCall, isDelete]);
   useEffect(() => {
-    setIsShow();
-  }, [isCall])
+    setIsShow(false);
+  }, [isCall, isDelete]);
   //phan hoi
   const handleRep = (id) => {
     callRep(id);
   };
   //state cho xu ly delete
-  const [isDelete, setIsDelete] = useState(false);
   const HandleDelete = () => {
     parentCallback();
     handleCloseAleart();
@@ -114,6 +117,21 @@ function Comment(props) {
       .then((res) => res.json())
       .then((data) => setIsDelete(data.success))
       .catch((err) => console.log("hey"));
+  };
+  const HandleDeleteRep = () => {
+    parentCallback();
+    handleCloseAleart();
+    if (idRepDelete != "")
+      fetch("http://localhost:8000/api/comment/" + idRepDelete, {
+        method: "DELETE",
+        headers: headers,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setIsDelete(data.success);
+          setAnchorEl(null);
+        })
+        .catch((err) => console.log("hey"));
   };
   return (
     <div className="commentContainer">
@@ -197,18 +215,26 @@ function Comment(props) {
               aria-describedby="alert-dialog-description"
             >
               <DialogTitle id="alert-dialog-title">
-                {"Xác nhận xóa bài"}
+                {isDeleteRep ? "Xác nhận xóa phản hồi" : "Xác nhận xóa comment"}
               </DialogTitle>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                  Bạn có muốn xóa bài này không?
+                  {isDeleteRep
+                    ? "Bạn có muốn xóa phản hồi này không?"
+                    : "Bạn có muốn xóa comment này không?"}
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
-                <Button onClick={handleCloseAleart}>Disagree</Button>
-                <Button onClick={HandleDelete} autoFocus>
-                  Agree
-                </Button>
+                <Button onClick={handleCloseAleart}>Hủy</Button>
+                {isDeleteRep ? (
+                  <Button onClick={HandleDeleteRep} autoFocus>
+                    Xóa phản hồi
+                  </Button>
+                ) : (
+                  <Button onClick={HandleDelete} autoFocus>
+                    Xóa
+                  </Button>
+                )}
               </DialogActions>
             </Dialog>
           </div>
@@ -296,8 +322,12 @@ function Comment(props) {
                       }}
                     >
                       {id_user == userData?.user?.id_user ? (
-                        <MenuItem onClick={handleClickOpenAleart}>
-                          Xóa comment
+                        <MenuItem
+                          onClick={() =>
+                            handleClickOpenRepAleart(comment.id_com)
+                          }
+                        >
+                          Xóa phản hồi
                         </MenuItem>
                       ) : (
                         ""

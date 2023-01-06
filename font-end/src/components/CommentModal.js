@@ -203,7 +203,7 @@ function CommentModal(props) {
               image={profileIcon}
               id_user={id_user}
             />
-            <CardButton className="cardButton" />
+            {/* <CardButton className="cardButton" /> */}
           </header>
           <div className="commentsModal">
             {/* <AutoSizer>
