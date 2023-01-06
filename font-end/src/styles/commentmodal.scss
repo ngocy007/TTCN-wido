@@ -108,6 +108,10 @@
   background: #555;
 }
 
+  :focus { 
+      outline: none;
+  }
+
 @media only screen and (max-width: 640px) {
   .card {
     border: none;
