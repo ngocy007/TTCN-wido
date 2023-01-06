@@ -12,9 +12,14 @@ function Profile(props) {
     storyBorder,
     hideAccountName,
     image,
-    id_user
+    id_user,
   } = props;
- 
+  const handleSwitch = () => {
+    window.location.assign("/");
+    localStorage.removeItem("token");
+    localStorage.removeItem("info");
+    localStorage.removeItem("isadmin");
+  };
   let accountName = username
     ? username
     : users[Math.floor(Math.random() * users.length)].username;
@@ -27,13 +32,13 @@ function Profile(props) {
         image={image}
         id_user={id_user}
       />
-      {(accountName || caption) && !hideAccountName && ( 
+      {(accountName || caption) && !hideAccountName && (
         <div className="textContainer">
           <span className="accountName">{accountName}</span>
           <span className={`caption ${captionSize}`}>{caption}</span>
         </div>
       )}
-      <a href="/">{urlText}</a>
+      <a href="#" onClick={handleSwitch}>{urlText}</a>
     </div>
   );
 }

@@ -65,7 +65,7 @@ function CommentModal(props) {
   const formElement = useRef(null);
   const additionalData = {
     id_post: id_post,
-    endpointUrl: apiCreate
+    endpointUrl: apiCreate,
   };
   //xu ly handle call back
   //state call back
@@ -74,6 +74,17 @@ function CommentModal(props) {
     setCallBack(!isCall);
     parentCallback2();
   };
+
+  //call back rep
+  //state truyen id cho post
+  const [idRep, setIdRep] = useState("");
+  const [isRep, setIsRep] = useState(false);
+
+  const handleCallBackRep = (id) => {
+    setIsRep(!isRep);
+    setIdRep(id);
+  };
+
   //xu ly post
   const { handleSubmit, status, message } = useForm({
     form: formElement.current,
@@ -89,6 +100,7 @@ function CommentModal(props) {
 
   useEffect(() => {
     setText("");
+    setIsRep(isRep);
   }, [isCall]);
   //call over
 
@@ -163,7 +175,7 @@ function CommentModal(props) {
     else setCLike(countLike + 1);
   };
   const length = comments.length;
-  //call back
+
   return (
     <div className="cardModal">
       <div className="cardcontainer">
@@ -191,7 +203,7 @@ function CommentModal(props) {
               image={profileIcon}
               id_user={id_user}
             />
-            <CardButton className="cardButton" />
+            {/* <CardButton className="cardButton" /> */}
           </header>
           <div className="commentsModal">
             {/* <AutoSizer>
@@ -215,6 +227,7 @@ function CommentModal(props) {
                 bgcolor: "background.paper",
                 position: "relative",
                 overflow: "auto",
+                overflowX: "hidden",
                 maxHeight: 320,
                 "& ul": { padding: 0 },
               }}
@@ -232,6 +245,8 @@ function CommentModal(props) {
                       id_com={comment.id_com}
                       id_post={comment.id_post}
                       parentCallback={parentCallback}
+                      callRep={handleCallBackRep}
+                      isCall={isCall}
                     ></Comment>
                   ))}
                 </ul>
@@ -302,8 +317,18 @@ function CommentModal(props) {
                     cols="50"
                     onChange={handleChangeInput}
                     value={text}
+                    placeholder={isRep ? "Thêm phản hồi" : "Thêm bình luận"}
                     required
                   ></textarea>
+                  {isRep ? (
+                    <input
+                      name="reply"
+                      value={idRep}
+                      style={{ display: "none" }}
+                    ></input>
+                  ) : (
+                    ""
+                  )}
                 </div>
                 {/* <div className="postText">Post</div> */}
                 {status !== "loading" && (

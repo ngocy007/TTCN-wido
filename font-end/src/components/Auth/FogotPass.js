@@ -8,12 +8,14 @@ class ForgotPass extends Component {
     super(props);
     this.state = {
       input: {},
+      errors: {},
       ishowpassword: false,
       checkedmail: true,
       checkedcode: false,
     };
     this.handleChange = this.handleChange.bind(this);
     this.showdiv = this.showdiv.bind(this);
+    this.handelsubmit = this.handelsubmit.bind(this);
   }
 
   handleChange(event) {
@@ -22,20 +24,123 @@ class ForgotPass extends Component {
     this.setState({
       input,
     });
+    console.log(this.state.input.email);
   }
-  showdiv(event) {
+  //kiểm tra mail trong database và gửi mã
+  async handelcheckmail() {
+    let checkmail = false;
+
+    await axios
+      .post(
+        "http://localhost:8000/api/user/sendOTP/ForgotPW",
+        {
+          email: this.state.input.email,
+        },
+        {}
+      )
+      .then(function (response) {
+        checkmail = true;
+      })
+      .catch(function (error) {});
+    return checkmail;
+  }
+
+  //kiểm tra mã otp
+  async handelcheckcode() {
+    let checkcode = false;
+
+    await axios
+      .post(
+        "http://localhost:8000/api/user/isOTP",
+        {
+          email: this.state.input.email,
+          otp: this.state.input.code,
+        },
+        {}
+      )
+      .then(function (response) {
+        checkcode = true;
+      })
+      .catch(function (error) {});
+    return checkcode;
+  }
+  //kiểm tra mật khẩu
+  validate() {
+    let input = this.state.input;
+    let errors = {};
+    let isValid = true;
+    if (!input["newpassword"]) {
+      isValid = false;
+      errors["newpassword"] = "hãy nhập mật khẩu.";
+    }
+    if (!input["confimpassword"]) {
+      isValid = false;
+      errors["confimpassword"] = "hãy nhập lại mật khẩu.";
+    }
+    if (typeof input["newpassword"] !== "undefined") {
+      if (input["newpassword"].length < 8) {
+        isValid = false;
+
+        errors["newpassword"] = "mật khẩu ít nhất 8 kí tự.";
+      }
+    }
+
+    if (
+      typeof input["newpassword"] !== "undefined" &&
+      typeof input["confimpassword"] !== "undefined"
+    ) {
+      if (input["newpassword"] !== input["confimpassword"]) {
+        isValid = false;
+        errors["newpassword"] = "không khớp mật khẩu.";
+      }
+    }
+    this.setState({
+      errors: errors,
+    });
+    return isValid;
+  }
+  //đổi mật khẩu
+  handelsubmit() {
+    if (this.validate()) {
+      axios
+        .post(
+          "http://localhost:8000/api/user/forgotPassword",
+          {
+            email: this.state.input.email,
+            password: this.state.input.newpassword,
+          },
+          {}
+        )
+        .then(function (response) {
+          alert("thành công");
+          window.location.assign("/");
+        })
+        .catch(function (error) {});
+    }
+  }
+  //hiệu ứng ẩn hiện
+  async showdiv(event) {
     switch (event) {
       case "checkedpass":
-        this.setState({
-          checkedpass: !this.state.checkedpass,
-          checkedcode: !this.state.checkedcode,
-        });
+        if (await this.handelcheckcode()) {
+          this.setState({
+            checkedpass: !this.state.checkedpass,
+            checkedcode: !this.state.checkedcode,
+          });
+        } else {
+          alert("mã không hợp lệ");
+        }
         break;
       case "checkedcode":
-        this.setState({
-          checkedmail: !this.state.checkedmail,
-          checkedcode: !this.state.checkedcode,
-        });
+        if (await this.handelcheckmail()) {
+          this.setState({
+            checkedmail: !this.state.checkedmail,
+            checkedcode: !this.state.checkedcode,
+          });
+          alert("đã gửi mail");
+        } else {
+          alert("tài khoản không tồn tại");
+        }
         break;
       case "confim":
         this.setState({});
@@ -64,7 +169,7 @@ class ForgotPass extends Component {
                   placeholder="email"
                   value={this.state.input.email}
                   onChange={this.handleChange}
-                  name="emai"
+                  name="email"
                   id="email"
                 />
                 <div className="col-12">
@@ -116,6 +221,9 @@ class ForgotPass extends Component {
                     name="newpassword"
                     id="newpassword"
                   />
+                  <div className="text-danger err">
+                    {this.state.errors.newpassword}
+                  </div>
                 </div>
                 <div className="col-12 form-group">
                   <lable>nhập lại mật khẩu mới:</lable>
@@ -129,6 +237,9 @@ class ForgotPass extends Component {
                     name="confimpassword"
                     id="confimpassword"
                   />
+                  <div className="text-danger err">
+                    {this.state.errors.confimpassword}
+                  </div>
                 </div>
                 <div>
                   <input
@@ -140,10 +251,7 @@ class ForgotPass extends Component {
                   <span className="forgot-password">Hiện mật khẩu</span>
                 </div>
                 <div className="col-12">
-                  <button
-                    className="btn-login"
-                    onClick={() => this.showdiv("confim")}
-                  >
+                  <button className="btn-login" onClick={this.handelsubmit}>
                     đổi mật khẩu
                   </button>
                 </div>

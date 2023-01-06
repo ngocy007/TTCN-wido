@@ -41,7 +41,7 @@ class Sidebar extends React.Component {
             <Profile
               username={this.state.items?.user?.name}
               caption=""
-              urlText="Switch"
+              urlText="Đổi tài khoản"
               iconSize="big"
               image={this.state.items?.user?.image}
               id_user={this.state.items?.user?.id_user}

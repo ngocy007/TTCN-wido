@@ -82,7 +82,7 @@ function ProfilePage(props) {
           id_user={userId}
           parentCallback={callbackProfile}
         />
-        <Story />
+        {/* <Story /> */}
         <MobileOnly>
           <KeyNumbers
             countFollower={userdetail?.user?.countFollower}

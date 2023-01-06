@@ -313,12 +313,12 @@ function Card(props) {
             "aria-labelledby": "basic-button",
           }}
         >
-          <MenuItem onClick={handleCloseMenu}>cancel</MenuItem>
           {id_user === userData.user.id_user ? (
-            <MenuItem onClick={handleClickOpen}>xóa</MenuItem>
+            <MenuItem onClick={handleClickOpen}>Xóa</MenuItem>
           ) : (
             ""
           )}
+          <MenuItem onClick={handleCloseMenu}>Cancel</MenuItem>
         </Menu>
         <Dialog
           open={opendele}
@@ -334,9 +334,9 @@ function Card(props) {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClickClose}>Disagree</Button>
+            <Button onClick={handleClickClose}>Hủy</Button>
             <Button onClick={HandleDeletePost} autoFocus>
-              Agree
+              Xóa
             </Button>
           </DialogActions>
         </Dialog>
