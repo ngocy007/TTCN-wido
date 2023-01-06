@@ -5,12 +5,6 @@ class Profile extends Component {
     super(props);
     this.state = {
       user: JSON.parse(localStorage.getItem("info")),
-      // name: "",
-      // email: "",
-      // gender: "",
-      // dob: "",
-      // image: "",
-      // content: "",
       input: [],
       isshowupdate: false,
       isshowcontent: true,
@@ -34,18 +28,23 @@ class Profile extends Component {
   }
   //update avata
   async uploadImage(e) {
-    let formdata = new FormData();
     const file = e.target.files[0];
+    console.log(file);
+
+    let formdata = new FormData();
     formdata.append("image", file);
-    await axios
-      .put("http://localhost:8000/api/user/update", formdata, {
-        headers: {
-          "x-access-token": localStorage.getItem("token"),
-        },
-      })
-      .then((res) => {
-        this.componentDidMount();
-      });
+
+    let bodyContent = formdata;
+
+    let reqOptions = {
+      url: "http://localhost:8000/api/user/update",
+      method: "PUT",
+      headers: { "x-access-token": localStorage.getItem("token") },
+      data: bodyContent,
+    };
+
+    await axios.request(reqOptions);
+    this.componentDidMount();
   }
   handlechange(event) {
     event.preventDefault();
@@ -55,7 +54,7 @@ class Profile extends Component {
     console.log(inputs);
   }
   //update user
-  handleupdate(event) {
+  handleupdate() {
     let formdata = new FormData();
     formdata.append("name", this.state.input.name);
     formdata.append("dob", this.state.input.dob);
@@ -195,9 +194,7 @@ class Profile extends Component {
                   </table>
                 </div>
                 <div className="">
-                  <button onClick={(event) => this.handleupdate(event)}>
-                    xác nhận
-                  </button>
+                  <button onClick={() => this.handleupdate()}>xác nhận</button>
                 </div>
               </div>
             )}
