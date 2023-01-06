@@ -65,7 +65,7 @@ class _UpLoadPostPageState extends State<UpLoadPostPage> {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Vui lòng chọn ảnh"),duration: Duration(seconds: 1),));
               }
               else{
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreatePostPage(files: multiple!,),));
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreatePostPage(files: multiple,),));
               }
             },
           ),

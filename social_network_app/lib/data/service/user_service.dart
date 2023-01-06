@@ -1,10 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_network_app/config/constant.dart';
 import 'package:social_network_app/data/models/api/api_respone.dart';
 import 'package:social_network_app/data/models/user/user.dart';
-
+import 'package:async/async.dart';
 // Đăng nhập
 Future<ApiResponse> login(String email, String password) async {
   ApiResponse apiResponse = ApiResponse();
@@ -67,7 +68,6 @@ Future<ApiResponse> logoutUser() async {
 Future<ApiResponse> register(String name, String email, String password) async {
   ApiResponse apiResponse = ApiResponse();
   try {
-    // link API: regisTerURL <=> http://localhost:8000/api/user/register
     final response = await http.post(Uri.parse(regisTerURL),
         headers: {'Content-Type': 'application/json'},
         body: {'name': name, 'email': email, 'password': password});
@@ -90,19 +90,23 @@ Future<ApiResponse> register(String name, String email, String password) async {
 
 // Cập nhật người dùng
 Future<ApiResponse> updateUser(
-    String content, String dob, int gender, String name) async {
+    String content, String dob, int gender, String name, File? image) async {
   ApiResponse apiResponse = ApiResponse();
   try {
-    String token = await getToken();
 
-    final response = await http.put(Uri.parse(updateURL),
-        headers: {"Accept": "application/json", "x-access-token": '$token'},
-        body: {"content": content, "dob":"$dob", "gender": "${gender}", "name": name});
+    String token = await getToken();
+    var headersList = {"x-access-token": '$token'};
+    var uri = Uri.parse(updateUserURL);
+    var req = http.MultipartRequest('PUT', uri);
+    req.headers.addAll(headersList);
+    req.fields.addAll({"content": content, "dob":"$dob", "gender": "${gender}", "name": name});
+    if(image != null){
+      req.files.add(await http.MultipartFile.fromPath('image', image.path));
+    }
+
+    var response = await req.send();
     switch (response.statusCode) {
       case 200:
-        break;
-      case 404:
-        apiResponse.error = jsonDecode(response.body)['message'];
         break;
       default:
         apiResponse.error = wrong;
@@ -224,12 +228,12 @@ Future<ApiResponse> verifyOTP(String email, String otp) async {
 }
 
 // Theo dõi người dùng
-Future<ApiResponse> follow(int id) async {
+Future<ApiResponse> follow(int id, int id_user) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
     final response = await http.post(Uri.parse("$followURL${id}"),
-        headers: {"Accept": "application/json", "x-access-token": '$token'});
+        headers: {"Accept": "application/json", "x-access-token": '$token'},body: {"id_user" : "$id_user"});
     switch (response.statusCode) {
       case 200:
         apiResponse.data = jsonDecode(response.body)["isFollowed"];

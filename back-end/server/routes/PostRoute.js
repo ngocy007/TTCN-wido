@@ -2,7 +2,6 @@ const router = require("express").Router();
 const {
   createPost,
   getAllPost,
-  updatePost,
   deletePost,
   getDetailsPost,
 } = require("../controllers/PostController");
@@ -24,7 +23,6 @@ router
 router
   .route("/:id")
   .get(isAuthenticatedUser, getDetailsPost)
-  .put(isAuthenticatedUser, updatePost)
   .delete(isAuthenticatedUser, deletefile, deletePost);
 
 module.exports = router;

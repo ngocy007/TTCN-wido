@@ -13,6 +13,7 @@ class FormContainerWidget extends StatefulWidget {
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onFieldSubmitted;
   final bool? readOnLy;
+  final bool? autofocus;
   final TextInputType? inputType;
   const FormContainerWidget({
     this.controller,
@@ -25,7 +26,8 @@ class FormContainerWidget extends StatefulWidget {
     this.validator,
     this.onFieldSubmitted,
     this.inputType,
-    this.readOnLy
+    this.readOnLy,
+    this.autofocus
   });
   @override
   _FormContainerWidgetState createState() => new _FormContainerWidgetState();
@@ -41,6 +43,7 @@ class _FormContainerWidgetState extends State<FormContainerWidget> {
         borderRadius: BorderRadius.circular(3),
       ),
       child: TextField(
+        autofocus: widget.autofocus != null ?true : false,
         readOnly: widget.readOnLy!,
         style: TextStyle(color: primaryColor),
         controller: widget.controller,

@@ -1,9 +1,9 @@
 // APi
-const baseURL = "http://192.168.1.21:8000/api/";
+const baseURL = "http://192.168.2.113:8000/api/";
 
 // User
 const loginURL = baseURL + "user/login";
-const updateURL = baseURL + "user/update";
+const updateUserURL = baseURL + "user/update";
 const regisTerURL = baseURL + "user/register";
 const logoutURL = baseURL + "user/logout";
 const userURL = baseURL + "user/info/";
@@ -24,7 +24,7 @@ const likeURl = baseURL + "like/post/";
 const createPostURL = baseURL + "post/create";
 const createCMTURL = baseURL +  "comment/create";
 const deleteCMTURL = baseURL + "comment/";
-
+const getRepliesURL = baseURL + "comment/more/";
 // Chat
 const getRoomURL = baseURL + "chat";
 const getMessURL = baseURL + "mess/";

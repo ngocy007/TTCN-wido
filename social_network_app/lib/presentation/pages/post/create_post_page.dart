@@ -69,7 +69,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                    await _createPost().then((value) {
                      Navigator.of(context).pushAndRemoveUntil(
                          MaterialPageRoute(
-                           builder: (context) => MainScreen(),
+                           builder: (context) =>
+                               MainScreen(),
                          ),
                              (route) => false);
                    });

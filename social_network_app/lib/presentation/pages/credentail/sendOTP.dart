@@ -12,6 +12,7 @@ import 'package:social_network_app/presentation/widgets/form_container_widget.da
 class SendOTP extends StatefulWidget {
   const SendOTP({Key? key, required this.useCase}) : super(key: key);
   final bool useCase;
+
   @override
   State<SendOTP> createState() => _SendOTPState();
 }
@@ -20,7 +21,9 @@ class _SendOTPState extends State<SendOTP> {
   bool _btnEnabled = false;
   final TextEditingController txtEmail = TextEditingController();
   bool loading = false;
-
+  DateTime now = DateTime.now();
+  DateTime future = DateTime.now();
+  String email = " ";
   @override
   void initState() {
     super.initState();
@@ -31,11 +34,6 @@ class _SendOTPState extends State<SendOTP> {
     });
   }
 
-  @override
-  void dispose() {
-    txtEmail.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +78,12 @@ class _SendOTPState extends State<SendOTP> {
                               ? () {
                                   setState(() {
                                     loading = true;
+                                    if(email != txtEmail.text){
+                                      future =DateTime.now().add(Duration(minutes: 2));
+                                    }
+                                    if(future.difference(DateTime.now()).inSeconds <= 0 ){
+                                      future =DateTime.now().add(Duration(minutes: 2));
+                                    }
                                     validateEmail();
                                   });
                                 }
@@ -151,13 +155,22 @@ class _SendOTPState extends State<SendOTP> {
             builder: (context) => SignUpPage(
                   emailTXT: txtEmail,
                 )),
-      ) : Navigator.push(
+      ) :
+      Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ChangePasswordPage(
-              emailTXT: txtEmail.text,
-            )),
-      );
+            builder: (context) {
+              return ChangePasswordPage(
+                time: future,
+                emailTXT: txtEmail.text,
+              );
+            }
+        ),
+      ).then((value) {
+        future = (value as Map)['future'];
+        email = (value as Map)['email'];
+        print(txtEmail.text);
+      });
     } else {
       setState(() {
         loading = false;

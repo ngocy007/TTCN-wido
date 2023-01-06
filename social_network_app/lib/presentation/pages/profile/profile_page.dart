@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:social_network_app/config/constant.dart';
 import 'package:social_network_app/consts.dart';
 import 'package:social_network_app/data/models/api/api_respone.dart';
 import 'package:social_network_app/data/models/user/user.dart';
 import 'package:social_network_app/data/service/user_service.dart';
+import 'package:social_network_app/presentation/pages/post/upload_post_page.dart';
 import 'package:social_network_app/presentation/pages/profile/list_follow_page.dart';
 import 'package:social_network_app/presentation/pages/credentail/sign_in_page.dart';
 import 'package:social_network_app/presentation/pages/post/detail_post_page.dart';
@@ -27,7 +29,9 @@ class _ProfilePageState extends State<ProfilePage> {
   int fol = 0;
 
   Future<dynamic> _follow(int id) async {
-    ApiResponse response = await follow(id);
+    int uid = await getUserId();
+    ApiResponse response = await follow(id,uid);
+
     if (response.error == null) {
       setState(() {
         isFollowed = response.data as bool;
@@ -119,7 +123,7 @@ class _ProfilePageState extends State<ProfilePage> {
             style: TextStyle(color: primaryColor),
           ),
           actions: [
-            Padding(
+            isUser == true ? Padding(
               padding: const EdgeInsets.only(right: 10.0),
               child: InkWell(
                   onTap: () {
@@ -129,7 +133,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     Icons.menu,
                     color: primaryColor,
                   )),
-            )
+            ): SizedBox()
           ],
         ),
         body: _loading
@@ -137,15 +141,15 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: CircularProgressIndicator(),
               )
             : RefreshIndicator(
-          onRefresh: () {
-            setState(() {
-              _loading = true;
-            });
-            return _getUser();
-          },
-              child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+                onRefresh: () {
+                  setState(() {
+                    _loading = true;
+                  });
+                  return _getUser();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 15.0, vertical: 10),
                   child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,7 +165,8 @@ class _ProfilePageState extends State<ProfilePage> {
                               width: 80,
                               height: 80,
                               decoration: BoxDecoration(
-                                  color: secondaryColor, shape: BoxShape.circle),
+                                  color: secondaryColor,
+                                  shape: BoxShape.circle),
                             ),
                             Row(
                               children: [
@@ -204,13 +209,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                       sizeVer(8),
                                       SizedBox(
-                                        width: MediaQuery.of(context).size.width *
-                                            0.22,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.22,
                                         child: Text(
                                           overflow: TextOverflow.ellipsis,
                                           "Người theo dõi",
                                           style: TextStyle(
-                                              color: primaryColor, fontSize: 15),
+                                              color: primaryColor,
+                                              fontSize: 15),
                                           maxLines: 1,
                                         ),
                                       )
@@ -239,13 +246,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                       sizeVer(8),
                                       SizedBox(
-                                        width: MediaQuery.of(context).size.width *
-                                            0.22,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.22,
                                         child: Text(
                                           overflow: TextOverflow.ellipsis,
                                           "Đang theo dõi",
                                           style: TextStyle(
-                                              color: primaryColor, fontSize: 15),
+                                              color: primaryColor,
+                                              fontSize: 15),
                                           maxLines: 1,
                                         ),
                                       )
@@ -285,14 +294,16 @@ class _ProfilePageState extends State<ProfilePage> {
                                           child: isFollowed == true
                                               ? ElevatedButton(
                                                   onPressed: () async {
-                                                    await _follow(user.id_user!);
+                                                    await _follow(
+                                                        user.id_user!);
                                                     setState(() {
                                                       fol = fol - 1;
                                                     });
                                                   },
                                                   child: Row(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment.center,
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
                                                       Text("Đang theo dõi",
                                                           style: TextStyle(
@@ -300,7 +311,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                                       Icon(Icons.expand_more)
                                                     ],
                                                   ),
-                                                  style: ElevatedButton.styleFrom(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
                                                     backgroundColor:
                                                         Colors.white24,
                                                     padding:
@@ -309,7 +321,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 )
                                               : ElevatedButton(
                                                   onPressed: () async {
-                                                    await _follow(user.id_user!);
+                                                    await _follow(
+                                                        user.id_user!);
                                                     setState(() {
                                                       fol = fol + 1;
                                                     });
@@ -320,7 +333,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                                           TextOverflow.ellipsis,
                                                       style: TextStyle(
                                                           fontSize: 15)),
-                                                  style: ElevatedButton.styleFrom(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
                                                     padding:
                                                         EdgeInsets.only(top: 2),
                                                   ),
@@ -344,47 +358,88 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               )
                             : const SizedBox(),
+                        isUser == true ?Column(
+                          children: [
+                            sizeVer(5),
+                            Center(
+                              child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Color(0xFF4F4D4D)),
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                EditProfilePage()));
+                                  },
+                                  child: Text("Chỉnh sửa thông tin cá nhân")),
+                            ),
+                          ],
+                        ):SizedBox(),
                         sizeVer(10),
-                        GridView.builder(
-                            itemCount: user.posts?.length,
-                            physics: ScrollPhysics(),
-                            shrinkWrap: true,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3,
-                                    crossAxisSpacing: 5,
-                                    mainAxisSpacing: 5),
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () async {
-                                  bool delete = await  Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => DetailPost(
-                                      name: widget.name!,
-                                      image: user.image!,
-                                      post: user.posts![index],
+                        user.posts!.isEmpty && isUser == true
+                            ? Center(
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.2),
+                                  child: Column(
+                                  children: [
+                                    Text("Hãy đăng bài viết đầu tiên"),
+                                    ElevatedButton(
+                                        onPressed: () => Navigator.of(context)
+                                                .push(MaterialPageRoute(
+                                              builder: (context) =>
+                                                  UpLoadPostPage(),
+                                            )),
+                                        child: Text("Tạo bài viết"))
+                                  ],
+                              ),
+                                ))
+                            : GridView.builder(
+                                itemCount: user.posts?.length,
+                                physics: ScrollPhysics(),
+                                shrinkWrap: true,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        crossAxisSpacing: 5,
+                                        mainAxisSpacing: 5),
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    onTap: () async {
+                                      bool delete = await Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                        builder: (context) => DetailPost(
+                                          name: widget.name!,
+                                          image: user.image!,
+                                          post: user.posts![index],
+                                        ),
+                                      ));
+                                      delete == true
+                                          ? setState(() {
+                                              user.posts!.removeAt(index);
+                                            })
+                                          : null;
+                                    },
+                                    child: Container(
+                                      width: 100,
+                                      height: 100,
+                                      child:
+                                          user.posts![index].photos!.isNotEmpty
+                                              ? Image.network(
+                                                  user.posts![index].photos!
+                                                      .first.url!,
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : Image.asset(
+                                                  "assets/no-image-icon.png"),
                                     ),
-                                  ));
-                                  delete == true ? setState(() {
-                                    user.posts!.removeAt(index);
-                                  }):null;
-                                },
-                                child: Container(
-                                  width: 100,
-                                  height: 100,
-                                  child: user.posts![index].photos!.isNotEmpty
-                                      ? Image.network(
-                                          user.posts![index].photos!.first.url!,
-                                          fit: BoxFit.cover,
-                                        )
-                                      : Image.asset("assets/no-image-icon.png"),
-                                ),
-                              );
-                            })
+                                  );
+                                })
                       ],
                     ),
                   ),
                 ),
-            ));
+              ));
   }
 
   _openBottomModalSheet(BuildContext context) {

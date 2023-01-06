@@ -42,7 +42,6 @@ Future<ApiResponse> getDetail(int id) async {
     String token = await getToken();
     final response = await http.get(Uri.parse("$getDetailPost$id"),
         headers: {'Accept': 'application/json', "x-access-token": '$token'});
-    print(response.body);
     switch (response.statusCode) {
       case 200:
         apiResponse.data = Post.fromJson(jsonDecode(response.body)["post"]);
@@ -120,23 +119,20 @@ Future<ApiResponse> createPost(String content, List<String> files) async {
   try {
     String token = await getToken();
     var client = http.Client();
-    var headersList = {
-      "x-access-token": '$token'
-    };
+    var headersList = {"x-access-token": '$token'};
     var uri = Uri.parse(createPostURL);
     var req = http.MultipartRequest('POST', uri);
     req.headers.addAll(headersList);
     req.fields.addAll({"content": content});
-    if(files.isNotEmpty){
+    if (files.isNotEmpty) {
       files.forEach((element) async {
-        http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
-            "multiple", element);
+        http.MultipartFile multipartFile =
+            await http.MultipartFile.fromPath("multiple", element);
         req.files.add(multipartFile);
       });
     }
 
     var response = await req.send();
-    print(response.statusCode);
     switch (response.statusCode) {
       case 200:
         break;
@@ -159,8 +155,7 @@ Future<ApiResponse> deletePost(int id) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
-    final response = await http.delete(
-        Uri.parse("$getDetailPost$id"),
+    final response = await http.delete(Uri.parse("$getDetailPost$id"),
         headers: {'Accept': 'application/json', "x-access-token": '$token'});
     switch (response.statusCode) {
       case 200:
@@ -180,13 +175,17 @@ Future<ApiResponse> deletePost(int id) async {
 }
 
 // Tạo bình luận
-Future<ApiResponse> createCMT(String content, int id) async {
+Future<ApiResponse> createCMT(String content, int id, int? reply) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
+    print(reply);
+    var body = reply == -1
+        ? {"content": content, "id_post": "${id}"}
+        : {"content": content, "id_post": "${id}", "reply": "${reply}" };
     final response = await http.post(Uri.parse(createCMTURL),
         headers: {'Accept': 'application/json', "x-access-token": '$token'},
-        body: {"content": content, "id_post": "${id}"});
+        body: body);
     switch (response.statusCode) {
       case 200:
         apiResponse.data = Comment.fromJson2(jsonDecode(response.body));
@@ -213,7 +212,6 @@ Future<ApiResponse> likePost(int id) async {
 
     final response = await http.post(Uri.parse("$likeURl$id"),
         headers: {"Accept": "application/json", "x-access-token": '$token'});
-    print(response.statusCode);
     switch (response.statusCode) {
       case 200:
         apiResponse.data = jsonDecode(response.body)["like"];
@@ -232,3 +230,31 @@ Future<ApiResponse> likePost(int id) async {
   return apiResponse;
 }
 
+// Lấy trả lời bình luận
+Future<ApiResponse> getReplies(int id) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+
+    final response = await http.get(Uri.parse("$getRepliesURL$id"),
+        headers: {"Accept": "application/json", "x-access-token": '$token'});
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = (jsonDecode(response.body)["replies"] as List)
+            .map((c) => Comment.fromJson3(c))
+            .toList();
+        print((apiResponse.data as List<Comment>)[0].id_post);
+        break;
+      case 404:
+        apiResponse.error = jsonDecode(response.body)['message'];
+        break;
+      default:
+        apiResponse.error = wrong;
+        break;
+    }
+  } catch (e) {
+    print(e);
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}

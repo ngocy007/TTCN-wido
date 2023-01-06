@@ -129,19 +129,6 @@ exports.createPost = async (req, res) => {
   }
 };
 
-// Cập nhật bài viết
-exports.updatePost = async (req, res) => {
-  try {
-    const updatedPost = await Post.update(req.body, {
-      where: {
-        id: req.params.id,
-      },
-    });
-    res.json({ updatedPost, success: true });
-  } catch (err) {
-    res.sendStatus(500).send(err);
-  }
-};
 
 // Xóa bài viết
 exports.deletePost = async (req, res) => {
@@ -168,10 +155,10 @@ exports.likePost = async (req, res) => {
 
     if (!result) {
       await Like_Post.create({ id_user: userId, id_post: id });
-      res.status(200).json({ like: true, msg: `Liked post: ${id}` });
+      res.status(200).json({ like: true, msg: `Đã thích bài viết: ${id}` });
     } else {
       await Like_Post.destroy({ where: { id_lp: result.id_lp } });
-      res.status(200).json({ like: false, msg: `Disliked post: ${id}` });
+      res.status(200).json({ like: false, msg: `Hủy thích bài viết: ${id}` });
     }
   } catch (error) {
     res.status(500).json({ error: { msg: "Lỗi chuyển đổi trạng thái" } });

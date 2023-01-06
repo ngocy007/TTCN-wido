@@ -132,10 +132,10 @@ exports.userDetails = async (req, res) => {
     },
   });
   const processUser = rawUser.get({ plain: true });
-  const countFollower = await Follow.findAll({
+  const countFollowee = await Follow.findAll({
     where: { id_follower: processUser.id_user },
   }).then((e) => e.length);
-  const countFollowee = await Follow.findAll({
+  const countFollower = await Follow.findAll({
     where: { id_followee: processUser.id_user },
   }).then((e) => e.length);
   const user = { ...processUser, countFollower, countFollowee };
@@ -210,7 +210,7 @@ exports.getUsersFLr = async (req, res) => {
   }
 };
 
-// Lấy ra tất cả người mình đang theo dõi
+// Lấy ra tất cả người dùng mình đang theo dõi
 exports.getUsersFLg = async (req, res) => {
   try {
     const { id } = req.params;

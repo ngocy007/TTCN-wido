@@ -24,8 +24,8 @@ class ListFollowPage extends StatefulWidget {
 class _ListFollowPageState extends State<ListFollowPage> {
   bool isFollow = true;
   bool _loading = true;
-  List<Follow>? followers;
-  List<Follow>? followees;
+  List<Follow> followers= [];
+  List<Follow> followees = [];
   bool? isFollowed;
   bool? isSearch = false;
   TextEditingController text = TextEditingController();
@@ -112,7 +112,7 @@ class _ListFollowPageState extends State<ListFollowPage> {
                 child: CircularProgressIndicator(),
               )
             else
-              followers!.isNotEmpty
+              followers.isNotEmpty
                   ? CustomScrollView(
                       slivers: [
                         SliverList(
@@ -122,7 +122,8 @@ class _ListFollowPageState extends State<ListFollowPage> {
                               onTap: () => Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) => ProfilePage(
-                                        user_id: followers![index].id_user,name: followers![index].name,
+                                        user_id: followers![index].id_user,
+                                        name: followers![index].name,
                                       ),
                                     ),
                                   ),
@@ -176,84 +177,53 @@ class _ListFollowPageState extends State<ListFollowPage> {
                 child: CircularProgressIndicator(),
               )
             else
-              followees!.isNotEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SearchWidget(
-                            controller: text,
-                            autoFocus: false,
-                            readOnLy: false,
-                            onChanged: (value) => searchFollower(value),
-                          ),
-                          sizeHor(10),
-                          Expanded(
-                              child: isSearch == true
-                                  ? Center(child: CircularProgressIndicator())
-                                  : CustomScrollView(
-                                      slivers: [
-                                        SliverList(
-                                            delegate:
-                                                SliverChildBuilderDelegate(
-                                                    (context, index) {
-                                          return ListTile(
-                                              onTap: () =>
-                                                  Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          ProfilePage(
-                                                        user_id:
-                                                            followees![index]
-                                                                .id_user,name: followees![index].name,
-                                                      ),
-                                                    ),
-                                                  ),
-                                              contentPadding:
-                                                  EdgeInsets.fromLTRB(
-                                                      0, 10, 0, 10),
-                                              title: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  SizedBox(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.22,
-                                                    child: Text(
-                                                      maxLines: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      followees![index].name!,
-                                                      style: TextStyle(
-                                                          color: primaryColor,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 15),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              leading: CircleAvatar(
-                                                radius: 40,
-                                                backgroundColor: secondaryColor,
-                                                backgroundImage: NetworkImage(
-                                                    followees![index].image!),
-                                              ),
-                                              trailing: Icon(
-                                                Icons.more_vert,
-                                                color: primaryColor,
-                                              ));
-                                        }, childCount: followees!.length))
-                                      ],
-                                    ))
-                        ],
-                      ),
+              followees.isNotEmpty
+                  ? CustomScrollView(
+                      slivers: [
+                        SliverList(
+                            delegate:
+                                SliverChildBuilderDelegate((context, index) {
+                          return ListTile(
+                              onTap: () => Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => ProfilePage(
+                                        user_id: followees![index].id_user,
+                                        name: followees![index].name,
+                                      ),
+                                    ),
+                                  ),
+                              contentPadding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                              title: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.22,
+                                    child: Text(
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      followees![index].name!,
+                                      style: TextStyle(
+                                          color: primaryColor,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              leading: CircleAvatar(
+                                radius: 40,
+                                backgroundColor: secondaryColor,
+                                backgroundImage:
+                                    NetworkImage(followees![index].image!),
+                              ),
+                              trailing: Icon(
+                                Icons.more_vert,
+                                color: primaryColor,
+                              ));
+                        }, childCount: followees!.length))
+                      ],
                     )
                   : Center(
                       child: Container(

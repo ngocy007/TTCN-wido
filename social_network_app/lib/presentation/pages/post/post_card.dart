@@ -203,19 +203,6 @@ class _PostCardState extends State<PostCard> {
                         color: primaryColor,
                       )),
                 ),
-                IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Feather.send,
-                      color: primaryColor,
-                    )),
-                Spacer(),
-                IconButton(
-                    onPressed: () => {},
-                    icon: Icon(
-                      Icons.bookmark_border,
-                      color: primaryColor,
-                    )),
               ],
             ),
           ),
@@ -276,7 +263,7 @@ class _PostCardState extends State<PostCard> {
                   height: 5,
                 ),
                 Text(
-                  'Đăng ngày ${cvDate(widget.post.createdAt)}',
+                  'Đăng lúc ${cvDate(widget.post.createdAt)}',
                   style: TextStyle(fontSize: 13, color: darkGreyColor),
                 ),
                 SizedBox(
