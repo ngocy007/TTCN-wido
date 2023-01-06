@@ -110,6 +110,11 @@ section.section2 {
    font-size: x-large;
     color: #520cf7;
     cursor: pointer;
+    position: relative;
+}
+
+.nav-text:not(.is-active):hover {
+    color: red;
 }
 .div-left{
     margin-top: 100px;
@@ -183,4 +188,21 @@ section.section2 {
 .Fade-admin{
    height: 430px;
    text-align: center;
+}
+.infodiv1{
+    width: 50%;
+    float: left;
+    background-color: lightblue;
+}
+.infodiv2{
+    width: 45%;
+    margin-left: 50px;
+    float: left;
+    background-color: lightblue;
+    padding-left: 30px;
+    border-radius: 5px;
+}
+.infoava{
+    width: 70px;
+    height: 70px;
 }

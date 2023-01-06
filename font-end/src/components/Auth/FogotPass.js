@@ -64,6 +64,9 @@ class ForgotPass extends Component {
       .catch(function (error) {});
     return checkcode;
   }
+  handelback() {
+    window.location.assign("/");
+  }
   //kiểm tra mật khẩu
   validate() {
     let input = this.state.input;
@@ -179,6 +182,12 @@ class ForgotPass extends Component {
                   >
                     gửi yêu cầu
                   </button>
+                  <button
+                    className="btn-login"
+                    onClick={() => this.handelback()}
+                  >
+                    đăng nhập
+                  </button>
                 </div>
               </div>
             )}
@@ -202,6 +211,12 @@ class ForgotPass extends Component {
                     onClick={() => this.showdiv("checkedpass")}
                   >
                     xác nhận
+                  </button>
+                  <button
+                    className="btn-login"
+                    onClick={() => this.handelback()}
+                  >
+                    đăng nhập
                   </button>
                 </div>
               </div>
@@ -253,6 +268,12 @@ class ForgotPass extends Component {
                 <div className="col-12">
                   <button className="btn-login" onClick={this.handelsubmit}>
                     đổi mật khẩu
+                  </button>
+                  <button
+                    className="btn-login"
+                    onClick={() => this.handelback()}
+                  >
+                    đăng nhập
                   </button>
                 </div>
               </div>

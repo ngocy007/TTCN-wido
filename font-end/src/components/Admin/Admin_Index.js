@@ -8,6 +8,7 @@ import Thongke from "./Thongke";
 import User from "./User";
 import Profile from "./Adminprofile";
 import Post from "./Post";
+import Info from "./Info";
 
 class Admin_Index extends Component {
   constructor(props) {
@@ -19,6 +20,7 @@ class Admin_Index extends Component {
       isshowpost: false,
       isshowindex: true,
       isshowprofile: false,
+      isshowinfo: false,
     };
     this.handleLogout = this.handleLogout.bind(this);
   }
@@ -34,10 +36,11 @@ class Admin_Index extends Component {
       )
       .then((res) => {
         const user = res.data;
-        this.state.img = user.user.image;
 
         this.state.img = user.user.image;
-        this.setState({});
+        this.setState({
+          img: this.state.img,
+        });
       });
   }
   handleLogout() {
@@ -64,6 +67,7 @@ class Admin_Index extends Component {
           isshowindex: (this.state.isshowindex = true),
           isshowpost: (this.state.isshowpost = false),
           isshowprofile: (this.state.isshowprofile = false),
+          isshowinfo: (this.state.isshowinfo = false),
         });
         break;
       case "isshowprofile":
@@ -72,6 +76,7 @@ class Admin_Index extends Component {
           isshowindex: (this.state.isshowindex = false),
           isshowpost: (this.state.isshowpost = false),
           isshowprofile: (this.state.isshowprofile = true),
+          isshowinfo: (this.state.isshowinfo = false),
         });
         break;
       case "isshowpost":
@@ -80,13 +85,24 @@ class Admin_Index extends Component {
           isshowindex: (this.state.isshowindex = false),
           isshowpost: (this.state.isshowpost = true),
           isshowprofile: (this.state.isshowprofile = false),
+          isshowinfo: (this.state.isshowinfo = false),
+        });
+        break;
+      case "isshowinfo":
+        this.setState({
+          isshowuser: (this.state.isshowuser = false),
+          isshowindex: (this.state.isshowindex = false),
+          isshowpost: (this.state.isshowpost = false),
+          isshowprofile: (this.state.isshowprofile = false),
+          isshowinfo: (this.state.isshowinfo = true),
         });
         break;
       default:
     }
   }
   render() {
-    const { isshowindex, isshowpost, isshowuser, isshowprofile } = this.state;
+    const { isshowindex, isshowpost, isshowuser, isshowprofile, isshowinfo } =
+      this.state;
     return (
       <div>
         <nav className="nav-admin">
@@ -125,8 +141,12 @@ class Admin_Index extends Component {
               </div>
             </li>
             <li>
-              <i class="fa fa-telegram nav-text-top" aria-hidden="true">
-                Thông tin
+              <i
+                class="fa fa-telegram nav-text-top"
+                aria-hidden="true"
+                onClick={() => this.showdiv("isshowinfo")}
+              >
+                Thông Tin
               </i>
             </li>
           </ul>
@@ -136,7 +156,7 @@ class Admin_Index extends Component {
                 className="nav-text fa fa-user"
                 onClick={() => this.showdiv("isshowuser")}
               >
-                người dùng
+                Người dùng
               </i>
             </div>
             <div className="div-left">
@@ -153,6 +173,7 @@ class Admin_Index extends Component {
         {isshowuser && <User />}
         {isshowprofile && <Profile />}
         {isshowpost && <Post />}
+        {isshowinfo && <Info />}
       </div>
     );
   }
