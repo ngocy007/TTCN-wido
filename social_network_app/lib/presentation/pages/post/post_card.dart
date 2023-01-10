@@ -254,10 +254,16 @@ class _PostCardState extends State<PostCard> {
                   height: 5,
                 ),
                 widget.post.countCmt != 0
-                    ? Text(
+                    ? GestureDetector(
+                  onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) =>  CommentPage(
+                    post: widget.post,
+                    avatar: widget.avatar,
+                  ),)),
+                      child: Text(
                   'Xem tất cả ${widget.post.countCmt} bình luận',
                   style: TextStyle(color: darkGreyColor),
-                )
+                ),
+                    )
                     : SizedBox(),
                 SizedBox(
                   height: 5,

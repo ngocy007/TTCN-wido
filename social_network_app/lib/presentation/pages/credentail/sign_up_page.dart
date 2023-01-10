@@ -179,9 +179,9 @@ class _SignUpPageState extends State<SignUpPage> {
                             _btnEnabled5
                         ? () {
                             setState(() {
+
                               loading = true;
-                              _verifyPass();
-                              // _register();
+                              _verifyPass() ? _register(): loading = false;
                             });
                           }
                         : null,
@@ -221,25 +221,30 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  void _verifyPass() {
-    if (txtPassword.text.trim().length < 6 && txtPassword.text.trim().length > 15) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Chiều dài mật khẩu phải lớn hơn 6 và nhỏ hơn 15 ký tự")));
-    }
-    if (txtPassword.text.trim() != txtConfirmPassword.text.trim()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Xác nhận mật khẩu không khớp với mặt khẩu")));
+  bool _verifyPass() {
+    if (txtPassword.text.trim().length < 6 &&
+        txtPassword.text.trim().length > 15) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Mật khẩu phải lớn hơn 6 và nhỏ hơn 15 ký tự")));
+      return false;
+    } else if (txtPassword.text.trim() != txtConfirmPassword.text.trim()) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Xác nhận mật khẩu mới không khớp với mặt khẩu mới")));
+      return false;
+    } else {
+      return true;
     }
   }
 
   void _isOTP(otp) async {
     ApiResponse response = await verifyOTP(txtEmail.text, otp);
     setState(() {
-      loading = !loading;
+      loading = true;
     });
     if (response.error == null) {
       setState(() {
         _btnEnabled5 = true;
+        loading = false;
       });
     } else {
       setState(() {
@@ -252,18 +257,18 @@ class _SignUpPageState extends State<SignUpPage> {
 
   void _register() async {
     setState(() {
-      loading = !loading;
+      loading = true;
     });
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              SignInPage(),
-        ),
-        (route) => false);
-    ApiResponse response =
-        await register(txtName.text, txtEmail.text, txtPassword.text);
+    ApiResponse response = await register(txtName.text, txtEmail.text, txtPassword.text);
+    print(response.error);
     if (response.error == null) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                SignInPage(),
+          ),
+              (route) => false);
     } else {
       setState(() {
         loading = !loading;

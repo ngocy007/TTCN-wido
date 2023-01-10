@@ -5,6 +5,7 @@ import 'package:social_network_app/consts.dart';
 import 'package:social_network_app/data/models/api/api_respone.dart';
 import 'package:social_network_app/data/service/post_service.dart';
 import 'package:social_network_app/data/service/user_service.dart';
+import 'package:social_network_app/presentation/pages/Loading.dart';
 import 'package:social_network_app/presentation/pages/credentail/sign_in_page.dart';
 import 'package:social_network_app/presentation/pages/main_screen/main_screen.dart';
 
@@ -70,7 +71,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                      Navigator.of(context).pushAndRemoveUntil(
                          MaterialPageRoute(
                            builder: (context) =>
-                               MainScreen(),
+                               Loading(),
                          ),
                              (route) => false);
                    });

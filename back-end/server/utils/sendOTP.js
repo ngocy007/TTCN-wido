@@ -1,7 +1,7 @@
 const redis = require("../config/redis");
 const sendMail = require("./sendMail");
 
-const sendOTP = async (email,res) => {
+const sendOTP = async (email,res,subject) => {
   const otp = Math.floor(Math.random() * (999999 - 100000) + 100000);
   const message = `Mã OTP của bạn: ${otp}`;
   let send = false;
@@ -21,7 +21,7 @@ const sendOTP = async (email,res) => {
       if (send == true) {
         sendMail({
           email: email,
-          subject: `Xác thực đăng ký`,
+          subject: subject,
           message,
         });
         res.send({ message: "Đã gửi email, vui lòng kiểm tra" });

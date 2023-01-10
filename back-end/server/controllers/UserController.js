@@ -30,10 +30,10 @@ exports.createUser = async (req, res) => {
         .json({ success: false, message: "Tài khoản đã tồn tại" });
     }
 
-    await UserMess.create({
-      name: req.body.name,
-      email: req.body.email,
-    });
+    // await UserMess.create({
+    //   name: req.body.name,
+    //   email: req.body.email,
+    // });
 
     user = await User.create({
       name: req.body.name,
@@ -277,7 +277,7 @@ exports.sendOTPCreate = catchAsyncErrors(async (req, res, next) => {
         new ErrorHandler(`Email ${req.body.email} đã được sử dụng`, 404)
       );
     } else {
-      sendOTP(email, res);
+      sendOTP(email, res,'Xác thực đăng ký');
     }
   } catch (err) {
     res.sendStatus(500).send(err);
@@ -297,7 +297,7 @@ exports.sendOTPForgotPW = catchAsyncErrors(async (req, res, next) => {
         )
       );
     } else {
-      sendOTP(email, res);
+      sendOTP(email, res,'Quên mật khẩu');
     }
   } catch (err) {
     res.sendStatus(500).send(err);

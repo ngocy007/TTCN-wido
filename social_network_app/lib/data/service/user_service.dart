@@ -69,10 +69,11 @@ Future<ApiResponse> register(String name, String email, String password) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     final response = await http.post(Uri.parse(regisTerURL),
-        headers: {'Content-Type': 'application/json'},
+        headers: {"Accept": "application/json"},
         body: {'name': name, 'email': email, 'password': password});
+    print(response.statusCode);
     switch (response.statusCode) {
-      case 200:
+      case 201:
         break;
       case 401:
         apiResponse.error = jsonDecode(response.body)['message'];
@@ -82,6 +83,7 @@ Future<ApiResponse> register(String name, String email, String password) async {
         break;
     }
   } catch (e) {
+    print(e);
     apiResponse.error = serverError;
   }
 
@@ -151,10 +153,8 @@ Future<ApiResponse> getUserDetail(int? id) async {
 Future<ApiResponse> sendOTPCreate(String email) async {
   ApiResponse apiResponse = ApiResponse();
   try {
-    String token = await getToken();
     final response = await http.post(Uri.parse(sendOTP1), headers: {
       "Accept": "application/json",
-      "x-access-token": '$token'
     }, body: {
       'email': email,
     });
@@ -179,10 +179,8 @@ Future<ApiResponse> sendOTPCreate(String email) async {
 Future<ApiResponse> sendOTPForgot(String email) async {
   ApiResponse apiResponse = ApiResponse();
   try {
-    String token = await getToken();
     final response = await http.post(Uri.parse(sendOTP2), headers: {
       "Accept": "application/json",
-      "x-access-token": '$token'
     }, body: {
       'email': email,
     });
@@ -367,7 +365,6 @@ Future<ApiResponse> forgotPass(String email, String pass) async {
 
     final response = await http.post(Uri.parse(forgotPassURL), headers: {
       "Accept": "application/json",
-      "x-access-token": '$token',
     }, body: {
       "email": email,
       "password": pass

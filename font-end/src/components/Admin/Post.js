@@ -132,10 +132,10 @@ class Post extends Component {
         <section className="section2">
           <table className="table">
             <tr className="col-9">
-              <td className="col-2">id</td>
-              <td className="col-2">nội dung</td>
-              <td className="col-2">ngày đăng</td>
-              <td className="col-2">người đăng</td>
+              <td className="col-2 th">Mã bài viết</td>
+              <td className="col-2 th">nội dung</td>
+              <td className="col-2 th">ngày đăng</td>
+              <td className="col-2 th">người đăng</td>
             </tr>
             {this.state.posts.map((item) => (
               <tr key={item.id_post} className="col-9">

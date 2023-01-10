@@ -32,7 +32,7 @@ class _ListFollowPageState extends State<ListFollowPage> {
 
   void searchFollower(String value) {
     setState(() {
-      followers = followers!
+      followers = followers
           .where((element) =>
               element.name!.toLowerCase().contains(value.toLowerCase()))
           .toList();
@@ -122,8 +122,8 @@ class _ListFollowPageState extends State<ListFollowPage> {
                               onTap: () => Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) => ProfilePage(
-                                        user_id: followers![index].id_user,
-                                        name: followers![index].name,
+                                        user_id: followers[index].id_user,
+                                        name: followers[index].name,
                                       ),
                                     ),
                                   ),
@@ -133,7 +133,7 @@ class _ListFollowPageState extends State<ListFollowPage> {
                               title: Text(
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                followers![index].name!,
+                                followers[index].name!,
                                 style: TextStyle(
                                     color: primaryColor,
                                     fontWeight: FontWeight.bold,
@@ -143,13 +143,13 @@ class _ListFollowPageState extends State<ListFollowPage> {
                                 backgroundColor: secondaryColor,
                                 radius: 40,
                                 backgroundImage:
-                                    NetworkImage('${followers![index].image}'),
+                                    NetworkImage('${followers[index].image}'),
                               ),
                               trailing: Icon(
                                 Icons.more_vert,
                                 color: primaryColor,
                               ));
-                        }, childCount: followers!.length))
+                        }, childCount: followers.length))
                       ],
                     )
                   : Center(
@@ -187,8 +187,8 @@ class _ListFollowPageState extends State<ListFollowPage> {
                               onTap: () => Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) => ProfilePage(
-                                        user_id: followees![index].id_user,
-                                        name: followees![index].name,
+                                        user_id: followees[index].id_user,
+                                        name: followees[index].name,
                                       ),
                                     ),
                                   ),
@@ -203,7 +203,7 @@ class _ListFollowPageState extends State<ListFollowPage> {
                                     child: Text(
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      followees![index].name!,
+                                      followees[index].name!,
                                       style: TextStyle(
                                           color: primaryColor,
                                           fontWeight: FontWeight.bold,
@@ -216,13 +216,13 @@ class _ListFollowPageState extends State<ListFollowPage> {
                                 radius: 40,
                                 backgroundColor: secondaryColor,
                                 backgroundImage:
-                                    NetworkImage(followees![index].image!),
+                                    NetworkImage(followees[index].image!),
                               ),
                               trailing: Icon(
                                 Icons.more_vert,
                                 color: primaryColor,
                               ));
-                        }, childCount: followees!.length))
+                        }, childCount: followees.length))
                       ],
                     )
                   : Center(

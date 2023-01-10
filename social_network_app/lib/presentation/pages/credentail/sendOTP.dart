@@ -107,10 +107,7 @@ class _SendOTPState extends State<SendOTP> {
                   ),
                   InkWell(
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SignInPage()));
+                      Navigator.pop(context);
                     },
                     child: Text(
                       "Đăng nhập",
