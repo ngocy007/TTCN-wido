@@ -56,7 +56,7 @@ function Menu() {
       <Home className="icon" onClick={navigateHome} />
       {/* <Inbox className="icon" />
       <Explore className="icon" /> */}
-      <Notifications className="icon" />
+      {/* <Notifications className="icon" /> */}
       <Upload className="icon" onClick={handleOpen} />
       <ProfileIcon
         iconSize="small"

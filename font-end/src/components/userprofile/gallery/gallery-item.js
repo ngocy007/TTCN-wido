@@ -14,6 +14,7 @@ const Img = styled.img`
   width: 100%;
   height: 300px;
   display: block;
+  object-fit: cover;
 `;
 const Icon = styled.span`
   position: absolute;

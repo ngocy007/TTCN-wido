@@ -36,7 +36,7 @@ function Suggestions() {
   return (
     <div className="suggestions">
       <div className="titleContainer">
-        <div className="title">Suggestions For You</div>
+        <div className="title">Bạn có thể biết</div>
       </div>
       {itemsC >= 5 ? (
         items?.slice(0, 5).map((user) => {

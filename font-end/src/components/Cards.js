@@ -1,12 +1,16 @@
 import "../styles/cards.scss";
-import Stories from "./Stories";
+//import Stories from "./Stories";
 import Card from "./Card";
 import { useEffect, useState } from "react";
+import "../styles/stories.scss";
+import HorizontalScroll from "react-horizontal-scrolling";
+import Button from "@mui/material/Button";
 
 function Cards() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [items, setItems] = useState([]);
+  const [itemss, setItemss] = useState([]);
   const headers = {
     "x-access-token": localStorage.getItem("token"),
   };
@@ -17,9 +21,9 @@ function Cards() {
     fetch("http://localhost:8000/api/post/home?_limit=5&_page=0", { headers })
       .then((res) => res.json())
       .then(
-        (result) => {
+        (data) => {
           setIsLoaded(true);
-          setItems(result);
+          setItems(data.posts);
         },
         // Note: it's important to handle errors here
         // instead of a catch() block so that we don't swallow
@@ -30,6 +34,29 @@ function Cards() {
         }
       );
   }, [isCall]);
+
+  //Handle thêm bài
+  const [cPage, setCPage] = useState(1);
+  const [isEnd, setIsEnd] = useState(false);
+  const HandleShowMore = () => {
+    fetch("http://localhost:8000/api/post/home?_limit=5&_page="+ cPage , { headers })
+      .then((res) => res.json())
+      .then((data) => {
+        if(data.posts.length)
+        {
+          console.log("danh sach truco khi noi",items)
+          setItemss(data.posts);
+          console.log("danh sach fetch",data.posts)
+          setItems([...items, ...data.posts]);
+          setCPage(cPage+1);
+          console.log("danh sach da noi",items)
+        }
+        else{
+          setIsEnd(true);
+        }
+      })
+      .catch((err) => console.log("hey"));
+  };
 
   if (error) {
     return <div>Error: {error.message}</div>;
@@ -47,7 +74,7 @@ function Cards() {
     // );
     return (
       <div className="cards">
-        <Stories />
+        {/* <Stories /> */}
 
         {/* <Card
           accountName="rafagrassetti"
@@ -58,7 +85,7 @@ function Cards() {
           likedByNumber={89}
           hours={16}
         /> */}
-        {items?.posts?.map((item) => (
+        {items?.map((item) => (
           <Card
             userName={item.User.name}
             profileIcon={item.User.image}
@@ -73,6 +100,11 @@ function Cards() {
             parentCallBack={handleCallBack}
           />
         ))}
+        <div className="storiesBut">
+          <HorizontalScroll className="scroll" reverseScroll={true}>
+            {isEnd ? "Bạn Đã xem hết bài viết" : <Button onClick={HandleShowMore}>Xem thêm</Button>}
+          </HorizontalScroll>
+        </div>
 
         {/* <Card
           accountName="mapvault"

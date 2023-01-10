@@ -32,11 +32,20 @@ function Comment(props) {
   //handle cho menu button
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openMenu = Boolean(anchorEl);
+  //handle cho menu button
+  const [anchorElRep, setAnchorElRep] = React.useState(null);
+  const openMenuRep = Boolean(anchorElRep);
   const handleClickMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  const handleClickMenuRep = (event) => {
+    setAnchorElRep(event.currentTarget);
+  };
   const handleCloseMenu = () => {
     setAnchorEl(null);
+  };
+  const handleCloseMenuRep = () => {
+    setAnchorElRep(null);
   };
   //hadnle aleart xoa bai
   const [openAleart, setOpenAleart] = React.useState(false);
@@ -103,7 +112,9 @@ function Comment(props) {
     setIsShow(false);
   }, [isCall, isDelete]);
   //phan hoi
+  const [isReping, setIsReping] = useState(false);
   const handleRep = (id) => {
+    setIsReping(!isReping);
     callRep(id);
   };
   //state cho xu ly delete
@@ -180,7 +191,7 @@ function Comment(props) {
                   fontWeight: "550",
                 }}
               >
-                Phản hồi
+                {isReping ? "Hủy phản hồi" : "Phản hồi"}
               </p>
             </Button>
             <Button
@@ -305,18 +316,18 @@ function Comment(props) {
                     {" "}
                     <Button
                       id="basic-button"
-                      aria-controls={openMenu ? "basic-menu" : undefined}
+                      aria-controls={openMenuRep ? "basic-menu" : undefined}
                       aria-haspopup="true"
-                      aria-expanded={openMenu ? "true" : undefined}
-                      onClick={handleClickMenu}
+                      aria-expanded={openMenuRep ? "true" : undefined}
+                      onClick={handleClickMenuRep}
                     >
                       <CardButton className="cardButton" />
                     </Button>
                     <Menu
                       id="basic-menu"
-                      anchorEl={anchorEl}
-                      open={openMenu}
-                      onClose={handleCloseMenu}
+                      anchorEl={anchorElRep}
+                      open={openMenuRep}
+                      onClose={handleCloseMenuRep}
                       MenuListProps={{
                         "aria-labelledby": "basic-button",
                       }}
@@ -332,7 +343,7 @@ function Comment(props) {
                       ) : (
                         ""
                       )}
-                      <MenuItem onClick={handleCloseMenu}>Cancel</MenuItem>
+                      <MenuItem onClick={handleCloseMenuRep}>Cancel</MenuItem>
                     </Menu>
                   </div>
                 </div>

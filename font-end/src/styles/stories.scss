@@ -12,6 +12,20 @@
   overflow-y: hidden;
 }
 
+.storiesBut {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  background-color: $background-white;
+  border: 1px solid $border-color-grey;
+  border-radius: 3px;
+  margin: 2em 0 1.5em 0;
+  height: 3em;
+  width: 600px;
+  overflow: hidden;
+}
+
 @media only screen and (max-width: 640px) {
   .stories {
     margin: 0 0 0.5em 0;
